@@ -104,10 +104,32 @@ const TS = (() => {
   }
   function gcd(a, b) { return b ? gcd(b, a % b) : a; }
 
-  const LOGO = '<svg viewBox="0 0 34 34" aria-hidden="true"><rect width="34" height="34" rx="9" fill="var(--note)"/><path d="M9 25c0-8 16-7 16-16" stroke="var(--gold)" stroke-width="3.4" fill="none" stroke-linecap="round"/><circle cx="9" cy="25" r="3.6" fill="var(--surface)" stroke="var(--gold)" stroke-width="2"/><circle cx="25" cy="9" r="3.6" fill="var(--surface)" stroke="var(--gold)" stroke-width="2"/></svg>';
+  const LOGO = '<svg viewBox="0 0 34 34" aria-hidden="true"><defs><linearGradient id="srlg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#14b8a6"/><stop offset="1" stop-color="#0b5e57"/></linearGradient></defs><rect width="34" height="34" rx="9" fill="url(#srlg)"/><rect x=".5" y=".5" width="33" height="33" rx="8.5" fill="none" stroke="#ffffff" stroke-opacity=".18"/><path d="M9 25c0-8 16-7 16-16" stroke="#fbbf24" stroke-width="3.4" fill="none" stroke-linecap="round"/><circle cx="9" cy="25" r="3.6" fill="#ffffff" stroke="#fbbf24" stroke-width="2"/><circle cx="25" cy="9" r="3.6" fill="#ffffff" stroke="#fbbf24" stroke-width="2"/></svg>';
 
-  return { $, $$, esc, fmt, money, date, api, session, setCsrf, md, toast, bindTheme, guilloche, LOGO };
+  // Short name for greetings. Honorific prefixes common in Bangladesh and elsewhere (Md, Mst, Mr, Dr…) are not first names.
+  const PREFIX = /^(md|mst|mosammat|mohd|mr|mrs|ms|miss|dr|prof)\.?$/i;
+  function first(name) {
+    const parts = String(name || "").trim().split(/\s+/).filter(Boolean);
+    while (parts.length > 1 && PREFIX.test(parts[0])) parts.shift();
+    return parts[0] || "";
+  }
+  return { $, $$, esc, fmt, money, date, api, session, setCsrf, md, toast, bindTheme, guilloche, LOGO, first };
 })();
 
 // Installable web app (see /sw.js). Registration failures are harmless.
 if ("serviceWorker" in navigator && location.protocol !== "file:") { window.addEventListener("load", () => { navigator.serviceWorker.register("/sw.js").catch(() => {}); }); }
+
+// One click "Try as judge": a private sandbox with a student and a linked parent, signed in as the student.
+document.addEventListener("click", async e => {
+  const b = e.target.closest("[data-judge]");
+  if (!b) return;
+  e.preventDefault();
+  if (b.dataset.busy) return;
+  b.dataset.busy = "1"; const label = b.textContent; b.textContent = "Preparing your private sandbox…";
+  try {
+    const r = await TS.api("/api/public/judge", {});
+    if (r.ok) { location.href = r.redirect; return; }
+    TS.toast(r.error || "Could not start the demo. Try again.");
+  } catch (err) { TS.toast("Could not start the demo. Try again."); }
+  b.textContent = label; delete b.dataset.busy;
+});

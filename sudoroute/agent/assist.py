@@ -184,7 +184,7 @@ Kill switch: the student or guardian can freeze every payment with one press.
 Certificates: a paid-on-time tuition payment can become an Ed25519-signed certificate that anyone can check on the Verify page; a proof-of-funds certificate shows a balance is above a threshold without revealing the balance.
 If a transfer is returned or arrives short, SudoRoute explains why and pays only the shortfall, never the full amount twice.
 Languages: English, Simplified Chinese and Bangla.
-Proof pages: the Security Lab runs 47 live attacks plus 4 controls; the accuracy page shows the scam check on 84 test invoices and a comparison with a bank wire and a basic AI assistant.
+Proof pages: the Security Lab runs 57 live attacks plus 6 controls, including a deliberately compromised AI model; the accuracy page shows the scam check on 84 test invoices and a comparison with a bank wire and a basic AI assistant.
 Cost: the sandbox is free to try. Sign up at the Get started button. Built for the 2026 Shenzhen International FinTech Competition."""
 
 PUBLIC_FAQ = [

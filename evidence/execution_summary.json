@@ -1,10 +1,10 @@
 {
-  "scenarios_passed": 34,
-  "scenarios_total": 34,
+  "scenarios_passed": 41,
+  "scenarios_total": 41,
   "audit_chain": {
     "valid": true,
-    "entries": 106,
-    "head": "2969cba5286bb247fe6f4badb5310073d61d6458794c0b49f88bb83d1ed18981"
+    "entries": 131,
+    "head": "83db215a895b4efc32acd2d6dc7d7015549e1581ed637c952f5e0e0e366e3ea2"
   },
   "transfers": [
     {
@@ -90,6 +90,44 @@
       "eta": "2026-11-25T09:00:00+00:00",
       "credited": "2026-11-25T09:00:00+00:00",
       "received_amount": 2066.66
+    },
+    {
+      "id": "TXN-20261206-0012",
+      "student_id": "STU-BD-201",
+      "proposal_id": "PRP-00010",
+      "leg": 1,
+      "invoice_id": "INV-MUT-201",
+      "university_id": "MUT",
+      "reference": "MUT-2026-71719",
+      "provider": "edupay",
+      "provider_name": "EduPay (education payment platform)",
+      "src_amount": 499160.32,
+      "src_currency": "BDT",
+      "dst_amount": 16900.0,
+      "dst_currency": "MYR",
+      "beneficiary_account": "MY-MBB-5140-2290-8837",
+      "status": "in_transit",
+      "created": "2026-12-06T09:00:00+00:00",
+      "eta": "2026-12-09T09:00:00+00:00"
+    },
+    {
+      "id": "TXN-20261206-0014",
+      "student_id": "STU-BD-202",
+      "proposal_id": "PRP-00013",
+      "leg": 1,
+      "invoice_id": "INV-MUT-202",
+      "university_id": "MUT",
+      "reference": "MUT-2026-79638",
+      "provider": "edupay",
+      "provider_name": "EduPay (education payment platform)",
+      "src_amount": 499160.32,
+      "src_currency": "BDT",
+      "dst_amount": 16900.0,
+      "dst_currency": "MYR",
+      "beneficiary_account": "MY-MBB-5140-2290-8837",
+      "status": "in_transit",
+      "created": "2026-12-06T09:00:00+00:00",
+      "eta": "2026-12-09T09:00:00+00:00"
     }
   ],
   "university_ledgers": {
@@ -117,6 +155,26 @@
       "status": "paid",
       "paid": 6200.0,
       "amount": 6200.0
+    },
+    "INV-MUT-201": {
+      "status": "open",
+      "paid": 0.0,
+      "amount": 16900.0
+    },
+    "INV-PHISH-201": {
+      "status": "open",
+      "paid": 0.0,
+      "amount": 16900.0
+    },
+    "INV-MUT-202": {
+      "status": "open",
+      "paid": 0.0,
+      "amount": 16900.0
+    },
+    "INV-PHISH-202": {
+      "status": "open",
+      "paid": 0.0,
+      "amount": 16900.0
     }
   },
   "mandates": [
@@ -157,7 +215,47 @@
       ],
       "total_legs": 3,
       "expires": "2026-11-27T09:00:00+00:00",
+      "kind": "installments",
       "payee_account": "GB-\u2022\u2022\u20228834"
+    },
+    {
+      "mandate_id": "MDT-00011",
+      "proposal_id": "PRP-00010",
+      "invoice_id": "INV-MUT-201",
+      "provider_id": "edupay",
+      "status": "completed",
+      "quoted_rate": 0.03338924,
+      "max_slippage": 0.05,
+      "legs": [
+        {
+          "leg": 1,
+          "day_offset": 25,
+          "execute_on": "2026-12-26",
+          "dst_amount": 16900.0,
+          "src_amount_quote": 506151.08,
+          "done": true,
+          "src_amount_actual": 499160.32,
+          "transfer_id": "TXN-20261206-0012",
+          "executed_on": "2026-12-06"
+        }
+      ],
+      "executed_legs": [
+        "TXN-20261206-0012"
+      ],
+      "total_legs": 1,
+      "expires": "2026-12-26",
+      "kind": "smart_timing",
+      "target_rate": 0.03383774,
+      "floor_rate": 0.03179928,
+      "deadline": "2026-12-26",
+      "dst_currency": "MYR",
+      "src_currency": "BDT",
+      "last_check": {
+        "date": "2026-12-06",
+        "rate": 0.03385686,
+        "decision": "target_reached"
+      },
+      "payee_account": "MY-\u2022\u2022\u20228837"
     }
   ],
   "final_balances": {
@@ -169,6 +267,14 @@
     "STU-NG-002": {
       "NGN": 4582352.23,
       "GBP": 640.0
+    },
+    "STU-BD-201": {
+      "BDT": 125939.68,
+      "MYR": 1243.73
+    },
+    "STU-BD-202": {
+      "BDT": 117339.68,
+      "MYR": 1253.27
     }
   },
   "steps": [
@@ -372,6 +478,48 @@
       "student": "STU-BD-001",
       "intent": "certificate",
       "passed": true
+    },
+    {
+      "step": "Pay my tuition at the best rate before the deadline",
+      "student": "STU-BD-201",
+      "intent": "smart_pay",
+      "passed": true
+    },
+    {
+      "step": "confirm: smart-timing approval (nothing moves yet)",
+      "student": "STU-BD-201",
+      "passed": true,
+      "code": null
+    },
+    {
+      "step": "approval moves no money",
+      "student": "STU-BD-201",
+      "intent": "smart_pay",
+      "passed": true
+    },
+    {
+      "step": "smart mandate executed on time, to the registry account",
+      "student": "STU-BD-201",
+      "intent": "smart_pay",
+      "passed": true
+    },
+    {
+      "step": "Pay my tuition",
+      "student": "STU-BD-202",
+      "intent": "pay_tuition",
+      "passed": true
+    },
+    {
+      "step": "confirm: with the SMS-style code (must fail)",
+      "student": "STU-BD-202",
+      "passed": true,
+      "code": "bad_otp"
+    },
+    {
+      "step": "confirm: with the authenticator-app code",
+      "student": "STU-BD-202",
+      "passed": true,
+      "code": null
     }
   ]
 }

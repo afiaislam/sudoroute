@@ -39,3 +39,12 @@ in the capture environment; with internet access the site uses Overpass.
 | 33_pilot_feedback.png | In-app pilot feedback; only totals are published |
 | 34_mobile_ai.png | AI assistant on a phone |
 | 35_onchain_anchor.png | On-chain proof box on /verify (shows "not submitted" honestly when the server is offline) |
+| 36_smart_timing_proposal.png | Smart-timing payment: target rate, latest safe day, chance the target is reached and a signed price floor |
+| 37_smart_timing_watching.png | After one approval the agent checks the rate every day by itself (last check shown) |
+| 38_smart_timing_paid.png | The agent paid on its own, to the verified university account, and it arrived before the due date |
+| 39_authenticator_setup.png | Linking an authenticator app (RFC 6238 TOTP) with a QR code — SMS codes then stop working |
+
+| 40_judge_mode.png | One-click judge mode: a private sandbox and the 60-second guided path |
+
+Screenshots 36–40 were taken without a language model (rules only). The AI plan box and the quarantined
+AI reader's second opinion appear when `GEMINI_API_KEY` is set — take those screenshots on your own machine.

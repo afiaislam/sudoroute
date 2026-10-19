@@ -21,7 +21,7 @@ class FakeGemini:
                  fail_models=(), prohibited_action=None):
         self.intent, self.compose_fn, self.answer_text = intent, compose, answer
         self.fail_models, self.prohibited_action = set(fail_models), prohibited_action
-        self.calls, self.prompts = [], []
+        self.calls, self.prompts, self.systems = [], [], []
 
     def __call__(self, url, headers, body):
         model = url.split("/models/")[1].split(":")[0]
@@ -30,6 +30,7 @@ class FakeGemini:
         system = body["systemInstruction"]["parts"][0]["text"]
         user = body["contents"][0]["parts"][0]["text"]
         self.prompts.append(user)
+        self.systems.append(system)
         if model in self.fail_models:
             raise urllib.error.HTTPError(url, 404, "model not found", None, None)
         if "intent classifier" in system:
@@ -105,8 +106,12 @@ class GeminiLayerTests(GeminiTestCase):
                  "account MY-RHB-1100-2299-3344.")
         out = make_agent().chat(STU_BD, email)
         self.assertEqual(out["cards"][0]["verdict"], "BLOCK")
-        self.assertTrue(all("ignore previous instructions" not in p for p in fake.prompts))
-        self.assertTrue(all("MY-RHB-1100-2299-3344" not in p for p in fake.prompts))
+        # Only the quarantined reader (no tools, typed output, can only add risk) may see the document.
+        privileged = [p for p, s in zip(fake.prompts, fake.systems) if "QUARANTINED document reader" not in s]
+        self.assertTrue(privileged)
+        self.assertTrue(all("ignore previous instructions" not in p for p in privileged))
+        self.assertTrue(all("MY-RHB-1100-2299-3344" not in p for p in privileged))
+        self.assertFalse(any("planning module" in s for s in fake.systems))  # pasted text never reaches the planner
 
     def test_general_question_answered(self):
         self.use(FakeGemini(intent="general", answer="**Bring** your passport and offer letter."))
@@ -155,3 +160,53 @@ class RulesModeTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class OverloadedModelTests(GeminiTestCase):
+    def test_503_on_first_model_falls_back_to_the_next(self):
+        fake = self.use(FakeGemini(intent="pay_tuition"))
+        first = config.GEMINI_MODELS[0]
+
+        def busy(url, headers, body):
+            if f"/models/{first}:" in url:
+                raise urllib.error.HTTPError(url, 503, "overloaded", None, None)
+            return fake(url, headers, body)
+        llm._post = busy
+        out = llm.classify("pay my fees")
+        self.assertIsNotNone(out)
+        self.assertNotEqual(llm.status()["model"], first)
+
+
+class ThinkingModelTests(GeminiTestCase):
+    def test_empty_answer_falls_back_and_thinking_config_is_sent(self):
+        fake = FakeGemini(intent="pay_tuition")
+        first = config.GEMINI_MODELS[0]
+        bodies = []
+
+        def thinker(url, headers, body):
+            bodies.append(body)
+            if f"/models/{first}:" in url:  # spends everything on thinking: no visible text
+                return {"candidates": [{"content": {"parts": [{"text": "…", "thought": True}]}, "finishReason": "MAX_TOKENS"}]}
+            return fake(url, headers, body)
+        llm._post = thinker
+        out = llm.classify("pay my fees")
+        self.assertIsNotNone(out)
+        self.assertEqual(bodies[0]["generationConfig"]["thinkingConfig"], {"thinkingLevel": "low"})
+        self.assertGreaterEqual(bodies[0]["generationConfig"]["maxOutputTokens"], 2048)
+
+    def test_model_that_rejects_thinking_config_is_retried_without_it(self):
+        import io
+        fake = FakeGemini(intent="pay_tuition")
+        seen = []
+
+        def strict(url, headers, body):
+            cfg = body["generationConfig"]
+            seen.append("thinkingConfig" in cfg)
+            if "thinkingConfig" in cfg:
+                raise urllib.error.HTTPError(url, 400, "bad", None, io.BytesIO(b'{"error": "Unknown name thinkingConfig"}'))
+            return fake(url, headers, body)
+        llm._NO_THINKING_CFG.clear()
+        llm._post = strict
+        self.assertIsNotNone(llm.classify("pay my fees"))
+        self.assertEqual(seen[:2], [True, False])
+        llm._NO_THINKING_CFG.clear()

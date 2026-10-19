@@ -14,6 +14,8 @@ import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if "--ai" not in sys.argv:  # reproducible evidence: the rule engine only, even if .env holds a real key
+    os.environ["GEMINI_API_KEY"] = os.environ["GOOGLE_API_KEY"] = os.environ["TS_LLM_PROVIDER"] = ""
 os.environ.setdefault("TS_SECRET", "fintechathon-2026-demo")
 
 from sudoroute import config  # noqa: E402
@@ -197,6 +199,54 @@ md.append("")
 md.append("```\n" + cert.get("code", "") + "\n```")
 results.append({"step": "issue + verify certificate", "student": STU_BD, "intent": "certificate", "passed": check["valid"]})
 results.append({"step": "tampered certificate rejected", "student": STU_BD, "intent": "certificate", "passed": not bad["valid"]})
+
+# ---------------------------------------------------------------- scenario 8
+section("Scenario 8 — Smart timing: the agent waits for a better rate and pays by itself, never late")
+STU_S = "STU-BD-201"
+bank.create_student(student_id=STU_S, name="Smart Timing Student", home_country="BD", university_id="MUT",
+                    program="BSc Computer Science, Year 1", phone_masked="017••••••01")
+out = say(STU_S, "Pay my tuition at the best rate before the deadline",
+          lambda o: any(c["type"] == "proposal" and c["proposal"]["strategy"] == "smart_timing" for c in o["cards"]))
+card = proposal_card(out)
+t = card["proposal"]["timing"]
+md.append(f"Target rate **{t['target_rate']:.6f}** (+{t['target_improvement_pct']}%), floor {t['floor_rate']:.6f}, deadline "
+          f"**{t['deadline']}**, chance the target is reached {t['p_target_hit'] * 100:.0f}%, never more than "
+          f"{t['max_cost_src']:,.0f} {card['proposal']['src_currency']}.")
+md.append("")
+res = confirm(STU_S, card, sandbox_otp(card["proposal"]["proposal_id"]), "smart-timing approval (nothing moves yet)", True)
+results.append({"step": "approval moves no money", "student": STU_S, "intent": "smart_pay",
+                "passed": res.get("ok") and res.get("transfer") is None})
+mid = res["mandate"]["mandate_id"]
+days = 0
+while agent.mandates[mid]["status"] == "active" and days < 40:
+    agent.advance(1)
+    days += 1
+m = agent.mandates[mid]
+txn = bank.transfers.get(m["executed_legs"][0]) if m["executed_legs"] else None
+inv = bank.invoices[m["invoice_id"]]
+ok = bool(txn) and m["status"] == "completed" and txn["eta"][:10] <= inv["due"][:10]
+last = m["checks_log"][-1]
+md.append(f"The agent checked the rate on {len(m['checks_log'])} sandbox days and decided **{last['decision'].replace('_', ' ')}** "
+          f"on {last['date']} at {last['rate']:.6f}: sent {txn['dst_amount']:,.2f} {txn['dst_currency']} for "
+          f"{txn['src_amount']:,.0f} {txn['src_currency']} (quote on approval day: {m['legs'][0]['src_amount_quote']:,.0f}), "
+          f"arriving {txn['eta'][:10]} for a {inv['due'][:10]} due date." if txn else "Mandate did not execute.")
+md.append("")
+results.append({"step": "smart mandate executed on time, to the registry account", "student": STU_S,
+                "intent": "smart_pay", "passed": ok and txn["beneficiary_account"] == m["payee_account"]})
+print(f"[{'PASS' if ok else 'FAIL'}] smart mandate -> {m['status']} after {days} day(s), decision {last['decision']}")
+
+# ---------------------------------------------------------------- scenario 9
+section("Scenario 9 — Authenticator app (RFC 6238 TOTP) replaces the SMS code")
+from sudoroute.security import totp  # noqa: E402
+STU_T = "STU-BD-202"
+bank.create_student(student_id=STU_T, name="Authenticator Student", home_country="BD", university_id="MUT",
+                    program="MSc Finance", phone_masked="017••••••02")
+secret = totp.new_secret()
+agent.totp[STU_T] = {"secret": secret, "last_step": None}
+out = say(STU_T, "Pay my tuition", lambda o: proposal_card(o)["proposal"]["second_factor"] == "totp")
+card = proposal_card(out)
+confirm(STU_T, card, sandbox_otp(card["proposal"]["proposal_id"]), "with the SMS-style code (must fail)", False)
+confirm(STU_T, card, totp.code_at(secret), "with the authenticator-app code", True)
 
 # ---------------------------------------------------------------- summary
 verify = audit.verify()

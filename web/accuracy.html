@@ -16,37 +16,54 @@
 <script src="/static/i18n.js"></script>
 </head>
 <body>
+<div class="announce" id="announce" role="region" aria-label="Announcement">
+  <div class="wrap">
+    <span class="an-dot" aria-hidden="true"></span>
+    <p><b data-i18n="an.b">Shenzhen FinTechathon 2026 · Topic C</b> <span data-i18n="an.t">Sandbox demo — no real money moves.</span></p>
+    <a href="/register?role=student" data-auth class="an-cta"><span data-i18n="an.cta2">Get started</span> <i aria-hidden="true">→</i></a>
+    <button type="button" class="an-x" data-announce-close aria-label="Dismiss announcement">×</button>
+  </div>
+</div>
 <header class="topnav" id="topnav">
   <div class="wrap">
-    <a class="brand" href="/" aria-label="SudoRoute home"><span data-logo></span><b>SudoRoute</b></a>
+    <a class="brand" href="/" aria-label="SudoRoute home"><span data-logo></span><b class="wordmark"><span class="w1">Sudo</span><span class="w2">Route</span></b></a>
     <nav id="mainnav" aria-label="Main">
       <span class="hl" aria-hidden="true"></span>
       <div class="dd">
         <button type="button" class="navlink" aria-expanded="false" aria-controls="dd-product"><span data-i18n="nav.product">Product</span><i></i></button>
         <div class="ddmenu" id="dd-product">
           <a href="/#how"><b data-i18n="nav.how">How it works</b><span data-i18n="nav.howd">Five checks before any money moves</span></a>
+          <a href="/#features"><b data-i18n="nav.smart">Smart timing &amp; AI agent</b><span data-i18n="nav.smartd">Pays at a better rate, never late</span></a>
           <a href="/#scams"><b data-i18n="nav.scams">Scam check</b><span data-i18n="nav.scamsd">Fake invoices caught in four languages</span></a>
           <a href="/#families"><b data-i18n="nav.families">For families</b><span data-i18n="nav.familiesd">Guardians approve with their own code</span></a>
-          <a href="/#app"><b data-i18n="nav.app">Inside the app</b><span data-i18n="nav.appd">Real screens from the student portal</span></a>
+          <a href="/#demo"><b data-i18n="nav.demo">Watch the demo</b><span data-i18n="nav.demod">Four minutes, the whole flow</span></a>
         </div>
       </div>
       <div class="dd">
-        <button type="button" class="navlink" aria-expanded="false" aria-controls="dd-proof"><span data-i18n="nav.proof">Proof</span><i></i></button>
+        <button type="button" class="navlink" data-nav="/security-lab /accuracy /verify" aria-expanded="false" aria-controls="dd-proof"><span data-i18n="nav.proof">Proof</span><i></i></button>
         <div class="ddmenu" id="dd-proof">
-          <a href="/security-lab"><b data-i18n="proof.lab">Security Lab</b><span data-i18n="nav.labd">Run 47 live attacks yourself</span></a>
+          <a href="/security-lab"><b data-i18n="proof.lab">Security Lab</b><span data-i18n="nav.labd">Run 57 live attacks yourself</span></a>
           <a href="/accuracy"><b data-i18n="proof.acc">Scam-shield accuracy</b><span data-i18n="nav.accd">Every test invoice and every result</span></a>
           <a href="/accuracy#baselines"><b data-i18n="proof.base">Compared with today</b><span data-i18n="nav.based">SudoRoute vs bank wire vs a basic AI assistant</span></a>
           <a href="/verify"><b data-i18n="proof.ver">Verify a certificate</b><span data-i18n="nav.verd">Check a payment certificate's signature</span></a>
         </div>
       </div>
-      <a class="navlink" href="/#anywhere" data-i18n="nav.anywhere">Universities</a>
-      <a class="navlink" href="/#faq" data-i18n="nav.faq">Questions</a>
+      <a class="navlink" href="/pricing" data-nav="/pricing" data-i18n="nav.pricing">Pricing</a>
+      <div class="dd">
+        <button type="button" class="navlink" data-nav="/help" aria-expanded="false" aria-controls="dd-help"><span data-i18n="nav.help">Help</span><i></i></button>
+        <div class="ddmenu" id="dd-help">
+          <a href="/help"><b data-i18n="nav.hc">Help center</b><span data-i18n="nav.hcd">Guides for students, families and judges</span></a>
+          <a href="/help#faq"><b data-i18n="nav.faq">Questions</b><span data-i18n="nav.faqd">The short answers</span></a>
+          <a href="/contact?topic=feedback"><b data-i18n="nav.fb">Send feedback</b><span data-i18n="nav.fbd">Tell us what to improve</span></a>
+        </div>
+      </div>
+      <a class="navlink" href="/contact" data-nav="/contact" data-i18n="nav.contact">Contact</a>
     </nav>
     <div class="right">
       <span data-lang-picker></span>
       <button class="iconbtn" data-theme-toggle type="button"></button>
       <a class="btn quiet signin" href="/login" data-i18n="cta.signin">Sign in</a>
-      <a class="btn accent" href="/register" data-i18n="cta.start">Get started</a>
+      <a class="btn accent" href="/register" data-auth data-i18n="cta.start">Get started</a>
       <button class="iconbtn menubtn" id="menubtn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mainnav">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
@@ -72,24 +89,41 @@
   <div class="scoreboard" id="pilotscore"></div>
   <p class="empty">Limitations: the samples are synthetic and the universities fictional. Treat this as a transparent regression benchmark, not a field accuracy claim. Source: <code>sudoroute/benchmark/invoice_holdout.py</code>.</p>
 </div></main>
-<footer class="footer4">
-  <div class="wrap fcols">
+<footer class="footer4 footer9">
+  <div class="fband"><div class="wrap ftop">
     <div class="fbrand">
-      <a class="brand" href="/" aria-label="SudoRoute home"><span data-logo></span><b>SudoRoute</b></a>
+      <a class="brand" href="/" aria-label="SudoRoute home"><span data-logo></span><b class="wordmark"><span class="w1">Sudo</span><span class="w2">Route</span></b></a>
       <p data-i18n="foot.about">An AI agent that pays international students' tuition — only to verified universities, only after the student and family approve.</p>
+      <div class="fbadges"><span>🔒 <b>57/57</b> <span data-i18n="foot.b1">attacks stopped</span></span><span>⛓ <span data-i18n="foot.b2">Bitcoin-anchored certificates</span></span></div>
     </div>
-    <div><b data-i18n="nav.product">Product</b><a href="/#how" data-i18n="nav.how">How it works</a><a href="/#scams" data-i18n="nav.scams">Scam check</a><a href="/#families" data-i18n="nav.families">For families</a><a href="/#app" data-i18n="nav.app">Inside the app</a></div>
-    <div><b data-i18n="nav.proof">Proof</b><a href="/security-lab" data-i18n="proof.lab">Security Lab</a><a href="/accuracy" data-i18n="proof.acc">Scam-shield accuracy</a><a href="/verify" data-i18n="proof.ver">Verify a certificate</a></div>
+    <form class="newsletter" data-newsletter novalidate>
+      <b data-i18n="nl.title">Tuition tips, once a month</b>
+      <p data-i18n="nl.text">Exchange-rate timing, scam alerts and deadlines for international students. No spam — unsubscribe any time.</p>
+      <div class="nlrow"><label class="sr" for="nl-email">E-mail</label><input class="input" id="nl-email" type="email" autocomplete="email" placeholder="you@example.com" data-i18n-ph="nl.ph" required>
+        <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <button class="btn accent" type="submit" data-i18n="nl.btn">Subscribe</button></div>
+      <p class="nlmsg" aria-live="polite"></p>
+    </form>
+  </div></div>
+  <div class="wrap fcols">
+    <div><b data-i18n="nav.product">Product</b><a href="/#how" data-i18n="nav.how">How it works</a><a href="/#features" data-i18n="nav.smart">Smart timing &amp; AI agent</a><a href="/#scams" data-i18n="nav.scams">Scam check</a><a href="/#families" data-i18n="nav.families">For families</a><a href="/#demo" data-i18n="nav.demo">Watch the demo</a></div>
+    <div><b data-i18n="nav.proof">Proof</b><a href="/security-lab" data-i18n="proof.lab">Security Lab</a><a href="/accuracy" data-i18n="proof.acc">Scam-shield accuracy</a><a href="/accuracy#baselines" data-i18n="proof.base">Compared with today</a><a href="/verify" data-i18n="proof.ver">Verify a certificate</a></div>
+    <div><b data-i18n="nav.help">Help</b><a href="/help" data-i18n="nav.hc">Help center</a><a href="/help#faq" data-i18n="nav.faq">Questions</a><a href="/contact" data-i18n="nav.contact">Contact</a><a href="/contact?topic=feedback" data-i18n="nav.fb">Send feedback</a><a href="/#top" data-i18n="foot.judge2">Judge demo (home page)</a></div>
+    <div><b data-i18n="foot.company">Company</b><a href="/pricing" data-i18n="nav.pricing">Pricing</a><a href="/pricing#model" data-i18n="foot.model">How we make money</a><a href="/legal#terms" data-i18n="foot.terms">Terms</a><a href="/legal#privacy" data-i18n="foot.privacy">Privacy</a><a href="/legal#disclosure" data-i18n="foot.disclosure">Security disclosure</a></div>
     <div><b data-i18n="foot.account">Account</b><a href="/register?role=student" data-i18n="foot.student">Student sign-up</a><a href="/register?role=guardian" data-i18n="foot.guardian">Guardian sign-up</a><a href="/login" data-i18n="cta.signin">Sign in</a></div>
   </div>
+  <div class="wrap flegal">
+    <p data-i18n="foot.legal">SudoRoute is a prototype built for the 2026 Shenzhen International FinTech Competition (International Track, Topic C). It is not a bank or a licensed money transmitter and it moves no real money: every account, university and transfer on this site is simulated. In production, payments would be executed only by licensed partners — banks, education payment platforms and licensed money transfer operators — under their licences in each country, and SudoRoute would charge one visible service fee, never a hidden exchange-rate markup.</p>
+  </div>
   <div class="wrap fbottom">
-    <span data-i18n="footer.left">SudoRoute — 2026 Shenzhen International FinTech Competition, International Track, Topic C.</span>
-    <span data-i18n="foot.photos">Sandbox only: no real money moves. Photos from Unsplash.</span>
+    <span>© 2026 SudoRoute · <span data-i18n="foot.team">Team SudoRoute — Rajshahi, Bangladesh · Kuala Lumpur, Malaysia</span></span>
+    <span class="fbr"><span data-lang-picker></span><span data-i18n="foot.photos">Photos from Unsplash.</span></span>
   </div>
 </footer>
 <script src="/static/common.js"></script>
 <script src="/static/motion.js"></script>
 <script src="/static/landing.js"></script>
+<script src="/static/site9.js"></script>
 <script src="/static/accuracy.js"></script>
 <script src="/static/aichat.js" data-mode="public"></script>
 </body>

@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pricing — SudoRoute</title>
+<meta name="description" content="How SudoRoute makes money: one visible service fee, never a hidden exchange-rate markup.">
+<link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/static/img/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&family=Noto+Sans+Bengali:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="/static/site.css">
+<script src="/static/theme.js"></script>
+<script src="/static/i18n.js"></script>
+</head>
+<body>
+<div class="announce" id="announce" role="region" aria-label="Announcement">
+  <div class="wrap">
+    <span class="an-dot" aria-hidden="true"></span>
+    <p><b data-i18n="an.b">Shenzhen FinTechathon 2026 · Topic C</b> <span data-i18n="an.t">Sandbox demo — no real money moves.</span></p>
+    <a href="/register?role=student" data-auth class="an-cta"><span data-i18n="an.cta2">Get started</span> <i aria-hidden="true">→</i></a>
+    <button type="button" class="an-x" data-announce-close aria-label="Dismiss announcement">×</button>
+  </div>
+</div>
+<header class="topnav" id="topnav">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="SudoRoute home"><span data-logo></span><b class="wordmark"><span class="w1">Sudo</span><span class="w2">Route</span></b></a>
+    <nav id="mainnav" aria-label="Main">
+      <span class="hl" aria-hidden="true"></span>
+      <div class="dd">
+        <button type="button" class="navlink" aria-expanded="false" aria-controls="dd-product"><span data-i18n="nav.product">Product</span><i></i></button>
+        <div class="ddmenu" id="dd-product">
+          <a href="/#how"><b data-i18n="nav.how">How it works</b><span data-i18n="nav.howd">Five checks before any money moves</span></a>
+          <a href="/#features"><b data-i18n="nav.smart">Smart timing &amp; AI agent</b><span data-i18n="nav.smartd">Pays at a better rate, never late</span></a>
+          <a href="/#scams"><b data-i18n="nav.scams">Scam check</b><span data-i18n="nav.scamsd">Fake invoices caught in four languages</span></a>
+          <a href="/#families"><b data-i18n="nav.families">For families</b><span data-i18n="nav.familiesd">Guardians approve with their own code</span></a>
+          <a href="/#demo"><b data-i18n="nav.demo">Watch the demo</b><span data-i18n="nav.demod">Four minutes, the whole flow</span></a>
+        </div>
+      </div>
+      <div class="dd">
+        <button type="button" class="navlink" data-nav="/security-lab /accuracy /verify" aria-expanded="false" aria-controls="dd-proof"><span data-i18n="nav.proof">Proof</span><i></i></button>
+        <div class="ddmenu" id="dd-proof">
+          <a href="/security-lab"><b data-i18n="proof.lab">Security Lab</b><span data-i18n="nav.labd">Run 57 live attacks yourself</span></a>
+          <a href="/accuracy"><b data-i18n="proof.acc">Scam-shield accuracy</b><span data-i18n="nav.accd">Every test invoice and every result</span></a>
+          <a href="/accuracy#baselines"><b data-i18n="proof.base">Compared with today</b><span data-i18n="nav.based">SudoRoute vs bank wire vs a basic AI assistant</span></a>
+          <a href="/verify"><b data-i18n="proof.ver">Verify a certificate</b><span data-i18n="nav.verd">Check a payment certificate's signature</span></a>
+        </div>
+      </div>
+      <a class="navlink" href="/pricing" data-nav="/pricing" data-i18n="nav.pricing">Pricing</a>
+      <div class="dd">
+        <button type="button" class="navlink" data-nav="/help" aria-expanded="false" aria-controls="dd-help"><span data-i18n="nav.help">Help</span><i></i></button>
+        <div class="ddmenu" id="dd-help">
+          <a href="/help"><b data-i18n="nav.hc">Help center</b><span data-i18n="nav.hcd">Guides for students, families and judges</span></a>
+          <a href="/help#faq"><b data-i18n="nav.faq">Questions</b><span data-i18n="nav.faqd">The short answers</span></a>
+          <a href="/contact?topic=feedback"><b data-i18n="nav.fb">Send feedback</b><span data-i18n="nav.fbd">Tell us what to improve</span></a>
+        </div>
+      </div>
+      <a class="navlink" href="/contact" data-nav="/contact" data-i18n="nav.contact">Contact</a>
+    </nav>
+    <div class="right">
+      <span data-lang-picker></span>
+      <button class="iconbtn" data-theme-toggle type="button"></button>
+      <a class="btn quiet signin" href="/login" data-i18n="cta.signin">Sign in</a>
+      <a class="btn accent" href="/register" data-auth data-i18n="cta.start">Get started</a>
+      <button class="iconbtn menubtn" id="menubtn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mainnav">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+<main class="page9" id="main">
+  <section class="phero">
+    <div class="wrap">
+      <span class="eyebrow" data-i18n="pr.eyebrow">Pricing</span>
+      <h1 data-i18n="pr.title">One visible fee. No hidden exchange-rate markup.</h1>
+      <p class="plead" data-i18n="pr.lead">Banks often hide 2–3% in the exchange rate. SudoRoute shows its fee on every quote, before you approve — and never earns from the rate.</p>
+    </div>
+  </section>
+  <section class="wrap">
+    <div class="plans" data-stagger>
+      <div class="plan card9">
+        <span class="ptag" data-i18n="pr.p1t">Students &amp; families</span>
+        <div class="pprice"><b>0.5%</b><small data-i18n="pr.p1u">of the payment</small></div>
+        <p class="pnote" data-i18n="pr.p1n">At least USD 3 · never more than USD 25 · waived during the pilot</p>
+        <ul class="pfeat"><li>AI agent, scam check and route comparison</li><li>Smart timing and installment plans</li><li>Guardian approval, authenticator app, kill switch</li><li>Signed payment certificates, Bitcoin-anchored</li></ul>
+        <a class="btn accent" href="/register?role=student" data-auth data-i18n="pr.try2">Get started</a>
+      </div>
+      <div class="plan card9 featured">
+        <span class="ptag" data-i18n="pr.p2t">Universities</span>
+        <div class="pprice"><b data-i18n="pr.free">Free</b><small data-i18n="pr.p2u">to receive payments</small></div>
+        <p class="pnote" data-i18n="pr.p2n">Optional reconciliation plan: USD 0.40 per payment</p>
+        <ul class="pfeat"><li>Every payment arrives with the student reference</li><li>Fewer scam victims among your students</li><li>Verified-payee registry, confirmed with your finance office</li><li>Reconciliation export for the bursar (optional plan)</li></ul>
+        <a class="btn" href="/contact?topic=universities" data-i18n="pr.talk">Talk to us</a>
+      </div>
+      <div class="plan card9">
+        <span class="ptag" data-i18n="pr.p3t">Licensed payment partners</span>
+        <div class="pprice"><b data-i18n="pr.disc">Disclosed</b><small data-i18n="pr.p3u">referral share</small></div>
+        <p class="pnote" data-i18n="pr.p3n">Shown on every quote — and it never changes which channel we pick</p>
+        <ul class="pfeat"><li>Education payment platforms, banks, licensed MTOs</li><li>Ranked only by landed cost and on-time chance</li><li>Channels that break home-country rules are never shown</li><li>Partners execute payments under their own licences</li></ul>
+        <a class="btn" href="/contact?topic=partners" data-i18n="pr.partner">Become a partner</a>
+      </div>
+    </div>
+
+    <div class="calc card9" id="calc">
+      <div class="calcin">
+        <h2 data-i18n="pr.calc">What a USD tuition payment really costs</h2>
+        <label for="amt" class="flabel" data-i18n="pr.amt">Tuition amount (USD)</label>
+        <div class="amtrow"><input type="range" id="amt" min="1000" max="30000" step="500" value="6000"><output id="amtout">USD 6,000</output></div>
+        <p class="calcnote" data-i18n="pr.calcn">Illustrative sandbox figures: a typical bank wire hides ~2.5% in the rate plus about USD 30 in fees; a licensed education platform costs ~0.8% in the rate plus about USD 5. Real costs vary by country and provider.</p>
+      </div>
+      <div class="bars9">
+        <div class="b9"><span data-i18n="pr.bank">Bank wire</span><div class="track"><i id="bar-bank"></i></div><b id="c-bank"></b></div>
+        <div class="b9 good"><span data-i18n="pr.sr">SudoRoute (platform + our fee)</span><div class="track"><i id="bar-sr"></i></div><b id="c-sr"></b></div>
+        <p class="save" id="save"></p>
+      </div>
+    </div>
+
+    <div class="model" id="model">
+      <h2 data-i18n="pr.model">How SudoRoute makes money — and how it never does</h2>
+      <div class="mgrid" data-stagger>
+        <div class="card9"><b>✅ <span data-i18n="pr.m1">We earn</span></b><p data-i18n="pr.m1d">a visible service fee per payment (0.5%, capped at USD 25), an optional reconciliation plan for universities, and a disclosed referral share from licensed partners.</p></div>
+        <div class="card9"><b>🚫 <span data-i18n="pr.m2">We never earn</span></b><p data-i18n="pr.m2d">from a hidden exchange-rate markup, from selling your data, or from steering you to a channel that pays us more. The route ranking ignores partner revenue entirely.</p></div>
+        <div class="card9"><b>📈 <span data-i18n="pr.m3">Why it can work</span></b><p data-i18n="pr.m3d">Millions of international students pay tuition every term. A family saving about 1.5% on a USD 6,000 payment keeps ~USD 90 — and pays us at most USD 25 of it. Universities save time and see fewer scam victims.</p></div>
+        <div class="card9"><b>⚖️ <span data-i18n="pr.m4">Compliance first</span></b><p data-i18n="pr.m4d">Money is moved only by licensed partners. SudoRoute is the agent and the safety layer: verified payees, signed approvals, audit trail and limits.</p></div>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="footer4 footer9">
+  <div class="fband"><div class="wrap ftop">
+    <div class="fbrand">
+      <a class="brand" href="/" aria-label="SudoRoute home"><span data-logo></span><b class="wordmark"><span class="w1">Sudo</span><span class="w2">Route</span></b></a>
+      <p data-i18n="foot.about">An AI agent that pays international students' tuition — only to verified universities, only after the student and family approve.</p>
+      <div class="fbadges"><span>🔒 <b>57/57</b> <span data-i18n="foot.b1">attacks stopped</span></span><span>⛓ <span data-i18n="foot.b2">Bitcoin-anchored certificates</span></span></div>
+    </div>
+    <form class="newsletter" data-newsletter novalidate>
+      <b data-i18n="nl.title">Tuition tips, once a month</b>
+      <p data-i18n="nl.text">Exchange-rate timing, scam alerts and deadlines for international students. No spam — unsubscribe any time.</p>
+      <div class="nlrow"><label class="sr" for="nl-email">E-mail</label><input class="input" id="nl-email" type="email" autocomplete="email" placeholder="you@example.com" data-i18n-ph="nl.ph" required>
+        <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <button class="btn accent" type="submit" data-i18n="nl.btn">Subscribe</button></div>
+      <p class="nlmsg" aria-live="polite"></p>
+    </form>
+  </div></div>
+  <div class="wrap fcols">
+    <div><b data-i18n="nav.product">Product</b><a href="/#how" data-i18n="nav.how">How it works</a><a href="/#features" data-i18n="nav.smart">Smart timing &amp; AI agent</a><a href="/#scams" data-i18n="nav.scams">Scam check</a><a href="/#families" data-i18n="nav.families">For families</a><a href="/#demo" data-i18n="nav.demo">Watch the demo</a></div>
+    <div><b data-i18n="nav.proof">Proof</b><a href="/security-lab" data-i18n="proof.lab">Security Lab</a><a href="/accuracy" data-i18n="proof.acc">Scam-shield accuracy</a><a href="/accuracy#baselines" data-i18n="proof.base">Compared with today</a><a href="/verify" data-i18n="proof.ver">Verify a certificate</a></div>
+    <div><b data-i18n="nav.help">Help</b><a href="/help" data-i18n="nav.hc">Help center</a><a href="/help#faq" data-i18n="nav.faq">Questions</a><a href="/contact" data-i18n="nav.contact">Contact</a><a href="/contact?topic=feedback" data-i18n="nav.fb">Send feedback</a><a href="/#top" data-i18n="foot.judge2">Judge demo (home page)</a></div>
+    <div><b data-i18n="foot.company">Company</b><a href="/pricing" data-i18n="nav.pricing">Pricing</a><a href="/pricing#model" data-i18n="foot.model">How we make money</a><a href="/legal#terms" data-i18n="foot.terms">Terms</a><a href="/legal#privacy" data-i18n="foot.privacy">Privacy</a><a href="/legal#disclosure" data-i18n="foot.disclosure">Security disclosure</a></div>
+    <div><b data-i18n="foot.account">Account</b><a href="/register?role=student" data-i18n="foot.student">Student sign-up</a><a href="/register?role=guardian" data-i18n="foot.guardian">Guardian sign-up</a><a href="/login" data-i18n="cta.signin">Sign in</a></div>
+  </div>
+  <div class="wrap flegal">
+    <p data-i18n="foot.legal">SudoRoute is a prototype built for the 2026 Shenzhen International FinTech Competition (International Track, Topic C). It is not a bank or a licensed money transmitter and it moves no real money: every account, university and transfer on this site is simulated. In production, payments would be executed only by licensed partners — banks, education payment platforms and licensed money transfer operators — under their licences in each country, and SudoRoute would charge one visible service fee, never a hidden exchange-rate markup.</p>
+  </div>
+  <div class="wrap fbottom">
+    <span>© 2026 SudoRoute · <span data-i18n="foot.team">Team SudoRoute — Rajshahi, Bangladesh · Kuala Lumpur, Malaysia</span></span>
+    <span class="fbr"><span data-lang-picker></span><span data-i18n="foot.photos">Photos from Unsplash.</span></span>
+  </div>
+</footer>
+<script src="/static/common.js"></script>
+<script src="/static/motion.js"></script>
+<script src="/static/landing.js"></script>
+<script src="/static/site9.js"></script>
+<script src="/static/aichat.js" data-mode="public"></script>
+</body>
+</html>

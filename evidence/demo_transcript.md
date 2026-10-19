@@ -158,14 +158,38 @@ Certificate `CRT-00009` for MYR 18,500.00 paid 18 day(s) before the due date. Pu
 Verification with the public key: **valid**. One character changed: **rejected**.
 
 ```
-SR1.eyJhdWRpdF9hbmNob3IiOnsiaGFzaCI6Ijc3MzAyYTU5NjU1NjNiZjUwMWI1ZTFlZDk3NTY5MDM5MTAwNjYzZGE1ODdmYzE5MGUwNjcxZTY5ZTA0YmQ5NTciLCJzZXEiOjEwNX0sImNlcnRfaWQiOiJDUlQtMDAwMDkiLCJob2xkZXIiOiJBZmlhIElzbGFtIiwiaG9sZGVyX3JlZiI6IuKAouKAouKAojQ0MTciLCJpbnN0aXR1dGlvbl9jb3VudHJ5IjoiTVkiLCJpc3MiOiJTdWRvUm91dGUiLCJpc3N1ZWRfYXQiOiIyMDI2LTEyLTAxVDA5OjAwOjAwKzAwOjAwIiwia2lkIjoiNTY0NzVhYTc1NDYzNDc0YyIsInBheW1lbnQiOnsiYW1vdW50IjoxODUwMC4wLCJjaGFubmVsIjoiRWR1UGF5IChlZHVjYXRpb24gcGF5bWVudCBwbGF0Zm9ybSkiLCJjdXJyZW5jeSI6Ik1ZUiIsImRheXNfZWFybHkiOjE4LCJkdWUiOiIyMDI2LTExLTA4IiwiaW5zdGl0dXRpb24iOiJNZXJpZGlhbiBVbml2ZXJzaXR5IG9mIFRlY2hub2xvZ3kiLCJvbl90aW1lIjp0cnVlLCJwYWlkX29uIjoiMjAyNi0xMC0yMSIsInRyYW5zZmVyX2lkIjoiVFhOLTIwMjYxMDE4LTAwMDIifSwic2FuZGJveCI6dHJ1ZSwidHlwZSI6InR1aXRpb25fcGF5bWVudCIsInYiOjF9.yb_at60pHdlABOkA0CHis7EEm-jM4I7iVMAoGBeIcnAQQnNNt7Jqz4L05z1A3i-3KGUALLNXOYLx2C-gCnmSDw
+SR1.eyJhdWRpdF9hbmNob3IiOnsiaGFzaCI6ImNlNGZmN2IxMGMwMDBmZWM3NWJhNjFhNGRhZDU3MjljYTRhMzI3ZjVkYjM5YmI3NzhmYzIwMThkOTA4YjcyZDIiLCJzZXEiOjEwNX0sImNlcnRfaWQiOiJDUlQtMDAwMDkiLCJob2xkZXIiOiJBZmlhIElzbGFtIiwiaG9sZGVyX3JlZiI6IuKAouKAouKAojQ0MTciLCJpbnN0aXR1dGlvbl9jb3VudHJ5IjoiTVkiLCJpc3MiOiJTdWRvUm91dGUiLCJpc3N1ZWRfYXQiOiIyMDI2LTEyLTAxVDA5OjAwOjAwKzAwOjAwIiwia2lkIjoiNTY0NzVhYTc1NDYzNDc0YyIsInBheW1lbnQiOnsiYW1vdW50IjoxODUwMC4wLCJjaGFubmVsIjoiRWR1UGF5IChlZHVjYXRpb24gcGF5bWVudCBwbGF0Zm9ybSkiLCJjdXJyZW5jeSI6Ik1ZUiIsImRheXNfZWFybHkiOjE4LCJkdWUiOiIyMDI2LTExLTA4IiwiaW5zdGl0dXRpb24iOiJNZXJpZGlhbiBVbml2ZXJzaXR5IG9mIFRlY2hub2xvZ3kiLCJvbl90aW1lIjp0cnVlLCJwYWlkX29uIjoiMjAyNi0xMC0yMSIsInRyYW5zZmVyX2lkIjoiVFhOLTIwMjYxMDE4LTAwMDIifSwic2FuZGJveCI6dHJ1ZSwidHlwZSI6InR1aXRpb25fcGF5bWVudCIsInYiOjF9.t3TWa8h-WFP38tjTyinTW1puM8s56GMLvQvHMcMKtuF7I4S6M9p8hQ3-g4lVBoloSHdSN302GTTkdaftjpvaCw
 ```
+
+## Scenario 8 — Smart timing: the agent waits for a better rate and pays by itself, never late
+
+**Student (STU-BD-201):** Pay my tuition at the best rate before the deadline  
+**Agent (smart_pay):** I've prepared a smart-timing payment of 16,900.00 MYR to Meridian University of Technology via EduPay (education payment platform). After you approve, I'll check the rate every day and pay as soon as it reaches 0.033838 (1.34% better than today), or on 2026-12-26 at the market rate so it still arrives on time. Chance the target is reached: 64%. You'll never pay more than 531,459 BDT — if the rate falls further, I pause and ask you. That's 11,521 BDT cheaper than a bank wire. All compliance checks passed. Enter the one-time code sent to your phone to confirm.  
+<sub>Tools: list_invoices[ok] → verify_invoice[ok] → compare_routes[ok] → fx_budget_at_risk[ok] → fx_smart_timing[ok] → policy_precheck[ok] → create_signed_proposal[ok]</sub>
+
+Target rate **0.033838** (+1.34%), floor 0.031799, deadline **2026-12-26**, chance the target is reached 64%, never more than 531,459 BDT.
+
+**Confirm (smart-timing approval (nothing moves yet)):** ✅ Approved. I'll watch the BDT/MYR rate every day and pay 16,900.00 MYR as soon as it reaches 0.033838, or on 2026-12-26 at the market rate. Nothing has moved yet; you can cancel any time.
+
+The agent checked the rate on 5 sandbox days and decided **target reached** on 2026-12-06 at 0.033857: sent 16,900.00 MYR for 499,160 BDT (quote on approval day: 506,151), arriving 2026-12-09 for a 2026-12-31 due date.
+
+
+## Scenario 9 — Authenticator app (RFC 6238 TOTP) replaces the SMS code
+
+**Student (STU-BD-202):** Pay my tuition  
+**Agent (pay_tuition):** I've prepared a payment of 16,900.00 MYR to Meridian University of Technology via EduPay (education payment platform), today. Estimated cost 499,160 BDT. That's 11,397 BDT cheaper than a bank wire. All compliance checks passed. Enter the one-time code from your authenticator app to confirm.  
+<sub>Tools: list_invoices[ok] → verify_invoice[ok] → compare_routes[ok] → fx_budget_at_risk[ok] → policy_precheck[ok] → create_signed_proposal[ok]</sub>
+
+**Confirm (with the SMS-style code (must fail)):** ⛔ Wrong one-time code. (`bad_otp`)
+
+**Confirm (with the authenticator-app code):** ✅ Sent 16,900.00 MYR via EduPay (education payment platform). Expected to arrive by 2026-12-09.
+
 
 ## Result
 
-- Steps passed: **34/34**
-- Audit chain: **valid**, 106 entries, head `2969cba5286bb247…`
-- Money moved: 4 sandbox transfers; INV-MUT-26S2 = paid, INV-NBU-26T1 = paid, INV-PHISH-001 = open (never paid)
+- Steps passed: **41/41**
+- Audit chain: **valid**, 131 entries, head `83db215a895b4efc…`
+- Money moved: 6 sandbox transfers; INV-MUT-26S2 = paid, INV-NBU-26T1 = paid, INV-PHISH-001 = open (never paid)
 
 | Transfer | Student | Channel | Sent | Received | Status |
 |---|---|---|---:|---:|---|
@@ -173,3 +197,5 @@ SR1.eyJhdWRpdF9hbmNob3IiOnsiaGFzaCI6Ijc3MzAyYTU5NjU1NjNiZjUwMWI1ZTFlZDk3NTY5MDM5
 | TXN-20261022-0005 | STU-NG-002 | RemitLite (licensed money transfer operator) | 3,714,342.95 NGN | 2,066.67 GBP | credited |
 | TXN-20261107-0007 | STU-NG-002 | RemitLite (licensed money transfer operator) | 3,715,689.40 NGN | 2,066.67 GBP | credited |
 | TXN-20261123-0008 | STU-NG-002 | RemitLite (licensed money transfer operator) | 3,687,615.42 NGN | 2,066.66 GBP | credited |
+| TXN-20261206-0012 | STU-BD-201 | EduPay (education payment platform) | 499,160.32 BDT | 16,900.00 MYR | in_transit |
+| TXN-20261206-0014 | STU-BD-202 | EduPay (education payment platform) | 499,160.32 BDT | 16,900.00 MYR | in_transit |

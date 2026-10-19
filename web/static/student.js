@@ -17,12 +17,13 @@
     </section>
     <aside class="panel" style="margin:0"><h3>What the assistant did <small id="intent"></small></h3><ul class="trace" id="trace"><li class="empty" style="background:none">Each step appears here, with its permission level.</li></ul></aside>
   </div>`);
-  const CHIPS = ["Pay my tuition", "Pay my tuition in installments", "Compare transfer options", "When should I pay?", "Show my budget", "How do I build credit?", "Where is my payment?"];
+  const CHIPS = ["Is my invoice real? If yes, pay it the cheapest legal way", "Pay at the best rate before my deadline", "Pay my tuition", "Pay my tuition in installments", "Compare transfer options", "When should I pay?", "Show my budget", "How do I build credit?", "Where is my payment?"];
   chat.querySelector("#chips").innerHTML = CHIPS.map(c => `<button class="chip" type="button">${esc(c)}</button>`).join("");
   chat.querySelectorAll("#chips .chip").forEach(b => b.addEventListener("click", () => send(b.textContent)));
   chat.querySelector("#composer").addEventListener("submit", e => { e.preventDefault(); const t = chat.querySelector("#msg"); const v = t.value; t.value = ""; send(v); });
   chat.querySelector("#msg").addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); chat.querySelector("#composer").requestSubmit(); } });
 
+  document.addEventListener("sr:send", e => send(e.detail));
   function addMsg(who, html) {
     const d = document.createElement("div"); d.className = `msg ${who}`; d.innerHTML = html;
     const th = chat.querySelector("#thread"); th.appendChild(d); th.scrollTop = th.scrollHeight; return d;
@@ -39,6 +40,7 @@
     const d = addMsg("bot", `<div class="bubble">${md(r.reply)}</div><div class="src">${fromAI ? `<span class="ai">Written by Gemini</span>${r.reply_draft ? `<span>numbers checked</span><button type="button" class="showdraft">Show checked facts</button>` : `<span>general guidance</span>`}` : `<span>SudoRoute</span>`}</div>`);
     const sd = d.querySelector(".showdraft");
     if (sd) sd.addEventListener("click", () => { const ex = d.querySelector(".draft"); if (ex) { ex.remove(); sd.textContent = "Show checked facts"; } else { d.querySelector(".src").insertAdjacentHTML("afterend", `<div class="draft">${esc(r.reply_draft)}</div>`); sd.textContent = "Hide checked facts"; } });
+    if (r.plan && r.plan.length) d.querySelector(".src").insertAdjacentHTML("afterend", `<details class="planbox"><summary><span class="aitag">✦ AI plan</span> ${r.plan.reduce((n, p) => n + p.steps.length, 0)} tool step${r.plan.reduce((n, p) => n + p.steps.length, 0) === 1 ? "" : "s"} in ${r.plan.length} round${r.plan.length > 1 ? "s" : ""}</summary><ol>${r.plan.map(p => `<li><b>${p.steps.length ? p.steps.map(x => esc(x.replace(/_/g, " "))).join(" → ") : "finished"}</b>${p.thought ? `<br><span>${esc(p.thought)}</span>` : ""}</li>`).join("")}</ol><p>Gemini chose these tools from a fixed list. Each one still passed the permission gate and the policy checks; it can prepare a payment, never send one.</p></details>`);
     (r.cards || []).forEach(c => d.appendChild(Cards.render(c, { send, onChange: refresh })));
     chat.querySelector("#intent").textContent = r.intent.replace(/_/g, " ");
     chat.querySelector("#trace").innerHTML = r.trace.length ? r.trace.map(t => `<li class="${t.tier.startsWith("AI") ? "ai" : ""}"><span><span class="t">${esc(t.tool.replace(/_/g, " "))}</span><br><span class="d">${esc(t.tier)}${t.detail ? ` · ${esc(t.detail)}` : ""}</span></span>${pill(t.status, t.status)}</li>`).join("") : `<li class="empty" style="background:none">No tools were needed.</li>`;
@@ -179,8 +181,8 @@
     view.innerHTML = `
       <section class="pbanner">${photoImg("1562774053-701939374585")}<div class="pbanner-shade" aria-hidden="true"></div>
         <div class="pb-copy">
-          <span class="badge">${S.university.verified ? "✓ Verified university" : "University waiting for verification"} · ${g.length ? `Guardian: ${esc(g[0].name.split(" ")[0])}` : S.guardian_invite ? `Guardian invited` : "No guardian yet"}</span>
-          <h2>${greeting()}, ${esc(S.name.split(" ")[0])}</h2>
+          <span class="badge">${S.university.verified ? "✓ Verified university" : "University waiting for verification"} · ${g.length ? `Guardian: ${esc(TS.first(g[0].name))}` : S.guardian_invite ? `Guardian invited` : "No guardian yet"}</span>
+          <h2>${greeting()}, ${esc(TS.first(S.name))}</h2>
           <p>${esc(S.program)} · ${esc(S.university.name)}, ${esc(S.university.city)}</p>
           <div class="pb-actions"><button class="btn accent" id="paybtn" ${d.length && !S.frozen ? "" : "disabled"}>Pay tuition</button><button class="btn ghost" id="tourbtn">${esc(I18N.t("p.tour", "Guided tour"))}</button></div>
         </div>
@@ -262,7 +264,7 @@
     view.appendChild(chat);
     const th = chat.querySelector("#thread");
     if (!th.children.length) {
-      addMsg("bot", `<div class="bubble"><p>Hi ${esc(S.name.split(" ")[0])}. I can pay your tuition, check an invoice for scams, compare ways to send money, show exchange-rate risk, and review your budget or credit.</p><p>I'll prepare payments, but nothing moves until you confirm with your one-time code${S.guardians.length ? ` and ${esc(S.guardians[0].name.split(" ")[0])} approves` : ""}.</p></div>`);
+      addMsg("bot", `<div class="bubble"><p>Hi ${esc(TS.first(S.name))}. I can pay your tuition, check an invoice for scams, compare ways to send money, show exchange-rate risk, and review your budget or credit.</p><p>I'll prepare payments, but nothing moves until you confirm with your one-time code${S.guardians.length ? ` and ${esc(TS.first(S.guardians[0].name))} approves` : ""}.</p></div>`);
     }
     setTimeout(() => chat.querySelector("#msg").focus(), 50);
   };
@@ -271,7 +273,9 @@
     view.innerHTML = head("Payments", "Payments waiting for approval, money on its way, and installment plans.") +
       journeyHTML() + `<section id="pending"></section>
        <section class="panel" id="history"><h3>Payment history</h3>${transferTable(S.transfers, true)}</section>
-       <section class="panel"><h3>Installment plans</h3>${S.mandates.length ? `<ul class="list">${S.mandates.map(m => `<li><div class="grow"><b>${esc(m.invoice_id)} · ${m.executed_legs.length} of ${m.total_legs} installments sent</b><span>To ${esc(m.payee_account)} · pauses if the rate moves more than ${(m.max_slippage * 100).toFixed(0)}% · ends ${date(m.expires)}</span></div>${st(m.status)}${m.status === "active" ? `<button class="btn sm danger" data-cancel="${esc(m.mandate_id)}">Cancel plan</button>` : ""}</li>`).join("")}</ul>` : `<p class="empty">No installment plans.</p>`}</section>`;
+       <section class="panel"><h3>Plans the agent runs for you</h3>${S.mandates.length ? `<ul class="list">${S.mandates.map(m => m.kind === "smart_timing"
+         ? `<li><div class="grow"><b>${esc(m.invoice_id)} · smart timing ${m.executed_legs.length ? "— paid" : "— watching the rate"}</b><span>Pays when ${esc(m.src_currency)}/${esc(m.dst_currency)} reaches ${m.target_rate.toFixed(6)}, at the latest on ${date(m.deadline)} · never below ${m.floor_rate.toFixed(6)} · to ${esc(m.payee_account)}${m.last_check ? ` · last check ${date(m.last_check.date)}: ${m.last_check.rate.toFixed(6)} (${esc(m.last_check.decision.replace(/_/g, " "))})` : ""}</span></div>${st(m.status)}${m.status === "active" ? `<button class="btn sm danger" data-cancel="${esc(m.mandate_id)}">Cancel plan</button>` : ""}</li>`
+         : `<li><div class="grow"><b>${esc(m.invoice_id)} · ${m.executed_legs.length} of ${m.total_legs} installments sent</b><span>To ${esc(m.payee_account)} · pauses if the rate moves more than ${(m.max_slippage * 100).toFixed(0)}% · ends ${date(m.expires)}</span></div>${st(m.status)}${m.status === "active" ? `<button class="btn sm danger" data-cancel="${esc(m.mandate_id)}">Cancel plan</button>` : ""}</li>`).join("")}</ul>` : `<p class="empty">No installment or smart-timing plans. Ask the assistant to "pay at the best rate before my deadline".</p>`}</section>`;
     animateJourney(); markFresh(); bindRecovery($("#history"));
     const pend = $("#pending");
     if (S.pending.length) {
@@ -361,12 +365,40 @@
             <button class="btn" type="submit">${S.guardian_invite ? "Update invitation" : "Invite guardian"}</button></form>
           ${S.guardians.length ? `<ul class="list">${S.guardians.map(g => `<li><div class="avatar">${esc(Portal.initials(g.name))}</div><div class="grow"><b>${esc(g.name)}</b><span>${esc(g.relationship)}</span></div><button class="btn sm danger" data-unlink="${esc(g.id)}">Remove</button></li>`).join("")}</ul>` : `<p class="empty">No guardian linked yet.</p>`}
           <div style="margin-top:12px"><button class="btn" id="invite">Create a guardian link code</button><div id="codeout" style="margin-top:12px"></div></div></section>
+        <section class="panel" id="totpbox"><h3>Authenticator app <small>${S.totp_enabled ? "linked" : "recommended"}</small></h3>
+          ${S.totp_enabled ? `<div class="alert ok" style="margin:0 0 12px">Payments are approved with the code from your authenticator app. No payment codes are sent by text message.</div><button class="btn sm danger" id="totpoff">Remove authenticator app</button>`
+            : `<p style="color:var(--ink-2);margin:0 0 12px;font-size:14px">Use Google Authenticator, Microsoft Authenticator, 1Password or any TOTP app instead of text messages. Codes then exist only on your phone — not in SMS, and never visible to the AI.</p><button class="btn" id="totpon">Link an authenticator app</button>`}
+          <div id="totpout"></div></section>
         <section class="panel"><h3>Password</h3><div id="pwc"></div></section>
       </div><div>
         <section class="panel"><h3>Your sandbox phone <small>${esc(S.phone || S.phone_masked)}</small></h3>${S.sms_inbox.length ? S.sms_inbox.slice().reverse().map(m => `<div class="sms">${esc(m.text).replace(/code (\d{6})/, "code <b>$1</b>")}<small>${esc(m.proposal_id)}</small></div>`).join("") : `<p class="empty">One-time codes for your payments arrive here.</p>`}</section>
         <section class="panel"><h3>Activity log</h3><div id="auditbox"><p class="empty">Loading…</p></div></section>
       </div></div>`;
     $("#pwc").appendChild(Portal.changePasswordForm());
+    if ($("#totpon")) $("#totpon").addEventListener("click", async () => {
+      const pw = await Portal.askPassword("Link an authenticator app?", "Enter your password to continue.");
+      if (pw === null) return;
+      const r = await api("/api/totp/setup", { password: pw });
+      if (!r.ok) { toast(r.error); return; }
+      let qr = "";
+      try { const q = qrcode(0, "M"); q.addData(r.uri); q.make(); qr = q.createSvgTag(4, 8); } catch (e) { qr = ""; }
+      $("#totpout").innerHTML = `<div class="totpsetup"><div class="qr">${qr}</div><div><ol class="steplist" style="margin:0 0 10px"><li>Scan this code with your authenticator app.</li><li>Or enter this key by hand: <code class="key">${esc(r.secret.replace(/(.{4})/g, "$1 ").trim())}</code></li><li>Type the 6-digit code the app shows.</li></ol>
+        <form id="totpform" class="otp"><input inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="••••••" aria-label="Code from the app"><button class="btn primary" type="submit">Link app</button></form></div></div>`;
+      $("#totpform").addEventListener("submit", async e => {
+        e.preventDefault();
+        const x = await Motion.busy($("#totpform button"), () => api("/api/totp/enable", { code: $("#totpform input").value }));
+        toast(x.ok ? "Authenticator app linked. Payments now need its code." : x.error);
+        if (x.ok) refresh();
+      });
+    });
+    if ($("#totpoff")) $("#totpoff").addEventListener("click", async () => {
+      const pw = await Portal.askPassword("Remove the authenticator app?", "Payment codes will be sent by text message again.");
+      if (pw === null) return;
+      const code = prompt("Enter the current code from your authenticator app");
+      if (code === null) return;
+      const r = await api("/api/totp/disable", { password: pw, code });
+      toast(r.ok ? "Authenticator app removed." : r.error); if (r.ok) refresh();
+    });
     $$("[data-level]", view).forEach(b => b.addEventListener("click", async () => {
       let r = await api("/api/settings", { level: b.dataset.level });
       if (r.code === "reauth_required") {
@@ -474,7 +506,7 @@
     const showIssued = list => {
       const box = $("#issued"); if (!list.length) return;
       box.innerHTML = list.slice().reverse().map(c => `<div class="card" style="margin:0 0 12px"><h4>${esc(c.type === "payment_history" ? "Payment history" : c.type === "proof_of_funds" ? "Proof of funds" : "Tuition payment")} · ${esc(c.cert_id)} ${pill("ok", "Signed")}</h4>
-        <div class="certcode">${esc(c.code)}</div><div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center"><button class="btn sm" data-copy="${esc(c.code)}">Copy</button><a class="btn sm" href="/verify#${encodeURIComponent(c.code)}" target="_blank" rel="noopener">Check it</a>${c.anchor ? `<span class="chainstat" data-anchor="${esc(c.anchor)}">⛓ checking on-chain anchor…</span>` : ""}</div></div>`).join("");
+        <div class="certcode">${esc(c.code)}</div><div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center"><button class="btn sm" data-copy="${esc(c.code)}">Copy</button><a class="btn sm" href="/verify#${encodeURIComponent(c.code)}" target="_blank" rel="noopener">Check it</a><a class="btn sm" href="/verify?pdf=1#${encodeURIComponent(c.code)}" target="_blank" rel="noopener">Download PDF</a>${c.anchor ? `<span class="chainstat" data-anchor="${esc(c.anchor)}">⛓ checking on-chain anchor…</span>` : ""}</div></div>`).join("");
       $$("[data-anchor]", box).forEach(async el => {
         const a = await api("/api/public/anchor?h=" + el.dataset.anchor);
         el.innerHTML = a.status === "submitted" ? `⛓ Anchored on Bitcoin via OpenTimestamps (${esc(a.calendars.length)} calendar${a.calendars.length > 1 ? "s" : ""})`
@@ -525,7 +557,7 @@
     { view: "insights", spot: ".card", title: "Currency risk and true cost", text: "4,000 simulated futures show the chance that waiting breaks the family budget, and the route table shows hidden exchange-rate markups and why illegal channels are excluded." },
     { view: "security", spot: "#killbtn", title: "Kill switch and permission levels", text: "One press cancels everything pending and stops instalment plans. Giving the agent more power, or removing the guardian, needs the password again." },
     { view: "certs", spot: ".panel", title: "Proof for a credit history", text: "After a payment arrives, the student can create a signed certificate that any landlord or bank can verify on a public page." },
-    { view: "overview", title: "Now try to break it", text: "Open the Security Lab from the home page: it fires 47 real attacks at a live copy of SudoRoute and shows each one being stopped." },
+    { view: "overview", title: "Now try to break it", text: "Open the Security Lab from the home page: it fires 57 real attacks at a live copy of SudoRoute and shows each one being stopped." },
   ];
   let tourIdx = -1, tourAuto = false, tourTimer = null;
   function tourStop() { tourIdx = -1; clearTimeout(tourTimer); $$(".tour-spot").forEach(e => e.classList.remove("tour-spot")); const t = $("#tourbox"); if (t) t.remove(); }
@@ -561,7 +593,7 @@
     Portal.setCount("payments", S.pending.length);
     Portal.setCount("invoices", S.invoices.filter(i => i.verdict === "BLOCK" && i.status === "open").length);
     paintKill();
-    Phone.mount("student", S.id, S.phone_masked || S.phone); Phone.sync(S.sms_inbox);
+    Phone.mount("student", S.id, S.phone_masked || S.phone); Phone.sync(S.sms_inbox, S.pending.filter(p => p.status === "awaiting_guardian").map(p => p.proposal.proposal_id));
     if (rerender && current !== "assistant") V[current]();
   }
   const go = Portal.init({

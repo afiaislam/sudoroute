@@ -31,7 +31,32 @@
         row("Environment", c.sandbox ? "Sandbox (competition demo)" : "Production") + `</dl>`;
     }
     $("#vout").innerHTML = html;
-    if (r.valid) anchorBox(code);
+    if (r.valid) {
+      const bar = document.createElement("div"); bar.className = "certpdfbar";
+      bar.innerHTML = `<button type="button" class="btn primary sm" id="pdfbtn">Download PDF certificate</button><span>A printable copy for a landlord, bank or scholarship office. The signed code is printed on it, so anyone can still check it here.</span>`;
+      $("#vout").appendChild(bar);
+      buildPrint(c, code, kind);
+      $("#pdfbtn").addEventListener("click", () => window.print());
+      await anchorBox(code);
+      if (new URLSearchParams(location.search).get("pdf") === "1") setTimeout(() => window.print(), 600);
+    }
+  }
+  // Print / "Save as PDF" layout: a clean one-page certificate. Content comes only from the server-verified claims.
+  function buildPrint(c, code, kind) {
+    let old = document.getElementById("certprint"); if (old) old.remove();
+    const el = document.createElement("section"); el.id = "certprint"; el.className = "certprint"; el.setAttribute("aria-hidden", "true");
+    const title = { tuition_payment: "Tuition payment certificate", payment_history: "Payment history certificate", proof_of_funds: "Proof of funds certificate" }[c.type] || "SudoRoute certificate";
+    const claims = $("#vout dl.claims");
+    el.innerHTML = `<header><div class="cp-brand"><span data-logo></span><b>Sudo<span>Route</span></b></div><div class="cp-meta">Certificate ${esc(c.cert_id)}<br>Issued ${esc(c.issued_at)}</div></header>
+      <h1>${esc(title)}</h1>
+      <p class="cp-ok">✓ Signature verified with SudoRoute's Ed25519 public key on ${esc(new Date().toISOString().slice(0, 10))}. Nothing has been changed.</p>
+      <dl class="claims">${claims ? claims.innerHTML : ""}</dl>
+      <div class="cp-anchor"></div>
+      <h2>Signed certificate code</h2><div class="cp-code">${esc(code.trim())}</div>
+      <p class="cp-how">To check this certificate, paste the code above at <b>${esc(location.origin)}/verify</b>. Any change to a single character makes the signature invalid.</p>
+      <footer>${c.sandbox ? "Sandbox certificate — issued by the SudoRoute prototype for the 2026 Shenzhen International FinTech Competition. No real money was moved." : "Issued by SudoRoute."}</footer>`;
+    document.body.appendChild(el);
+    el.querySelectorAll("[data-logo]").forEach(x => { x.innerHTML = TS.LOGO.replace(/srlg/g, "srlgp"); });
   }
   // On-chain anchor: a hash of the certificate and the audit-log state, timestamped on Bitcoin via OpenTimestamps.
   async function anchorBox(code) {
@@ -44,6 +69,8 @@
       <div class="anchoract"><a class="btn sm" href="/api/public/anchor/record?h=${esc(a.cert_sha256)}">Download anchor record</a>${a.has_proof ? `<a class="btn sm primary" href="/api/public/anchor/ots?h=${esc(a.cert_sha256)}">Download .ots proof</a><a class="btn sm quiet" href="https://opentimestamps.org" target="_blank" rel="noopener">Check on opentimestamps.org ↗</a>` : ""}</div>
       <small>${esc(a.how_to_check)}</small>`}`;
     $("#vout").appendChild(box);
+    const pa = document.querySelector("#certprint .cp-anchor");
+    if (pa && a.status !== "unknown") pa.innerHTML = `<h2>On-chain proof (Bitcoin, OpenTimestamps)</h2><dl class="claims"><dt>Certificate hash</dt><dd class="mono">${esc(a.cert_sha256)}</dd><dt>Anchored record</dt><dd class="mono">sha256 ${esc(a.digest)}</dd><dt>Status</dt><dd>${esc(label[1])}</dd></dl>`;
   }
   $("#vform").addEventListener("submit", e => { e.preventDefault(); check($("#code").value); });
   if (location.hash.length > 5) { $("#code").value = decodeURIComponent(location.hash.slice(1)); check($("#code").value); }

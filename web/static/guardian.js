@@ -6,7 +6,7 @@
   let current = "overview";
   const view = $("#view");
   const head = (t, s, a = "") => `<div class="pagehead"><div><h2>${esc(t)}</h2>${s ? `<p>${esc(s)}</p>` : ""}</div>${a}</div>`;
-  const first = n => String(n || "").split(" ")[0];
+  const first = n => TS.first(n);
 
   function linkForm() {
     const n = Cards.el(`<form class="linkform" novalidate><div class="field"><label for="lk">Student's link code</label><input class="input" id="lk" placeholder="ABCD-2345" autocomplete="off" style="max-width:220px;text-transform:uppercase"><span class="hint">The student creates it in SudoRoute under Security → Create a guardian link code.</span></div><button class="btn primary" type="submit">Link student</button><div class="out" style="margin-top:12px"></div></form>`);

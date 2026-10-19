@@ -36,7 +36,33 @@ const Cards = (() => {
       ${c.reasons.length ? `<ul class="reasons">${c.reasons.map(r => `<li><span class="pts">+${r.points}</span><span>${esc(r.message)}</span></li>`).join("")}</ul>`
         : `<p style="color:var(--ink-2);margin:0">No warning signs. Sender, bank account, amount and currency all match the university's verified record.</p>`}
       ${inj.length ? `<div class="quarantine"><b>Hidden instructions found and ignored</b>${inj.map(x => esc(x.excerpt)).join("<br>")}</div>` : ""}
+      ${aiReader(c)}
       <div class="advice ${c.verdict}">${esc(c.advice)}</div></div>`);
+  }
+  // Second opinion from the quarantined AI reader: typed fields only, can add risk but never remove it.
+  function aiReader(c) {
+    const a = c.ai_reader;
+    if (!a || a.status !== "ok") return "";
+    const f = a.fields || {}, fl = a.flags || {};
+    const row = (k, v) => v == null || v === "" ? "" : `<div><small>${esc(k)}</small><span>${esc(v)}</span></div>`;
+    const flag = (on, text) => `<li class="${on ? "on" : ""}">${on ? "⚠" : "✓"} ${esc(text)}</li>`;
+    const head = a.added.length ? `Found ${a.added.length} more warning sign${a.added.length > 1 ? "s" : ""} — risk raised from ${a.rule_score} to ${c.score}`
+      : c.verdict === "SAFE" ? "No extra warning signs" : (a.signals.length ? "Agrees with the rules" : "Found no extra warning signs — the rule result still stands");
+    return `<details class="aireader" ${a.added.length ? "open" : ""}><summary><span class="aitag">✦ AI second opinion</span> ${esc(head)}</summary>
+      <p class="aisub">Read by a quarantined model with no tools and no access to your account. It can only add risk, never remove it.</p>
+      <div class="aifields">${row("Sender", f.sender_email)}${row("Institution", f.institution)}${row("Amount", f.amount != null ? `${f.currency || ""} ${fmt(f.amount, 2)}` : null)}${row("Due", f.due_date)}${row("Bank account", a.bank_account)}</div>
+      <ul class="aiflags">${flag(fl.asks_new_bank_details, "Asks to pay new or different bank details")}${flag(fl.asks_crypto_or_giftcard, "Asks for crypto, gift cards or a personal account")}${flag(fl.urgency_or_threat, "Pressure or threats")}${flag(fl.instructions_to_ai, "Instructions aimed at an AI assistant")}</ul>
+      ${a.signals.length ? `<p class="aisub">${a.signals.map(esc).join(" · ")}</p>` : ""}</details>`;
+  }
+  function smartBox(p, c) {
+    const t = p.timing, x = c.timing || {};
+    if (!t) return "";
+    return `<div class="smartbox"><div class="smarthead"><span class="aitag">✦ Smart timing</span> The agent watches the rate every day and pays by itself — inside these limits:</div>
+      <div class="stats"><div class="stat"><small>Pays as soon as the rate reaches</small><span>${t.target_rate.toFixed(6)}</span><small>${t.target_improvement_pct}% better than today</small></div>
+        <div class="stat"><small>Pays at the latest on</small><span>${date(t.deadline)}</span><small>so it still arrives on time</small></div>
+        <div class="stat"><small>Chance the target is reached</small><span>${(t.p_target_hit * 100).toFixed(0)}%</span><small>${x.median_days_to_hit ? `usually within ${x.median_days_to_hit} days` : `${fmt(x.paths || 0)} simulated paths`}</small></div>
+        <div class="stat"><small>Never more than</small><span>${esc(p.src_currency)} ${fmt(t.max_cost_src)}</span><small>below ${t.floor_rate.toFixed(6)} it pauses and asks you</small></div></div>
+      <p style="color:var(--ink-2);font-size:13.5px;margin:8px 0 0">Expected saving vs paying today: <b>${esc(p.src_currency)} ${fmt(t.expected_saving_src)}</b> (best case ${esc(p.src_currency)} ${fmt(x.cost_now_src ? x.cost_now_src - t.best_case_src : 0)}). Same payee, same invoice, one payment. Cancel or use the kill switch any time.</p></div>`;
   }
   function routes(c) {
     const max = Math.max(...c.routes.map(r => r.total_src));
@@ -102,11 +128,11 @@ const Cards = (() => {
   }
 
   // Explains the one-time code and, in the sandbox, shows the "text message" that a real phone would receive.
-  function otpHelp(pid, who) {
+  function otpHelp(pid, who, waiting) {
     return `<div class="otphelp" data-otp-for="${esc(pid)}" data-who="${who}"><b>What is this code?</b> ${who === "guardian"
       ? "Your student can't approve family money alone. SudoRoute texts a separate 6-digit code to your phone; entering it proves that you approve this exact payment."
       : "When a payment is ready, SudoRoute texts a 6-digit one-time code to your registered phone. Typing it proves it's really you approving this exact payment — not the AI, and not someone who got into your account. Each code works once, for this payment only."}
-      <div class="smsline"><span>Demo mode: no real SMS is sent — the message arrives on the <b>phone icon</b> at the top of this page.</span><button type="button" class="btn sm" data-showsms>Show the text message</button></div></div>`;
+      ${waiting ? `<div class="smsline"><span>Your code becomes usable as soon as your guardian approves — it will pop up on the <b>phone icon</b> at the top of this page.</span></div></div>` : `<div class="smsline"><span>Demo mode: no real SMS is sent — the message arrives on the <b>phone icon</b> at the top of this page.</span><button type="button" class="btn sm" data-showsms>Show the text message</button></div></div>`}`;
   }
   async function revealSms(box) {
     const pid = box.dataset.otpFor, who = box.dataset.who;
@@ -130,28 +156,32 @@ const Cards = (() => {
     const status = c.status || "awaiting_confirmation";
     const waitingG = status === "awaiting_guardian";
     const passed = c.checks.checks.filter(x => x.status === "PASS").length;
-    const card = el(`<div class="card prop"><h4><span>Payment ready for approval</span>${st(status)}</h4>
+    const card = el(`<div class="card prop"><h4><span>${p.strategy === "smart_timing" ? "Smart-timing payment ready for approval" : "Payment ready for approval"}</span>${st(status)}</h4>
       <div class="bigamt num">${esc(p.dst_currency)} ${fmt(p.total_dst, 2)}</div>
       <div style="color:var(--ink-2);margin-top:4px">to <b>${esc(p.university_name)}</b>, ${esc(p.payee_bank)} · reference ${esc(p.reference)}</div>
       <div class="stats"><div class="stat"><small>Channel</small><span style="font-weight:500">${esc(p.provider_name)}</span></div>
         <div class="stat"><small>You pay about</small><span>${esc(p.src_currency)} ${fmt(p.total_src_quote)}</span></div>
         <div class="stat"><small>Payee account</small><span>${esc(p.payee_account.slice(0, 3))}•••${esc(p.payee_account.slice(-4))}</span></div>
+        ${p.service_fee ? `<div class="stat"><small>SudoRoute fee</small><span>${p.service_fee.waived ? `<s style="opacity:.6">${esc(p.src_currency)} ${fmt(p.service_fee.amount_src)}</s> <b style="color:var(--ok)">waived</b>` : `${esc(p.src_currency)} ${fmt(p.service_fee.amount_src)}`}</span><small style="display:block;color:var(--ink-3);font-size:11.5px">${(p.service_fee.rate * 100).toFixed(1)}%, max USD ${p.service_fee.cap_usd} · <a href="/pricing" target="_blank" rel="noopener">pricing</a></small></div>` : ""}
         <div class="stat"><small>Quote valid until</small><span>${new Date(p.expires_at * 1000).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span></div></div>
       ${p.legs.length > 1 ? `<div class="legrow">${p.legs.map(l => `<div class="leg"><small>Installment ${l.leg} · ${date(l.execute_on)}</small><b>${esc(p.dst_currency)} ${fmt(l.dst_amount, 2)}</b><small>≈ ${esc(p.src_currency)} ${fmt(l.src_amount_quote)}</small></div>`).join("")}</div>
         <p style="color:var(--ink-2);font-size:13.5px;margin:0">After you confirm, installments 2–${p.legs.length} run on their dates — same payee and invoice only, and they pause if ${esc(p.src_currency)} weakens more than ${(p.max_slippage * 100).toFixed(0)}%. You can cancel any time.</p>` : ""}
+      ${smartBox(p, c)}
+      ${p.ai_hold && !ctx.readonly ? `<div class="holdbox" role="alert"><span class="aitag">✦ Independent AI auditor</span> <b>On hold:</b> ${esc(p.ai_hold.reason)}
+        <label><input type="checkbox" class="ackhold"> I've read this concern and still want to pay. (The auditor can only pause a payment — you decide.)</label></div>` : ""}
       ${p.guardian_required && !ctx.readonly ? `<div class="alert ${c.guardian_approval ? "ok" : "info"}" style="margin:14px 0 0">${c.guardian_approval ? `Approved by ${esc(c.guardian_approval.name)}.` : `Waiting for ${esc((c.guardians || []).join(" and ") || "your guardian")} to approve. You can confirm after that.`}</div>` : ""}
       <details class="more" ${ctx.compact ? "" : "open"}><summary>${passed} of ${c.checks.checks.length} checks passed</summary>
         <div class="checks" style="margin-top:8px">${c.checks.checks.map(x => `<div class="check"><span class="ic ${x.status}">${{ PASS: "✓", WARN: "!", FAIL: "✕" }[x.status]}</span><span class="nm">${esc(x.check)}</span><span class="dt">${esc(x.detail)}</span></div>`).join("")}</div></details>
       ${c.route_explanation ? `<details class="more"><summary>Why this route</summary><ul class="reasons" style="margin-top:8px">${c.route_explanation.map(x => `<li>${esc(x)}</li>`).join("")}</ul></details>` : ""}
-      ${ctx.readonly ? "" : `<form class="otp"><label class="otplabel" for="otp-${esc(p.proposal_id)}">Enter the 6-digit code texted to your phone</label><input id="otp-${esc(p.proposal_id)}" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="••••••" ${waitingG ? "disabled" : ""}>
-        <button class="btn primary" type="submit" ${c.can_confirm === false || waitingG ? "disabled" : ""}>Confirm and pay</button></form>
-        ${otpHelp(p.proposal_id, "student")}`}
+      ${ctx.readonly ? "" : `<form class="otp"><label class="otplabel" for="otp-${esc(p.proposal_id)}">${p.second_factor === "totp" ? "Enter the 6-digit code from your authenticator app" : "Enter the 6-digit code texted to your phone"}</label><input id="otp-${esc(p.proposal_id)}" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="••••••" ${waitingG ? "disabled" : ""}>
+        <button class="btn primary" type="submit" ${c.can_confirm === false || waitingG ? "disabled" : ""}>${p.strategy === "smart_timing" ? "Approve smart payment" : "Confirm and pay"}</button></form>
+        ${p.second_factor === "totp" ? `<div class="otphelp"><b>Authenticator app.</b> Open the app on your phone and type the current SudoRoute code. No text message is sent, so nobody who reads your SMS — and not the AI — can approve this payment.</div>` : otpHelp(p.proposal_id, "student", waitingG)}`}
       <div class="out"></div></div>`);
     const form = card.querySelector("form.otp");
     if (form) form.addEventListener("submit", async e => {
       e.preventDefault();
       const btn = form.querySelector("button");
-      const r = await Motion.busy(btn, () => api("/api/confirm", { proposal_id: p.proposal_id, token: c.token, otp: form.querySelector("input").value }));
+      const r = await Motion.busy(btn, () => api("/api/confirm", { proposal_id: p.proposal_id, token: c.token, otp: form.querySelector("input").value, acknowledge_hold: !!(card.querySelector(".ackhold") || {}).checked }));
       btn.disabled = true;
       const out = card.querySelector(".out");
       if (r.ok) { out.innerHTML = `<div class="alert ok" style="margin:12px 0 0">${esc(r.message)}</div>`; form.remove(); }

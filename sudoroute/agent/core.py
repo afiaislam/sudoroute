@@ -12,16 +12,33 @@ from datetime import datetime, timedelta
 from .. import config
 from ..engines import budget as budget_engine
 from ..engines import credit as credit_engine
-from ..engines import fx_risk, routes
-from ..engines.invoice_check import parse_pasted_invoice, verify_invoice
+from ..engines import fx_risk, fx_timing, routes
+from ..engines.invoice_check import apply_ai_reading, parse_pasted_invoice, verify_invoice
 from ..sandbox.reference_data import COUNTRY_RULES, PROVIDERS, UNIVERSITIES
-from ..security import permissions, policy
+from ..security import permissions, policy, totp
 from ..security.audit import AuditLog
 from ..security.guardrails import mask_account
 from ..security.permissions import PROHIBITED_ACTIONS, TIER_LABELS, PermissionDenied, Tier
 from ..security.proposals import ProposalError, ProposalStore, sandbox_otp
 from . import intents, llm
 
+
+def redact_obs(text: str) -> str:
+    """Observations fed back to the planner: verified tool replies only, trimmed and with PII redacted."""
+    from ..security.guardrails import redact
+    return redact((text or "")[:600])
+
+
+
+_PREFIXES = {"md", "mst", "mosammat", "mohd", "mr", "mrs", "ms", "miss", "dr", "prof"}
+
+
+def short_name(name: str) -> str:
+    """First name for greetings; honorific prefixes such as "Md" or "Mst" are skipped."""
+    parts = (name or "").split()
+    while len(parts) > 1 and parts[0].rstrip(".").lower() in _PREFIXES:
+        parts.pop(0)
+    return parts[0] if parts else ""
 
 class Context:
     def __init__(self, student_id: str, level: str):
@@ -40,8 +57,16 @@ class SudoRouteAgent:
         self.guardian_inbox: dict[str, list] = {}
         self.guardian_funding: dict[str, list] = {}
         self.use_llm = True  # the Security Lab runs an offline copy with this off
+        self.llm = llm  # swappable: the Security Lab plugs in a deliberately hostile model here
         self.issuer = None  # set by the server (security.certificates.Issuer)
         self.certificates: dict[str, list] = {}
+        # Students who linked an authenticator app: sid -> {"secret": base32, "last_step": int | None}.
+        # When present, payment approval needs the app's code; the sandbox SMS code no longer works.
+        self.totp: dict[str, dict] = {}
+        # Second opinions from the quarantined AI reader, per (student, invoice). They can only add risk.
+        self.ai_readings: dict[tuple, dict] = {}
+        # Optional real SMS (sudoroute/sms.py): set by the server; called as sms_out(kind, ref, text)
+        self.sms_out = None
 
     # ================================================================ sessions
     def session(self, sid: str) -> dict:
@@ -95,10 +120,15 @@ class SudoRouteAgent:
         ctx.lang = lang
         parsed = intents.parse(message)
         pasted = parsed["slots"]["pasted"]
-        # 1. Language understanding. Rule-based refusals and pasted documents never go to the model.
+        # 1. Agentic planning. Rule-based refusals and pasted documents never go to the planner.
+        if parsed["intent"] != "prohibited" and not pasted and self._llm():
+            planned = self._plan_and_act(ctx, sid, message, lang)
+            if planned is not None:
+                return planned
+        # 1b. Fallback: single-intent language understanding.
         if parsed["intent"] != "prohibited" and not pasted and self._llm():
             t0 = time.perf_counter()
-            ai = llm.classify(message)
+            ai = self.llm.classify(message)
             self._ai_step(ctx, "classify_intent", t0, ai is not None,
                           f"→ {ai['intent']}" if ai else "fallback to rules")
             if ai:
@@ -111,7 +141,7 @@ class SudoRouteAgent:
                     for k in ("installments", "pay_now"):
                         parsed["slots"][k] = parsed["slots"][k] or ai[k]
                     parsed["slots"]["invoice_id"] = parsed["slots"]["invoice_id"] or ai["invoice_id"]
-                parsed["source"] = llm.provider()
+                parsed["source"] = self.llm.provider()
         self.audit.append("user_message", actor="student", sim_time=self._now(), student_id=sid,
                           intent=parsed["intent"], intent_source=parsed["source"], text=message[:300])
         # 2. Deterministic, tier-gated tools.
@@ -129,23 +159,116 @@ class SudoRouteAgent:
         if out["reply_source"] == "template" and parsed["intent"] != "prohibited" and self._llm():
             t0 = time.perf_counter()
             shown = "[the student pasted an email/invoice for checking]" if pasted else message
-            polished = llm.compose(shown, out["reply"], parsed["intent"], lang)
+            polished = self.llm.compose(shown, out["reply"], parsed["intent"], lang)
             self._ai_step(ctx, "write_reply", t0, polished is not None,
                           "numbers verified" if polished else "template kept")
             if polished:
-                out["reply_draft"], out["reply"], out["reply_source"] = out["reply"], polished, llm.provider()
+                out["reply_draft"], out["reply"], out["reply_source"] = out["reply"], polished, self.llm.provider()
         out["intent"] = parsed["intent"]
         out["intent_source"] = parsed["source"]
         out["trace"] = ctx.trace
         out["level"] = ctx.level
-        out["ai"] = llm.status()
+        out["ai"] = self.llm.status()
+        return out
+
+    MAX_PLAN_ROUNDS = 3
+    MAX_PLAN_TOOLS = 5
+
+    def _plan_and_act(self, ctx, sid, message, lang):
+        """Plan → act → observe loop. The model picks tools from a fixed list; every tool still goes through
+        the permission gate, the policy engine and the audit log. Payment tools can only PREPARE a proposal.
+        Returns None if the planner is unavailable (the caller falls back to single-intent handling)."""
+        s = self._student(sid)
+        context = (f"home {s['home_currency']}, study {s['study_currency']} in {s['study_country']}; "
+                   f"open invoices: {', '.join(i['id'] for i in self.bank.student_invoices(sid) if self._outstanding(i) > 0.01) or 'none'}; "
+                   f"assistant mode: {ctx.level}")
+        hist = self.session(sid).setdefault("history", [])
+        if hist:  # follow-ups ("ok, do it in installments") — the student's own recent messages, never pasted documents
+            context += "\nRecent conversation (oldest first):\n" + "\n".join(
+                f"- student: {redact_obs(h['msg'])[:160]} → tools: {', '.join(h['tools']) or 'none'}" for h in hist[-3:])
+        observations, results, done_keys, plan_log = [], [], set(), []
+        paid = False
+        for rnd in range(self.MAX_PLAN_ROUNDS):
+            t0 = time.perf_counter()
+            p = self.llm.plan(message, context, observations or None)
+            names = [x["tool"] for x in p["steps"]] if p else []
+            self._ai_step(ctx, f"plan_round_{rnd + 1}", t0, p is not None,
+                          (("→ " + ", ".join(names)) if names else "done") if p else "fallback to rules")
+            if p is None:
+                if rnd == 0:
+                    return None
+                break
+            plan_log.append({"round": rnd + 1, "thought": p["thought"], "steps": names})
+            new = [x for x in p["steps"] if (x["tool"], x["invoice_id"]) not in done_keys]
+            for st in new:
+                if len(results) >= self.MAX_PLAN_TOOLS or paid:
+                    break
+                done_keys.add((st["tool"], st["invoice_id"]))
+                if st["tool"] == "prohibited":
+                    if not st["prohibited_action"]:
+                        continue  # the model may only make things stricter, with a concrete rule
+                    slots = {"prohibited_action": st["prohibited_action"]}
+                    out = self._h_prohibited(ctx, slots, message)
+                    self.audit.append("user_message", actor="student", sim_time=self._now(), student_id=sid,
+                                      intent="prohibited", intent_source=self.llm.provider() + "-planner", text=message[:300])
+                    return self._finish(ctx, {**out, "plan": plan_log}, "prohibited", self.llm.provider() + "-planner",
+                                        message, lang, pasted=False)
+                slots = {"invoice_id": st["invoice_id"], "installments": st["installments"], "pay_now": st["pay_now"],
+                         "pasted": False, "smart": st["tool"] == "smart_pay"}
+                try:
+                    out = getattr(self, f"_h_{st['tool']}")(ctx, slots, message)
+                except PermissionDenied as e:
+                    out = {"reply": f"I can't do that in the current mode. {e} You can change the mode in Settings — "
+                                    "I can't change it myself.", "cards": []}
+                except LookupError as e:
+                    out = {"reply": str(e).strip("'\""), "cards": []}
+                results.append((st["tool"], out))
+                observations.append(f"[{st['tool']}] " + redact_obs(out.get("reply", "")))
+                paid = paid or st["tool"] in self.llm.PAYMENT_TOOLS
+            if p["done"] or paid or not new or len(results) >= self.MAX_PLAN_TOOLS:
+                break
+        if not results:
+            return None
+        intents_run = [r[0] for r in results]
+        hist.append({"msg": message[:300], "tools": intents_run})
+        del hist[:-6]
+        self.audit.append("user_message", actor="student", sim_time=self._now(), student_id=sid,
+                          intent="+".join(intents_run), intent_source=self.llm.provider() + "-planner", text=message[:300])
+        self.audit.append("agent_plan", actor="ai-planner", sim_time=self._now(), student_id=sid,
+                          rounds=len(plan_log), tools=intents_run)
+        cards, replies, sources = [], [], set()
+        for _, out in results:
+            cards += out.get("cards", [])
+            replies.append(out.get("reply", ""))
+            sources.add(out.get("reply_source", "template"))
+        primary = next((t for t in intents_run if t in self.llm.PAYMENT_TOOLS), intents_run[0])
+        combined = {"reply": "\n\n".join(r for r in replies if r), "cards": cards, "plan": plan_log,
+                    "reply_source": "template" if "template" in sources else sources.pop()}
+        return self._finish(ctx, combined, primary, self.llm.provider() + "-planner", message, lang, pasted=False)
+
+    def _finish(self, ctx, out, intent, source, message, lang, pasted):
+        out.setdefault("cards", [])
+        out.setdefault("reply_source", "template")
+        if out["reply_source"] == "template" and intent != "prohibited" and self._llm():
+            t0 = time.perf_counter()
+            shown = "[the student pasted an email/invoice for checking]" if pasted else message
+            polished = self.llm.compose(shown, out["reply"], intent, lang)
+            self._ai_step(ctx, "write_reply", t0, polished is not None,
+                          "numbers verified" if polished else "template kept")
+            if polished:
+                out["reply_draft"], out["reply"], out["reply_source"] = out["reply"], polished, self.llm.provider()
+        out["intent"] = intent
+        out["intent_source"] = source
+        out["trace"] = ctx.trace
+        out["level"] = ctx.level
+        out["ai"] = self.llm.status()
         return out
 
     def _llm(self) -> bool:
-        return self.use_llm and llm.enabled()
+        return self.use_llm and self.llm.enabled()
 
     def _ai_step(self, ctx, name: str, t0: float, ok: bool, detail: str) -> None:
-        st = llm.status()
+        st = self.llm.status()
         ctx.trace.append({"tool": f"{st['provider']}.{name}", "tier": f"AI · {st['model'] or 'language'}",
                           "status": "ok" if ok else "fallback", "detail": detail,
                           "ms": round((time.perf_counter() - t0) * 1000, 1)})
@@ -157,11 +280,11 @@ class SudoRouteAgent:
                    f"({s['home_currency']}) studying {s['program']} at {uni['name']} in {uni['city']}, "
                    f"{s['study_country']} ({s['study_currency']}).")
         t0 = time.perf_counter()
-        ans = llm.answer(msg, context, getattr(ctx, "lang", None)) if self._llm() else None
+        ans = self.llm.answer(msg, context, getattr(ctx, "lang", None)) if self._llm() else None
         if self._llm():
             self._ai_step(ctx, "answer_question", t0, ans is not None, "answered" if ans else "unavailable")
         if ans:
-            return {"reply": ans, "reply_source": llm.provider(), "cards": [{"type": "suggestions", "items": [
+            return {"reply": ans, "reply_source": self.llm.provider(), "cards": [{"type": "suggestions", "items": [
                 "Pay my tuition", "Compare transfer options", "When should I pay?"]}]}
         out = self._h_help(ctx, slots, msg)
         out["reply"] = ("I'm best at your tuition and money tasks — paying tuition, checking invoices for scams, "
@@ -216,7 +339,7 @@ class SudoRouteAgent:
     def _h_help(self, ctx, slots, msg):
         s = self._student(ctx.student_id)
         phish = next((i["id"] for i in self.bank.student_invoices(ctx.student_id) if "PHISH" in i["id"]), None)
-        return {"reply": (f"Hi {s['name'].split()[0]}! I'm SudoRoute. I can pay your tuition safely and cheaply, "
+        return {"reply": (f"Hi {short_name(s['name'])}! I'm SudoRoute. I can pay your tuition safely and cheaply, "
                           "check whether an invoice is a scam, compare transfer channels, show how exchange-rate "
                           "moves could affect your tuition, review your budget and plan your credit history. "
                           "Money only moves after you confirm with a one-time code."),
@@ -257,6 +380,7 @@ class SudoRouteAgent:
         cards, lines = [], []
         for inv in targets:
             v = self._call(ctx, "verify_invoice", Tier.ANALYZE, verify_invoice, inv, s)
+            v = self._ai_second_opinion(ctx, inv, v, read=len(targets) == 1)
             self.audit.append("invoice_verified", actor="agent", sim_time=self._now(), student_id=ctx.student_id,
                               invoice_id=inv["id"], verdict=v["verdict"], score=v["score"],
                               reasons=[r["code"] for r in v["reasons"]])
@@ -270,6 +394,26 @@ class SudoRouteAgent:
             emoji = {"SAFE": "✅", "REVIEW": "⚠️", "BLOCK": "⛔"}[v["verdict"]]
             lines.append(f"{emoji} {inv['id']}: {v['verdict']} (risk {v['score']}/100). {v['advice']}")
         return {"reply": "\n".join(lines), "cards": cards}
+
+    def _ai_second_opinion(self, ctx, inv, v, read=True):
+        """Quarantined AI reader (dual-LLM pattern): a model with no tools reads the untrusted text and returns
+        typed fields only. The result can add risk points, never remove them, and never reaches the planner."""
+        key = (ctx.student_id, inv.get("id"))
+        reading = self.ai_readings.get(key) if inv.get("id") != "PASTED" else None
+        if reading is None and read and self._llm() and inv.get("text"):
+            t0 = time.perf_counter()
+            reading = self.llm.read_document(inv["text"] if inv.get("id") == "PASTED"
+                                        else f"From: {inv.get('sender_email', '')}\nSubject: {inv.get('subject', '')}\n\n{inv['text']}")
+            self._ai_step(ctx, "quarantined_reader", t0, reading is not None,
+                          "typed fields only · can add risk, never remove" if reading else "rules only")
+            if reading and inv.get("id") != "PASTED":
+                self.ai_readings[key] = reading
+        merged = apply_ai_reading(v, reading, inv)
+        if reading and merged["ai_reader"].get("added"):
+            self.audit.append("ai_reader_raised_risk", actor="ai-quarantined", sim_time=self._now(),
+                              student_id=ctx.student_id, invoice_id=inv.get("id"), added=merged["ai_reader"]["added"],
+                              rule_score=v["score"], score=merged["score"])
+        return merged
 
     def _h_compare_routes(self, ctx, slots, msg):
         s = self._student(ctx.student_id)
@@ -378,6 +522,7 @@ class SudoRouteAgent:
             return {"reply": "⏳ " + self._unverified_reply(s["id"]), "cards": []}
         inv = self._pick_invoice(ctx, slots, require_safe=not slots.get("invoice_id"))
         v = self._call(ctx, "verify_invoice", Tier.ANALYZE, verify_invoice, inv, s)
+        v = apply_ai_reading(v, self.ai_readings.get((ctx.student_id, inv["id"])), inv)  # an earlier AI flag still counts
         if v["verdict"] == "BLOCK":
             self.audit.append("payment_refused_scam", actor="agent", sim_time=self._now(), student_id=ctx.student_id,
                               invoice_id=inv["id"], score=v["score"])
@@ -399,6 +544,22 @@ class SudoRouteAgent:
 
         quoted_rate = self.bank.market.mid(s["home_currency"], inv["currency"]) * (1 - provider["fx_markup"])
         fee_src = provider["fee_usd"] * self.bank.market.units_per_usd(s["home_currency"])
+        timing, smart_note = None, ""
+        if slots.get("smart"):
+            # Smart timing: one payment, executed by the agent on the first day the target rate is reached,
+            # or on the latest safe day at the market rate. Needs at least 2 days of room to be useful.
+            pay_by = datetime.fromisoformat(inv["due"]) - timedelta(days=config.ARRIVAL_BUFFER_DAYS + provider["days"][1])
+            horizon = (pay_by.date() - self.bank.now.date()).days
+            if horizon >= 2:
+                timing = self._call(ctx, "fx_smart_timing", Tier.ANALYZE, fx_timing.plan, self.bank.market,
+                                    s["home_currency"], inv["currency"], plan["remaining"], quoted_rate,
+                                    provider["fx_markup"], fee_src, horizon)
+                timing["deadline"] = pay_by.date().isoformat()
+                strategy, st = "smart_timing", {"legs": [{"day": horizon, "fraction": 1.0}]}
+            else:
+                smart_note = ("There isn't enough time before the latest safe day to wait for a better rate, "
+                              "so I've prepared a payment for today instead. ")
+                strategy, st = "pay_now", f["strategies"]["pay_now"]
         legs = []
         leg_specs = st["legs"] if strategy != "pay_at_due" else [{"day": 0, "fraction": 1.0}]
         for i, leg in enumerate(leg_specs):
@@ -430,13 +591,29 @@ class SudoRouteAgent:
             "total_src_quote": round(sum(l["src_amount_quote"] for l in legs), 2),
             "max_slippage": config.MANDATE_MAX_SLIPPAGE, "invoice_verdict": v["verdict"],
             "created_sim": self._now(),
+            "second_factor": "totp" if s["id"] in self.totp else "sms",
         }
+        # How SudoRoute would earn money (see /pricing): one visible service fee, never a hidden FX markup.
+        # 0.5% of the payment, at least USD 3 and at most USD 25 — shown on every quote, waived during the pilot.
+        fee_usd = min(config.SERVICE_FEE_CAP_USD, max(config.SERVICE_FEE_MIN_USD,
+                                                      config.SERVICE_FEE_RATE * self.bank.market.to_usd(payload["total_dst"], inv["currency"])))
+        payload["service_fee"] = {"rate": config.SERVICE_FEE_RATE, "min_usd": config.SERVICE_FEE_MIN_USD,
+                                  "cap_usd": config.SERVICE_FEE_CAP_USD, "usd": round(fee_usd, 2),
+                                  "amount_src": round(fee_usd * self.bank.market.units_per_usd(s["home_currency"]), 2),
+                                  "waived": config.SERVICE_FEE_WAIVED}
+        if timing:
+            payload["timing"] = {k: timing[k] for k in ("target_rate", "floor_rate", "deadline", "p_target_hit",
+                                                         "target_improvement_pct", "expected_saving_src",
+                                                         "max_cost_src", "best_case_src")}
         # Only one live approval per invoice: a new quote supersedes older pending ones.
         for old_id, old in self.proposals.proposals.items():
             if old["payload"]["invoice_id"] == inv["id"] and old["status"] in ("awaiting_guardian", "awaiting_confirmation"):
                 old["status"] = "cancelled"
                 self.audit.append("proposal_superseded", actor="agent", sim_time=self._now(), student_id=s["id"],
                                   proposal_id=old_id, replaced_by=payload["proposal_id"])
+        audit_ai = self._audit_ai(ctx, self._proposal_facts(s, inv, payload, checks, v), "proposal")
+        if audit_ai and audit_ai["hold"]:
+            payload["ai_hold"] = {"reason": audit_ai["reason"]}  # signed with the proposal; only a human can clear it
         guardians = s.get("guardians", [])
         need_guardian = bool(guardians) and s.get("guardian_approval", True)
         payload["guardian_required"] = need_guardian
@@ -447,34 +624,52 @@ class SudoRouteAgent:
         if need_guardian:
             for g in guardians:
                 gotp = sandbox_otp("guardian:" + payload["proposal_id"], self.proposals.key)
+                gtext = (f"SudoRoute guardian code {gotp}: {s['name']} asks you to approve "
+                         f"{payload['total_dst']:,.2f} {payload['dst_currency']} to {uni['name']}. Never share this code.")
                 self.guardian_inbox.setdefault(g["id"], []).append({
                     "to": g.get("phone_masked") or "guardian sandbox phone", "proposal_id": payload["proposal_id"],
-                    "text": f"SudoRoute guardian code {gotp}: {s['name']} asks you to approve "
-                            f"{payload['total_dst']:,.2f} {payload['dst_currency']} to {uni['name']}. Never share this code."})
-        otp = sandbox_otp(payload["proposal_id"], self.proposals.key)
+                    "text": gtext})
+                if self.sms_out:
+                    self.sms_out("guardian", g["id"], gtext)
         sess = self.session(ctx.student_id)
-        sess["sms_inbox"].append({"to": s["phone_masked"] or "your sandbox phone", "proposal_id": payload["proposal_id"],
-                                  "text": f"SudoRoute code {otp}: approve {payload['total_dst']:,.2f} "
-                                          f"{payload['dst_currency']} to {uni['name']}. Never share this code."})
+        if payload["second_factor"] == "sms":
+            otp = sandbox_otp(payload["proposal_id"], self.proposals.key)
+            stext = (f"SudoRoute code {otp}: approve {payload['total_dst']:,.2f} "
+                     f"{payload['dst_currency']} to {uni['name']}. Never share this code.")
+            sess["sms_inbox"].append({"to": s["phone_masked"] or "your sandbox phone", "proposal_id": payload["proposal_id"],
+                                      "text": stext})
+            if self.sms_out:
+                self.sms_out("student", s["id"], stext)
         self.audit.append("proposal_created", actor="agent", sim_time=self._now(), student_id=s["id"],
                           proposal_id=payload["proposal_id"], invoice_id=inv["id"], provider=provider["id"],
                           strategy=strategy, legs=len(legs), total_dst=payload["total_dst"],
                           total_src_quote=payload["total_src_quote"], payee=mask_account(payload["payee_account"]),
                           policy_allowed=checks["allowed"])
 
-        leg_txt = (f"in {len(legs)} installments ({', '.join(l['execute_on'] for l in legs)})"
-                   if len(legs) > 1 else "today")
-        reply = (f"I've prepared a payment of {payload['total_dst']:,.2f} {inv['currency']} to {uni['name']} via "
-                 f"{provider['name']}, {leg_txt}. Estimated cost {payload['total_src_quote']:,.0f} "
-                 f"{s['home_currency']}. ")
+        code_where = "from your authenticator app" if payload["second_factor"] == "totp" else "sent to your phone"
+        if timing:
+            reply = (f"{smart_note}I've prepared a smart-timing payment of {payload['total_dst']:,.2f} {inv['currency']} to "
+                     f"{uni['name']} via {provider['name']}. After you approve, I'll check the rate every day and pay as soon "
+                     f"as it reaches {timing['target_rate']:.6f} ({timing['target_improvement_pct']}% better than today), "
+                     f"or on {timing['deadline']} at the market rate so it still arrives on time. Chance the target is "
+                     f"reached: {timing['p_target_hit'] * 100:.0f}%. You'll never pay more than "
+                     f"{timing['max_cost_src']:,.0f} {s['home_currency']} — if the rate falls further, I pause and ask you. ")
+        else:
+            leg_txt = (f"in {len(legs)} installments ({', '.join(l['execute_on'] for l in legs)})"
+                       if len(legs) > 1 else "today")
+            reply = (f"{smart_note}I've prepared a payment of {payload['total_dst']:,.2f} {inv['currency']} to {uni['name']} via "
+                     f"{provider['name']}, {leg_txt}. Estimated cost {payload['total_src_quote']:,.0f} "
+                     f"{s['home_currency']}. ")
         if plan["routes"]["savings_vs_bank_src"]:
             reply += f"That's {plan['routes']['savings_vs_bank_src']:,.0f} {s['home_currency']} cheaper than a bank wire. "
+        if payload.get("ai_hold"):
+            reply += f"⚠ The independent AI auditor put this on hold: {payload['ai_hold']['reason']} You can still decide to pay. "
         if checks["allowed"] and need_guardian:
-            names = " and ".join(g["name"].split(" ")[0] for g in guardians)
+            names = " and ".join(short_name(g["name"]) for g in guardians)
             reply += (f"All compliance checks passed. Because family funds are involved, {names} must approve it "
-                      "first; after that, confirm with the one-time code sent to your phone.")
+                      f"first; after that, confirm with the one-time code {code_where}.")
         elif checks["allowed"]:
-            reply += "All compliance checks passed. Enter the one-time code sent to your phone to confirm."
+            reply += f"All compliance checks passed. Enter the one-time code {code_where} to confirm."
         else:
             reply += "Some checks need attention before this can be confirmed: " + ", ".join(checks["failed"]) + "."
         card = {"type": "proposal", "proposal": signed["payload"], "token": signed["token"], "checks": checks,
@@ -484,12 +679,44 @@ class SudoRouteAgent:
                 "route_explanation": plan["routes"]["explanation"],
                 "documents": COUNTRY_RULES.get(s["home_country"], {}).get("documents", []),
                 "status": "awaiting_guardian" if need_guardian else "awaiting_confirmation",
-                "guardians": [g["name"] for g in guardians] if need_guardian else []}
+                "guardians": [g["name"] for g in guardians] if need_guardian else [],
+                "timing": timing}
         self.proposals.proposals[payload["proposal_id"]]["card"] = {k: v for k, v in card.items() if k != "token"}
         return {"reply": reply, "cards": [card]}
 
+    def _audit_ai(self, ctx, facts: str, where: str) -> dict | None:
+        """Independent AI auditor: may only put a payment on hold for a human to look again. It cannot approve,
+        unblock, change or execute anything; without a model it simply does not run."""
+        if not self._llm():
+            return None
+        t0 = time.perf_counter()
+        a = self.llm.audit_proposal(facts)
+        if ctx is not None:
+            self._ai_step(ctx, "independent_auditor", t0, a is not None,
+                          ("HOLD — " + a["reason"]) if a and a["hold"] else ("no concerns" if a else "unavailable"))
+        if a and a["hold"]:
+            self.audit.append("ai_auditor_hold", actor="ai-auditor", sim_time=self._now(),
+                              student_id=ctx.student_id if ctx else None, where=where, reason=a["reason"])
+        return a
+
+    def _proposal_facts(self, s, inv, payload, checks, v) -> str:
+        paid_before = [t for t in self.bank.transfers.values() if t["invoice_id"] == inv["id"]]
+        return (f"Student home currency {s['home_currency']}, tuition budget {s['tuition_budget_home']:,.0f}, "
+                f"wallet {s['balances'].get(s['home_currency'], 0):,.0f} {s['home_currency']}.\n"
+                f"Invoice {inv['id']}: {inv['amount']:,.2f} {inv['currency']}, already paid {inv['paid']:,.2f}, due {inv['due'][:10]}, "
+                f"scam check {v['verdict']} ({v['score']}/100; {', '.join(r['code'] for r in v['reasons']) or 'no warnings'}).\n"
+                f"Earlier transfers for this invoice: {len(paid_before)} ({', '.join(t['status'] for t in paid_before) or 'none'}).\n"
+                f"Prepared payment: {payload['total_dst']:,.2f} {payload['dst_currency']} to the verified registry account of "
+                f"{payload['university_name']} via {payload['provider_name']}, strategy {payload['strategy']}, "
+                f"{len(payload['legs'])} leg(s), estimated cost {payload['total_src_quote']:,.0f} {payload['src_currency']}.\n"
+                f"Compliance checks: {'all passed' if checks['allowed'] else 'failed: ' + ', '.join(checks['failed'])}.")
+
+    def _h_smart_pay(self, ctx, slots, msg):
+        return self._h_pay_tuition(ctx, {**slots, "smart": True, "installments": False, "pay_now": False}, msg)
+
     # ================================================================ execution (T3)
-    def confirm(self, sid: str, proposal_id: str, token: str, otp: str, acknowledge_review: bool = False) -> dict:
+    def confirm(self, sid: str, proposal_id: str, token: str, otp: str, acknowledge_review: bool = False,
+                acknowledge_hold: bool = False) -> dict:
         sess = self.session(sid)
         ctx = Context(sid, sess["level"])
         try:
@@ -503,7 +730,20 @@ class SudoRouteAgent:
                 raise ProposalError("Your guardian declined this payment.", "declined")
             if rec["payload"].get("guardian_required") and not rec.get("guardian_approval"):
                 raise ProposalError("Waiting for your guardian to approve this payment first.", "awaiting_guardian")
-            payload = self.proposals.validate(proposal_id, token, otp)
+            if rec["payload"].get("ai_hold") and not acknowledge_hold:
+                raise ProposalError("The AI auditor put this payment on hold. Read its concern and tick the box if you "
+                                    "still want to pay.", "ai_hold")
+            app = self.totp.get(sid)
+            matched = {}
+
+            def _totp_ok(code, _app=app):
+                step = totp.verify(_app["secret"], code, _app.get("last_step"))
+                matched["step"] = step
+                return step is not None
+
+            payload = self.proposals.validate(proposal_id, token, otp, otp_check=_totp_ok if app else None)
+            if app:
+                app["last_step"] = matched["step"]  # each authenticator code works only once
         except (PermissionDenied, ProposalError) as e:
             code = getattr(e, "code", "denied")
             self.audit.append("execution_rejected", actor="security", sim_time=self._now(), student_id=sid,
@@ -525,6 +765,8 @@ class SudoRouteAgent:
                               proposal_id=proposal_id, code="policy", failed=checks["failed"])
             return {"ok": False, "code": "policy", "error": "Policy checks failed: " + ", ".join(checks["failed"]),
                     "checks": checks}
+        if payload.get("strategy") == "smart_timing":
+            return self._start_smart_mandate(sid, proposal_id, payload, inv, checks)
         try:
             txn = self.bank.transfer(student_id=sid, src_currency=payload["src_currency"],
                                      src_amount=leg["src_amount_quote"], dst_currency=payload["dst_currency"],
@@ -567,6 +809,32 @@ class SudoRouteAgent:
                             (f" The remaining {len(mandate['legs'])} installment(s) will run automatically on "
                              f"schedule within the limits you approved; you can cancel any time." if mandate else ""))}
 
+    def _start_smart_mandate(self, sid, proposal_id, payload, inv, checks) -> dict:
+        """Approved smart-timing payment: nothing moves now; the agent executes it later by itself,
+        only to the approved payee and invoice, only between the target rate and the floor, and only
+        until the deadline."""
+        t = payload["timing"]
+        self.proposals.mark(proposal_id, "executed")  # the approval is used up; no second payment from it
+        mandate = {
+            "mandate_id": self.bank.new_id("MDT"), "kind": "smart_timing", "proposal_id": proposal_id,
+            "student_id": sid, "invoice_id": payload["invoice_id"], "university_id": payload["university_id"],
+            "payee_account": payload["payee_account"], "provider_id": payload["provider_id"],
+            "src_currency": payload["src_currency"], "dst_currency": payload["dst_currency"],
+            "quoted_rate": payload["quoted_rate"], "max_slippage": payload["max_slippage"],
+            "target_rate": t["target_rate"], "floor_rate": t["floor_rate"], "deadline": t["deadline"],
+            "legs": copy.deepcopy(payload["legs"]), "reference": payload["reference"], "status": "active",
+            "executed_legs": [], "created_sim": self._now(), "invoice_verdict": payload["invoice_verdict"],
+            "total_legs": 1, "expires": t["deadline"], "checks_log": [],
+        }
+        self.mandates[mandate["mandate_id"]] = mandate
+        self.audit.append("mandate_created", actor="student-confirmed", sim_time=self._now(), student_id=sid,
+                          mandate_id=mandate["mandate_id"], proposal_id=proposal_id, kind="smart_timing",
+                          target_rate=t["target_rate"], floor_rate=t["floor_rate"], deadline=t["deadline"])
+        return {"ok": True, "transfer": None, "checks": checks, "mandate": self._public_mandate(mandate),
+                "message": (f"Approved. I'll watch the {payload['src_currency']}/{payload['dst_currency']} rate every day and pay "
+                            f"{payload['total_dst']:,.2f} {payload['dst_currency']} as soon as it reaches {t['target_rate']:.6f}, "
+                            f"or on {t['deadline']} at the market rate. Nothing has moved yet; you can cancel any time.")}
+
     def cancel_mandate(self, sid: str, mandate_id: str) -> dict:
         m = self.mandates.get(mandate_id)
         if not m or m["student_id"] != sid:
@@ -580,6 +848,11 @@ class SudoRouteAgent:
             return None
         out = {k: m[k] for k in ("mandate_id", "proposal_id", "invoice_id", "provider_id", "status",
                                  "quoted_rate", "max_slippage", "legs", "executed_legs", "total_legs", "expires")}
+        out["kind"] = m.get("kind", "installments")
+        if out["kind"] == "smart_timing":
+            out.update({k: m[k] for k in ("target_rate", "floor_rate", "deadline")})
+            out["dst_currency"], out["src_currency"] = m["dst_currency"], m["src_currency"]
+            out["last_check"] = (m.get("checks_log") or [None])[-1]
         out["payee_account"] = mask_account(m["payee_account"])
         return out
 
@@ -755,7 +1028,7 @@ class SudoRouteAgent:
         s = self._student(sid)
         if s.get("frozen"):
             return {"ok": True, "already": True, "frozen": s["frozen"]}
-        s["frozen"] = {"by": by_role, "user_id": user["id"], "name": user["name"].split(" ")[0], "at": self._now()}
+        s["frozen"] = {"by": by_role, "user_id": user["id"], "name": short_name(user["name"]), "at": self._now()}
         cancelled = []
         for pid, rec in self.proposals.proposals.items():
             if rec["payload"]["student_id"] == sid and rec["status"] in ("awaiting_guardian", "awaiting_confirmation"):
@@ -966,6 +1239,9 @@ class SudoRouteAgent:
             if today > m["expires"][:10]:
                 m["status"] = "expired"
                 continue
+            if m.get("kind") == "smart_timing":
+                events += self._run_smart(m, today)
+                continue
             for leg in m["legs"]:
                 if leg.get("done") or leg["execute_on"] > today:
                     continue
@@ -1015,6 +1291,74 @@ class SudoRouteAgent:
                 m["status"] = "completed"
         return events
 
+    def _run_smart(self, m, today: str) -> list[dict]:
+        """One daily decision of a smart-timing mandate. The agent acts on its own, inside the approval."""
+        s = self._student(m["student_id"])
+        provider = PROVIDERS[m["provider_id"]]
+        rate = self.bank.market.mid(m["src_currency"], m["dst_currency"]) * (1 - provider["fx_markup"])
+        leg = m["legs"][0]
+        reason = None
+        if rate >= m["target_rate"]:
+            reason = "target_reached"
+        elif today >= m["deadline"]:
+            if rate < m["floor_rate"]:
+                m["status"] = "paused"
+                note = (f"Smart payment paused: on the last safe day the rate ({rate:.6f}) is below the limit you "
+                        f"approved ({m['floor_rate']:.6f}). Please decide now — pay at today's rate or ask your guardian.")
+                self.session(s["id"])["notifications"].append(note)
+                m["checks_log"].append({"date": today, "rate": round(rate, 8), "decision": "paused_below_floor"})
+                return [{"type": "mandate_paused", "mandate_id": m["mandate_id"], "leg": 1, "rate": round(rate, 8),
+                         "reason": "below_floor_at_deadline"}]
+            reason = "deadline"
+        if reason is None:
+            m["checks_log"].append({"date": today, "rate": round(rate, 8), "decision": "wait"})
+            m["checks_log"] = m["checks_log"][-30:]
+            return [{"type": "smart_check", "mandate_id": m["mandate_id"], "rate": round(rate, 8),
+                     "target": m["target_rate"], "decision": "wait"}]
+        fee_src = provider["fee_usd"] * self.bank.market.units_per_usd(m["src_currency"])
+        src_amt = round(leg["dst_amount"] / rate + fee_src, 2)
+        inv = self.bank.invoices[m["invoice_id"]]
+        checks = policy.evaluate(self.bank, student=s, university_id=m["university_id"], provider_id=m["provider_id"],
+                                 invoice=inv, invoice_verdict=m["invoice_verdict"], leg_dst_amount=leg["dst_amount"],
+                                 leg_src_amount=src_amt, payee_account=m["payee_account"], disclosed_installments=1)
+        if checks["allowed"]:
+            a = self._audit_ai(None, (f"AUTOMATIC smart-timing payment about to run by itself ({reason}).\n"
+                                      f"Approved quote rate {m['quoted_rate']:.6f}, target {m['target_rate']:.6f}, floor "
+                                      f"{m['floor_rate']:.6f}, today's rate {rate:.6f}.\nInvoice {inv['id']}: "
+                                      f"{inv['amount']:,.2f} {inv['currency']}, paid {inv['paid']:,.2f}, due {inv['due'][:10]}.\n"
+                                      f"Payment {leg['dst_amount']:,.2f} {m['dst_currency']} for about {src_amt:,.0f} "
+                                      f"{m['src_currency']} to the approved registry account. Compliance checks passed."),
+                               "smart_mandate")
+            if a and a["hold"]:
+                m["status"] = "paused"
+                self.session(s["id"])["notifications"].append(
+                    f"Smart payment paused by the independent AI auditor: {a['reason']} Nothing was sent; please decide.")
+                m["checks_log"].append({"date": today, "rate": round(rate, 8), "decision": "ai_auditor_hold"})
+                return [{"type": "mandate_paused", "mandate_id": m["mandate_id"], "leg": 1, "reason": "ai_auditor_hold"}]
+        if not checks["allowed"]:
+            m["status"] = "paused"
+            self.session(s["id"])["notifications"].append(
+                f"Smart payment paused — failed checks: {', '.join(checks['failed'])}.")
+            m["checks_log"].append({"date": today, "rate": round(rate, 8), "decision": "paused_policy"})
+            return [{"type": "mandate_paused", "mandate_id": m["mandate_id"], "leg": 1, "failed": checks["failed"]}]
+        txn = self.bank.transfer(student_id=s["id"], src_currency=m["src_currency"], src_amount=src_amt,
+                                 dst_currency=m["dst_currency"], dst_amount=leg["dst_amount"], provider=provider,
+                                 university_id=m["university_id"], reference=m["reference"], invoice_id=m["invoice_id"],
+                                 proposal_id=m["proposal_id"], leg=1)
+        leg.update(done=True, src_amount_actual=src_amt, transfer_id=txn["id"], executed_on=today)
+        m["executed_legs"].append(txn["id"])
+        m["status"] = "completed"
+        m["checks_log"].append({"date": today, "rate": round(rate, 8), "decision": reason})
+        saved = round(leg["src_amount_quote"] - src_amt, 2)
+        why = ("the target rate was reached" if reason == "target_reached"
+               else "it was the last safe day to pay on time")
+        self.session(s["id"])["notifications"].append(
+            f"Smart payment sent because {why}: {leg['dst_amount']:,.2f} {m['dst_currency']} for {src_amt:,.0f} "
+            f"{m['src_currency']} ({'saved' if saved >= 0 else 'cost'} {abs(saved):,.0f} {m['src_currency']} vs. the day you approved).")
+        return [{"type": "mandate_leg_executed", "mandate_id": m["mandate_id"], "leg": 1, "transfer_id": txn["id"],
+                 "src_amount": src_amt, "dst_amount": leg["dst_amount"], "reason": reason, "rate": round(rate, 8),
+                 "saved_src": saved}]
+
     # ================================================================ state for UI
     def state(self, sid: str) -> dict:
         sess = self.session(sid)
@@ -1036,6 +1380,6 @@ class SudoRouteAgent:
         snap["rates"] = {f"{snap['home_currency']}/{snap['study_currency']}":
                          self.bank.market.mid(snap["home_currency"], snap["study_currency"])}
         snap["audit"] = self.audit.verify()
-        snap["ai"] = llm.status()
+        snap["ai"] = self.llm.status()
         snap["university_ledger"] = self.bank.university_ledger.setdefault(snap["university_id"], {}).get(snap["student_ref"], 0.0)
         return snap

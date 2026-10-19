@@ -63,7 +63,10 @@ test_model_fallback_when_first_model_unavailable (tests.test_llm.GeminiLayerTest
 test_model_never_sees_pasted_documents (tests.test_llm.GeminiLayerTests.test_model_never_sees_pasted_documents) ... ok
 test_numbers_preserved_check (tests.test_llm.GeminiLayerTests.test_numbers_preserved_check) ... ok
 test_unsafe_answer_dropped (tests.test_llm.GeminiLayerTests.test_unsafe_answer_dropped) ... ok
+test_503_on_first_model_falls_back_to_the_next (tests.test_llm.OverloadedModelTests.test_503_on_first_model_falls_back_to_the_next) ... ok
 test_works_without_any_model (tests.test_llm.RulesModeTests.test_works_without_any_model) ... ok
+test_empty_answer_falls_back_and_thinking_config_is_sent (tests.test_llm.ThinkingModelTests.test_empty_answer_falls_back_and_thinking_config_is_sent) ... ok
+test_model_that_rejects_thinking_config_is_retried_without_it (tests.test_llm.ThinkingModelTests.test_model_that_rejects_thinking_config_is_retried_without_it) ... ok
 test_cannot_touch_someone_elses_transfer (tests.test_recovery.RecoveryTests.test_cannot_touch_someone_elses_transfer) ... ok
 test_no_double_payment_while_in_transit (tests.test_recovery.RecoveryTests.test_no_double_payment_while_in_transit) ... ok
 test_only_in_transit_can_fail (tests.test_recovery.RecoveryTests.test_only_in_transit_can_fail) ... ok
@@ -136,6 +139,53 @@ test_pilot_feedback_aggregates_only (tests.test_v6.V6HttpTests.test_pilot_feedba
 test_proof_of_funds_certificate_round_trip (tests.test_v6.V6HttpTests.test_proof_of_funds_certificate_round_trip) ... ok
 test_public_ask_and_rate_limit (tests.test_v6.V6HttpTests.test_public_ask_and_rate_limit) ... ok
 test_recovery_endpoints_scoped (tests.test_v6.V6HttpTests.test_recovery_endpoints_scoped) ... ok
+test_multi_step_plan_checks_then_prepares (tests.test_v7.PlannerTests.test_multi_step_plan_checks_then_prepares) ... ok
+test_observe_and_replan (tests.test_v7.PlannerTests.test_observe_and_replan) ... ok
+test_only_one_payment_tool_and_it_runs_last (tests.test_v7.PlannerTests.test_only_one_payment_tool_and_it_runs_last) ... ok
+test_planner_can_refuse_but_needs_a_rule (tests.test_v7.PlannerTests.test_planner_can_refuse_but_needs_a_rule) ... ok
+test_planner_failure_falls_back (tests.test_v7.PlannerTests.test_planner_failure_falls_back) ... ok
+test_planner_respects_permission_mode (tests.test_v7.PlannerTests.test_planner_respects_permission_mode) ... ok
+test_rule_refusals_never_reach_planner (tests.test_v7.PlannerTests.test_rule_refusals_never_reach_planner) ... ok
+test_tool_budget_is_capped (tests.test_v7.PlannerTests.test_tool_budget_is_capped) ... ok
+test_unknown_tools_like_execute_are_dropped (tests.test_v7.PlannerTests.test_unknown_tools_like_execute_are_dropped) ... ok
+test_injected_reader_cannot_lower_a_block (tests.test_v7.ReaderTests.test_injected_reader_cannot_lower_a_block) ... ok
+test_merge_is_monotonic_for_every_flag_combination (tests.test_v7.ReaderTests.test_merge_is_monotonic_for_every_flag_combination) ... ok
+test_reader_can_raise_risk_the_rules_missed (tests.test_v7.ReaderTests.test_reader_can_raise_risk_the_rules_missed) ... ok
+test_reader_output_is_typed_and_sanitised (tests.test_v7.ReaderTests.test_reader_output_is_typed_and_sanitised) ... ok
+test_reader_sees_document_fenced_and_planner_never_does (tests.test_v7.ReaderTests.test_reader_sees_document_fenced_and_planner_never_does) ... ok
+test_stored_invoice_ai_flag_also_blocks_payment (tests.test_v7.ReaderTests.test_stored_invoice_ai_flag_also_blocks_payment) ... ok
+test_approval_moves_nothing_until_the_agent_decides (tests.test_v7.SmartTimingTests.test_approval_moves_nothing_until_the_agent_decides) ... ok
+test_executes_on_target_or_deadline_and_arrives_on_time (tests.test_v7.SmartTimingTests.test_executes_on_target_or_deadline_and_arrives_on_time) ... ok
+test_kill_switch_and_cancel_stop_it (tests.test_v7.SmartTimingTests.test_kill_switch_and_cancel_stop_it) ... ok
+test_never_pays_below_floor_at_deadline (tests.test_v7.SmartTimingTests.test_never_pays_below_floor_at_deadline) ... ok
+test_no_room_falls_back_to_pay_now (tests.test_v7.SmartTimingTests.test_no_room_falls_back_to_pay_now) ... ok
+test_proposal_is_priced_and_bounded (tests.test_v7.SmartTimingTests.test_proposal_is_priced_and_bounded) ... ok
+test_target_and_deadline_are_signed (tests.test_v7.SmartTimingTests.test_target_and_deadline_are_signed) ... ok
+test_app_code_cannot_be_reused_for_a_second_payment (tests.test_v7.TOTPTests.test_app_code_cannot_be_reused_for_a_second_payment) ... ok
+test_payment_needs_the_app_code_not_the_sms_code (tests.test_v7.TOTPTests.test_payment_needs_the_app_code_not_the_sms_code) ... ok
+test_rfc6238_vectors (tests.test_v7.TOTPTests.test_rfc6238_vectors) ... ok
+test_window_and_replay (tests.test_v7.TOTPTests.test_window_and_replay) ... ok
+test_auditor_can_pause_an_autonomous_payment (tests.test_v8.AuditorTests.test_auditor_can_pause_an_autonomous_payment) ... ok
+test_auditor_cannot_approve_or_override (tests.test_v8.AuditorTests.test_auditor_cannot_approve_or_override) ... ok
+test_hold_is_signed (tests.test_v8.AuditorTests.test_hold_is_signed) ... ok
+test_hold_pauses_until_a_human_acknowledges (tests.test_v8.AuditorTests.test_hold_pauses_until_a_human_acknowledges) ... ok
+test_no_model_no_auditor (tests.test_v8.AuditorTests.test_no_model_no_auditor) ... ok
+test_only_literal_true_holds (tests.test_v8.AuditorTests.test_only_literal_true_holds) ... ok
+test_one_click_flow_and_role_switch (tests.test_v8.JudgeHTTPTests.test_one_click_flow_and_role_switch) ... ok
+test_rate_limited_per_network (tests.test_v8.JudgeHTTPTests.test_rate_limited_per_network) ... ok
+test_regular_accounts_cannot_switch (tests.test_v8.JudgeHTTPTests.test_regular_accounts_cannot_switch) ... ok
+test_judge_world_is_rebuilt_after_restart (tests.test_v8.JudgeSandboxTests.test_judge_world_is_rebuilt_after_restart) ... ok
+test_old_judges_are_purged (tests.test_v8.JudgeSandboxTests.test_old_judges_are_purged) ... ok
+test_two_judges_are_isolated (tests.test_v8.JudgeSandboxTests.test_two_judges_are_isolated) ... ok
+test_world_view_reset_only_resets_that_world (tests.test_v8.JudgeSandboxTests.test_world_view_reset_only_resets_that_world) ... ok
+test_contact_and_newsletter (tests.test_v8.PublicFormsTests.test_contact_and_newsletter) ... ok
+test_new_pages_served (tests.test_v8.PublicFormsTests.test_new_pages_served) ... ok
+test_one_click_flow_and_role_switch (tests.test_v8.PublicFormsTests.test_one_click_flow_and_role_switch) ... ok
+test_quote_shows_service_fee (tests.test_v8.PublicFormsTests.test_quote_shows_service_fee) ... ok
+test_rate_limited_per_network (tests.test_v8.PublicFormsTests.test_rate_limited_per_network) ... ok
+test_regular_accounts_cannot_switch (tests.test_v8.PublicFormsTests.test_regular_accounts_cannot_switch) ... ok
+test_off_by_default_and_e164 (tests.test_v8.SMSTests.test_off_by_default_and_e164) ... ok
+test_sends_to_registered_number_with_rate_limit (tests.test_v8.SMSTests.test_sends_to_registered_number_with_rate_limit) ... ok
 test_audit_chain_is_persistent_and_reset_cannot_erase_it (tests.test_web.AuditSurvivesRestartAndReset.test_audit_chain_is_persistent_and_reset_cannot_erase_it) ... ok
 test_damaged_audit_file_is_reported_not_hidden (tests.test_web.AuditSurvivesRestartAndReset.test_damaged_audit_file_is_reported_not_hidden) ... ok
 test_cross_origin_post_blocked (tests.test_web.Authentication.test_cross_origin_post_blocked) ... ok
@@ -179,6 +229,6 @@ test_two_party_approval_flow (tests.test_web.RolesAndApprovals.test_two_party_ap
 test_reset_requires_reauthentication (tests.test_web.SandboxResetNeedsPassword.test_reset_requires_reauthentication) ... ok
 
 ----------------------------------------------------------------------
-Ran 179 tests in 36.197s
+Ran 229 tests in 39.160s
 
 OK

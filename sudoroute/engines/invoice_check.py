@@ -27,6 +27,11 @@ WEIGHTS = {
     "prompt_injection": 30,
     "hidden_content": 10,
     "reference_mismatch": 10,
+    # Added only by the quarantined AI reader, and only when the rules did not already catch the same thing.
+    "ai_bank_change": 30,
+    "ai_unusual_method": 30,
+    "ai_instructions": 30,
+    "ai_pressure": 10,
 }
 
 # Pressure, threat and payment-method cues in English, Malay, Bangla and Chinese. Non-Latin
@@ -247,3 +252,66 @@ def parse_pasted_invoice(text: str) -> dict:
         "currency": ccy, "bank_account": acct.group(1) if acct else "",
         "payment_methods": methods, "subject": "", "text": text,
     }
+
+
+def apply_ai_reading(result: dict, reading: dict | None, invoice: dict | None = None) -> dict:
+    """Merge the quarantined AI reader's findings into a rule verdict — MONOTONICALLY.
+
+    The AI can add risk points for things the rules missed; it can never remove a rule's points or lower the
+    verdict. A prompt-injected reader can therefore at worst send a genuine invoice to REVIEW (a phone call to
+    the university), never wave a scam through.
+    """
+    out = dict(result)
+    if not reading:
+        out["ai_reader"] = {"status": "off"}
+        return out
+    have = {r["code"] for r in result["reasons"]}
+    reasons = list(result["reasons"])
+    added = []
+
+    def add(code, message):
+        if code not in have:
+            r = {"code": code, "points": WEIGHTS[code], "message": message, "source": "ai"}
+            reasons.append(r)
+            added.append(code)
+
+    uni = match_university((invoice or {}).get("university_name", "") or (reading.get("institution") or ""))
+    acct = (reading.get("bank_account") or "").replace(" ", "")
+    if "bank_mismatch" not in have and (reading["asks_new_bank_details"] or
+                                        (uni and acct and acct != uni["beneficiary"]["account"].replace(" ", ""))):
+        add("ai_bank_change", "AI reader: the message asks you to pay new or different bank details.")
+    if reading["asks_crypto_or_giftcard"] and "unusual_method" not in have:
+        add("ai_unusual_method", "AI reader: the message asks for crypto, gift cards, cash or a personal account.")
+    if reading["instructions_to_ai"] and "prompt_injection" not in have:
+        add("ai_instructions", "AI reader: the message contains instructions aimed at an AI assistant.")
+    if reading["urgency_or_threat"] and not ({"urgency", "threat"} & have):
+        add("ai_pressure", "AI reader: the message pressures you with a short deadline or threats.")
+    score = min(100, sum(r["points"] for r in reasons))
+    score = max(score, result["score"])  # monotonic by construction
+    verdict = "BLOCK" if score >= config.RISK_BLOCK else "REVIEW" if score >= config.RISK_REVIEW else "SAFE"
+    order = ["SAFE", "REVIEW", "BLOCK"]
+    if order.index(verdict) < order.index(result["verdict"]):
+        verdict = result["verdict"]
+    agrees = not added and (bool(reading["signals"]) == (result["verdict"] != "SAFE"))
+    out.update(score=score, verdict=verdict, reasons=reasons)
+    if verdict != result["verdict"]:
+        out["advice"] = verify_advice(verdict)
+    out["ai_reader"] = {"status": "ok", "fields": {k: reading[k] for k in ("sender_email", "institution", "amount",
+                                                                           "currency", "due_date")},
+                        "bank_account": mask_account(reading["bank_account"]) if reading.get("bank_account") else None,
+                        "flags": {k: reading[k] for k in ("asks_new_bank_details", "asks_crypto_or_giftcard",
+                                                          "urgency_or_threat", "instructions_to_ai")},
+                        "signals": reading["signals"], "added": added, "rule_score": result["score"],
+                        "agrees": agrees}
+    return out
+
+
+def verify_advice(verdict: str) -> str:
+    return {
+        "SAFE": "This invoice matches the verified university record. SudoRoute will still pay only to the "
+                "registry account, never to details typed on the invoice.",
+        "REVIEW": "Some details are unusual. Confirm with the university through its official website or phone "
+                  "number before paying.",
+        "BLOCK": "Do not pay. This has the hallmarks of a tuition scam. Report it to your university's finance "
+                 "office using contact details from the official website — never the ones in this message.",
+    }[verdict]

@@ -22,13 +22,24 @@
       ph: "বাংলা, English বা 中文-তে প্রশ্ন করুন…", send: "পাঠান", ai: "Gemini লিখেছে · তথ্য যাচাই করা", rules: "SudoRoute", open: "অনুমোদনের জন্য পেমেন্ট খুলুন →", busy: "ভাবছি…", err: "দুঃখিত, হয়নি। আবার চেষ্টা করুন।" },
   };
   const L = () => T[lang()] || T.en;
+  // An expressive little AI face: it blinks, looks at you, smiles on hover, thinks while answering, beams when done.
+  const FACE = '<svg class="aiface" viewBox="0 0 48 48" aria-hidden="true">' +
+    '<defs><linearGradient id="aifg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5eead4"/><stop offset="1" stop-color="#0f766e"/></linearGradient></defs>' +
+    '<line x1="24" y1="7" x2="24" y2="2.5" stroke="#0b5e57" stroke-width="2.2" stroke-linecap="round"/><circle class="af-bulb" cx="24" cy="2.6" r="2.4" fill="#fbbf24"/>' +
+    '<rect x="5" y="7" width="38" height="36" rx="14" fill="url(#aifg)"/>' +
+    '<rect x="9.5" y="13" width="29" height="22" rx="10" fill="#04211e"/>' +
+    '<g class="af-eyes"><ellipse class="af-eye" cx="18" cy="23" rx="3" ry="3.6" fill="#99f6e4"/><ellipse class="af-eye" cx="30" cy="23" rx="3" ry="3.6" fill="#99f6e4"/>' +
+    '<path class="af-happy" d="M15 23.5q3-4 6 0M27 23.5q3-4 6 0" fill="none" stroke="#99f6e4" stroke-width="2.4" stroke-linecap="round"/></g>' +
+    '<path class="af-mouth" d="M19.5 29.5q4.5 3.6 9 0" fill="none" stroke="#fbbf24" stroke-width="2.2" stroke-linecap="round"/>' +
+    '<g class="af-dots" fill="#fbbf24"><circle cx="19" cy="30" r="1.4"/><circle cx="24" cy="30" r="1.4"/><circle cx="29" cy="30" r="1.4"/></g>' +
+    '<circle class="af-cheek" cx="12.5" cy="29" r="2" fill="#fb7185" opacity=".55"/><circle class="af-cheek" cx="35.5" cy="29" r="2" fill="#fb7185" opacity=".55"/></svg>';
   const SPARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>';
 
   const root = document.createElement("div");
   root.className = "aichat"; root.dataset.mode = mode;
-  root.innerHTML = `<button type="button" class="aifab" aria-expanded="false" aria-controls="aipanel" aria-label="Open SudoRoute AI">${SPARK}<span class="aifab-l">AI</span></button>
+  root.innerHTML = `<button type="button" class="aifab" aria-expanded="false" aria-controls="aipanel" aria-label="Open SudoRoute AI">${FACE}<span class="aifab-l">AI</span></button>
     <section class="aipanel" id="aipanel" role="dialog" aria-label="SudoRoute AI" hidden>
-      <header><span class="aiicon">${SPARK}</span><div><b class="ai-title"></b><small class="ai-sub"></small></div><button type="button" class="aiclose" aria-label="Close">×</button></header>
+      <header><span class="aiicon">${FACE}</span><div><b class="ai-title"></b><small class="ai-sub"></small></div><button type="button" class="aiclose" aria-label="Close">×</button></header>
       <div class="aibody" aria-live="polite"></div>
       <div class="aichips"></div>
       <form class="aiform"><textarea rows="1" maxlength="800" class="aiinput"></textarea><button type="submit" class="btn primary sm aisend"></button></form>
@@ -71,6 +82,7 @@
     if (panel.hidden) open(true);
     add("me", `<div class="bubble">${esc(text)}</div>`);
     const wait = add("bot", `<div class="bubble"><span class="typing"><i></i><i></i><i></i></span><span class="sr-only">${esc(L().busy)}</span></div>`);
+    root.classList.remove("ai-happy", "ai-sad"); root.classList.add("ai-thinking");
     let r;
     try {
       if (mode === "student") r = await api("/api/chat", { message: text, lang: lang() });
@@ -78,10 +90,17 @@
       else r = await api("/api/public/ask", { question: text, lang: lang() });
     } catch (e) { r = { ok: false, error: L().err }; }
     wait.remove();
-    if (!r || r.ok === false) { add("bot", `<div class="bubble">${esc((r && r.error) || L().err)}</div>`); return; }
+    root.classList.remove("ai-thinking");
+    const mood = m => { root.classList.add(m); clearTimeout(root._mood); root._mood = setTimeout(() => root.classList.remove(m), 2600); };
+    if (!r || r.ok === false) { mood("ai-sad"); add("bot", `<div class="bubble">${esc((r && r.error) || L().err)}</div>`); return; }
+    mood("ai-happy");
     const reply = mode === "student" ? r.reply : r.text;
     const src = mode === "student" ? r.reply_source : r.source;
     const d = add("bot", `<div class="bubble">${md(reply)}</div>${badge(src)}`);
+    if (mode === "student" && r.plan && r.plan.length) {
+      const steps = r.plan.flatMap(p => p.steps).map(x => esc(String(x).replace(/_/g, " ")));
+      if (steps.length) d.insertAdjacentHTML("beforeend", `<div class="aiplanline"><span class="aitag">✦ AI plan</span> ${steps.join(" → ")}</div>`);
+    }
     if (mode === "student") {
       (r.cards || []).forEach(c => {
         if (c.type === "proposal") { d.insertAdjacentHTML("beforeend", `<a class="btn sm primary aiopen" href="#payments">${esc(L().open)}</a>`); return; }

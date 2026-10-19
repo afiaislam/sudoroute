@@ -4,7 +4,7 @@
 // is "texted". "Use this code" fills the matching code box, wherever it is on the page.
 const Phone = (() => {
   const { $, esc } = TS;
-  let who = "student", key = "", items = [], seen = new Set(), number = "";
+  let who = "student", key = "", items = [], seen = new Set(), number = "", quiet = new Set();
   const idOf = m => `${m.proposal_id}`;
   const codeOf = m => (String(m.text).match(/\b(\d{6})\b/) || [])[1] || "";
   const reduce = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -35,7 +35,7 @@ const Phone = (() => {
 
   function badge() {
     const b = $("#phonebtn .pbadge"); if (!b) return;
-    const n = items.filter(m => !seen.has(idOf(m))).length;
+    const n = items.filter(m => !seen.has(idOf(m)) && !quiet.has(idOf(m))).length;
     b.hidden = !n; b.textContent = n;
   }
 
@@ -43,15 +43,17 @@ const Phone = (() => {
     const box = $("#phonepanel .plist"); if (!box) return;
     box.innerHTML = items.length ? items.slice().reverse().map(m => {
       const c = codeOf(m);
-      return `<div class="pmsg"><div class="pfrom">SudoRoute <small>to ${esc(m.to)}</small></div><div>${esc(m.text).replace(/(\d{6})/, "<b>$1</b>")}</div>${c ? `<button type="button" class="btn sm primary" data-phone-use="${c}" data-pid="${esc(m.proposal_id)}">Use this code</button>` : ""}</div>`;
+      return `<div class="pmsg"><div class="pfrom">SudoRoute <small>to ${esc(m.to)}</small></div><div>${esc(m.text).replace(/(\d{6})/, "<b>$1</b>")}</div>${!c ? "" : quiet.has(idOf(m)) ? `<small class="pwait">Usable after your guardian approves.</small>` : `<button type="button" class="btn sm primary" data-phone-use="${c}" data-pid="${esc(m.proposal_id)}">Use this code</button>`}</div>`;
     }).join("") : `<p class="empty">No messages yet. When a payment needs your approval, its one-time code arrives here.</p>`;
   }
 
-  // Called after every state refresh with the latest inbox.
-  function sync(inbox) {
+  // Called after every state refresh with the latest inbox. `held` = proposal ids whose code can't be
+  // used yet (still waiting for the guardian): their message stays quiet until it becomes usable.
+  function sync(inbox, held) {
     items = (inbox || []).slice();
+    quiet = new Set([...(held || [])].map(String));
     list();
-    const fresh = items.filter(m => !seen.has(idOf(m)));
+    const fresh = items.filter(m => !seen.has(idOf(m)) && !quiet.has(idOf(m)));
     badge();
     if (fresh.length) notify(fresh[fresh.length - 1]);
   }
@@ -92,5 +94,13 @@ const Phone = (() => {
     tick();
   }
 
-  return { mount, sync, use };
+  // Use the newest usable code (judge tour: one click instead of copy and paste).
+  function useLatest() {
+    const m = items.slice().reverse().find(x => codeOf(x) && !quiet.has(idOf(x)));
+    if (!m) { TS.toast("No code is waiting — ask the agent to prepare a payment first."); return false; }
+    const t = document.getElementById("phonetoast"); if (t) t.remove();
+    use(m.proposal_id, codeOf(m)); return true;
+  }
+
+  return { mount, sync, use, useLatest };
 })();

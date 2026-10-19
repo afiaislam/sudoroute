@@ -20,38 +20,54 @@
 <body class="home">
 <a class="skip" href="#main" data-i18n="skip">Skip to content</a>
 
+<div class="announce" id="announce" role="region" aria-label="Announcement">
+  <div class="wrap">
+    <span class="an-dot" aria-hidden="true"></span>
+    <p><b data-i18n="an.b">Shenzhen FinTechathon 2026 · Topic C</b> <span data-i18n="an.t">Sandbox demo — no real money moves.</span></p>
+    <a href="/register?role=student" data-auth class="an-cta"><span data-i18n="an.cta2">Get started</span> <i aria-hidden="true">→</i></a>
+    <button type="button" class="an-x" data-announce-close aria-label="Dismiss announcement">×</button>
+  </div>
+</div>
 <header class="topnav" id="topnav">
   <div class="wrap">
-    <a class="brand" href="/" aria-label="SudoRoute home"><span data-logo></span><b>SudoRoute</b></a>
+    <a class="brand" href="/" aria-label="SudoRoute home"><span data-logo></span><b class="wordmark"><span class="w1">Sudo</span><span class="w2">Route</span></b></a>
     <nav id="mainnav" aria-label="Main">
       <span class="hl" aria-hidden="true"></span>
       <div class="dd">
         <button type="button" class="navlink" aria-expanded="false" aria-controls="dd-product"><span data-i18n="nav.product">Product</span><i></i></button>
         <div class="ddmenu" id="dd-product">
-          <a href="#how"><b data-i18n="nav.how">How it works</b><span data-i18n="nav.howd">Five checks before any money moves</span></a>
-          <a href="#scams"><b data-i18n="nav.scams">Scam check</b><span data-i18n="nav.scamsd">Fake invoices caught in four languages</span></a>
-          <a href="#families"><b data-i18n="nav.families">For families</b><span data-i18n="nav.familiesd">Guardians approve with their own code</span></a>
-          <a href="#demo"><b data-i18n="nav.demo">Watch the demo</b><span data-i18n="nav.demod">Four minutes, the whole flow</span></a>
-          <a href="#app"><b data-i18n="nav.app">Inside the app</b><span data-i18n="nav.appd">Real screens from the student portal</span></a>
+          <a href="/#how"><b data-i18n="nav.how">How it works</b><span data-i18n="nav.howd">Five checks before any money moves</span></a>
+          <a href="/#features"><b data-i18n="nav.smart">Smart timing &amp; AI agent</b><span data-i18n="nav.smartd">Pays at a better rate, never late</span></a>
+          <a href="/#scams"><b data-i18n="nav.scams">Scam check</b><span data-i18n="nav.scamsd">Fake invoices caught in four languages</span></a>
+          <a href="/#families"><b data-i18n="nav.families">For families</b><span data-i18n="nav.familiesd">Guardians approve with their own code</span></a>
+          <a href="/#demo"><b data-i18n="nav.demo">Watch the demo</b><span data-i18n="nav.demod">Four minutes, the whole flow</span></a>
         </div>
       </div>
       <div class="dd">
-        <button type="button" class="navlink" aria-expanded="false" aria-controls="dd-proof"><span data-i18n="nav.proof">Proof</span><i></i></button>
+        <button type="button" class="navlink" data-nav="/security-lab /accuracy /verify" aria-expanded="false" aria-controls="dd-proof"><span data-i18n="nav.proof">Proof</span><i></i></button>
         <div class="ddmenu" id="dd-proof">
-          <a href="/security-lab"><b data-i18n="proof.lab">Security Lab</b><span data-i18n="nav.labd">Run 47 live attacks yourself</span></a>
+          <a href="/security-lab"><b data-i18n="proof.lab">Security Lab</b><span data-i18n="nav.labd">Run 57 live attacks yourself</span></a>
           <a href="/accuracy"><b data-i18n="proof.acc">Scam-shield accuracy</b><span data-i18n="nav.accd">Every test invoice and every result</span></a>
           <a href="/accuracy#baselines"><b data-i18n="proof.base">Compared with today</b><span data-i18n="nav.based">SudoRoute vs bank wire vs a basic AI assistant</span></a>
           <a href="/verify"><b data-i18n="proof.ver">Verify a certificate</b><span data-i18n="nav.verd">Check a payment certificate's signature</span></a>
         </div>
       </div>
-      <a class="navlink" href="#anywhere" data-i18n="nav.anywhere">Universities</a>
-      <a class="navlink" href="#faq" data-i18n="nav.faq">Questions</a>
+      <a class="navlink" href="/pricing" data-nav="/pricing" data-i18n="nav.pricing">Pricing</a>
+      <div class="dd">
+        <button type="button" class="navlink" data-nav="/help" aria-expanded="false" aria-controls="dd-help"><span data-i18n="nav.help">Help</span><i></i></button>
+        <div class="ddmenu" id="dd-help">
+          <a href="/help"><b data-i18n="nav.hc">Help center</b><span data-i18n="nav.hcd">Guides for students, families and judges</span></a>
+          <a href="/help#faq"><b data-i18n="nav.faq">Questions</b><span data-i18n="nav.faqd">The short answers</span></a>
+          <a href="/contact?topic=feedback"><b data-i18n="nav.fb">Send feedback</b><span data-i18n="nav.fbd">Tell us what to improve</span></a>
+        </div>
+      </div>
+      <a class="navlink" href="/contact" data-nav="/contact" data-i18n="nav.contact">Contact</a>
     </nav>
     <div class="right">
       <span data-lang-picker></span>
       <button class="iconbtn" data-theme-toggle type="button"></button>
       <a class="btn quiet signin" href="/login" data-i18n="cta.signin">Sign in</a>
-      <a class="btn accent" href="/register" data-i18n="cta.start">Get started</a>
+      <a class="btn accent" href="/register" data-auth data-i18n="cta.start">Get started</a>
       <button class="iconbtn menubtn" id="menubtn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mainnav">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
@@ -69,14 +85,14 @@
       <h1 data-i18n="hero.title4">Pay tuition abroad. Safely, cheaply, on time.</h1>
       <p class="lead" data-i18n="hero.lead4">SudoRoute is an AI agent that pays your university for you. It checks the invoice for scams, finds the cheapest licensed way to send the money, and waits for you and your family to approve before anything moves.</p>
       <div class="ctas">
-        <a class="btn accent lg" href="/register?role=student" data-i18n="hero.student4">Create a student account</a>
+        <a class="btn accent lg" href="/register?role=student" data-judge data-i18n="hero.judge">Try it now — 1 click, no sign-up</a>
         <a class="btn ghost lg" href="#demo" data-i18n="hero.demo">▶ Watch the 4-minute demo</a>
       </div>
-      <p class="hero-sub"><span data-i18n="hero.parent">Paying for a student?</span> <a href="/register?role=guardian" data-i18n="hero.parentlink">Create a guardian account</a></p>
+      <p class="hero-sub"><span data-i18n="hero.judgesub">Gives you a private sandbox with a student and a parent.</span> <a href="/register?role=student" data-i18n="hero.student4">Create a student account</a></p>
       <ul class="hero-facts">
-        <li><b>10</b><span data-i18n="hero.f1">checks before every payment</span></li>
-        <li><b>2</b><span data-i18n="hero.f2">approvals when family money is used</span></li>
-        <li><b>40/40</b><span data-i18n="hero.f3">attacks stopped in our live lab</span></li>
+        <li><b data-roll>10</b><span data-i18n="hero.f1">checks before every payment</span></li>
+        <li><b data-roll>2</b><span data-i18n="hero.f2">approvals when family money is used</span></li>
+        <li><b data-roll>57/57</b><span data-i18n="hero.f3">attacks stopped in our live lab</span></li>
       </ul>
     </div>
 
@@ -100,10 +116,33 @@
 
 <section class="statband" aria-label="SudoRoute in numbers">
   <div class="wrap statgrid" data-stagger>
-    <div><b class="num">51/51</b><span data-i18n="stat.lab">Security Lab checks passed</span></div>
-    <div><b class="num">0 / 42</b><span data-i18n="stat.fp">genuine invoices wrongly blocked</span></div>
-    <div><b class="num">16</b><span data-i18n="stat.countries">study countries supported</span></div>
-    <div><b class="num">3</b><span data-i18n="stat.langs">languages: English, 中文, বাংলা</span></div>
+    <div><b class="num" data-roll>63/63</b><span data-i18n="stat.lab">Security Lab checks passed</span></div>
+    <div><b class="num" data-roll>0 / 42</b><span data-i18n="stat.fp">genuine invoices wrongly blocked</span></div>
+    <div><b class="num" data-roll>16</b><span data-i18n="stat.countries">study countries supported</span></div>
+    <div><b class="num" data-roll>3</b><span data-i18n="stat.langs">languages: English, 中文, বাংলা</span></div>
+  </div>
+</section>
+
+<section class="smart3" aria-label="What SudoRoute does better">
+  <div class="wrap s3grid">
+    <article class="s3item" data-s3>
+      <span class="kick" data-i18n="s3.k1">check</span>
+      <h2 class="big"><span data-i18n="s3.w1">smarter</span></h2>
+      <p data-i18n="s3.p1">Every invoice is compared with the university's verified record — sender, bank account, amount, wording — in English, Malay, Bangla and Chinese.</p>
+      <div class="s3num"><b data-roll>0</b><small data-i18n="s3.n1">scam invoices paid in our 84-invoice benchmark (a plain bank wire paid 42)</small></div>
+    </article>
+    <article class="s3item" data-s3>
+      <span class="kick" data-i18n="s3.k2">pay</span>
+      <h2 class="big"><span data-i18n="s3.w2">cheaper</span></h2>
+      <p data-i18n="s3.p2">Licensed channels only, ranked by landed cost — hidden exchange-rate markup, fees and the risk of arriving late. Or let the agent wait for a better rate, never past the deadline.</p>
+      <div class="s3num"><b data-roll>1.8%</b><small data-i18n="s3.n2">cheaper than a bank wire across 160 priced payments</small></div>
+    </article>
+    <article class="s3item" data-s3>
+      <span class="kick" data-i18n="s3.k3">approve</span>
+      <h2 class="big"><span data-i18n="s3.w3">safer</span></h2>
+      <p data-i18n="s3.p3">The AI proposes, code disposes, humans execute: nothing moves without the student's code — and the parent's, when family money is used.</p>
+      <div class="s3num"><b data-roll>57/57</b><small data-i18n="s3.n3">attacks stopped, including a deliberately compromised AI model</small></div>
+    </article>
   </div>
 </section>
 
@@ -188,7 +227,7 @@
   <div class="wrap">
     <div class="sechead">
       <h2 data-station data-i18n="demo.title">Watch it work, start to finish</h2>
-      <p class="intro" data-reveal data-i18n="demo.intro">A 4-minute screen recording of the real app: a student signs up and meets SudoRoute AI, her father joins, a scam is blocked, the payment is approved by both with one-time codes, arrives short and is reconciled, becomes a certificate anchored on Bitcoin — and then we attack it.</p>
+      <p class="intro" data-reveal data-i18n="demo.intro">A 4-minute screen recording of the real app: a student and his mother sign up and sign in, a scam is blocked, the payment is approved by both with one-time codes, arrives on time and becomes a certificate (with PDF) anchored on Bitcoin; then smart timing, the one-click judge mode — and we attack it.</p>
     </div>
     <div class="demogrid" data-reveal>
       <div class="player">
@@ -201,19 +240,20 @@
       <div class="chapters" aria-label="Chapters">
         <b data-i18n="demo.chapters">Chapters</b>
           <button type="button" data-t="0.0"><span>0:00</span>Welcome</button>
-          <button type="button" data-t="18.0"><span>0:18</span>Sign up</button>
-          <button type="button" data-t="32.0"><span>0:32</span>Dashboard</button>
-          <button type="button" data-t="37.5"><span>0:37</span>SudoRoute AI</button>
-          <button type="button" data-t="53.0"><span>0:53</span>Guardian joins</button>
-          <button type="button" data-t="71.5"><span>1:11</span>Scam check</button>
-          <button type="button" data-t="88.0"><span>1:28</span>Pay tuition</button>
-          <button type="button" data-t="116.5"><span>1:56</span>Guardian approves</button>
-          <button type="button" data-t="133.0"><span>2:13</span>Student confirms</button>
-          <button type="button" data-t="143.5"><span>2:23</span>When a transfer goes wrong</button>
-          <button type="button" data-t="167.0"><span>2:47</span>Certificate</button>
-          <button type="button" data-t="180.5"><span>3:00</span>On-chain proof</button>
-          <button type="button" data-t="193.5"><span>3:13</span>Security Lab</button>
-          <button type="button" data-t="222.0"><span>3:42</span>Wrap-up</button>
+          <button type="button" data-t="19.3"><span>0:19</span>Student sign-up</button>
+          <button type="button" data-t="27.0"><span>0:27</span>Dashboard</button>
+          <button type="button" data-t="38.7"><span>0:38</span>Guardian sign-up</button>
+          <button type="button" data-t="50.5"><span>0:50</span>Student login</button>
+          <button type="button" data-t="56.9"><span>0:56</span>Scam check</button>
+          <button type="button" data-t="66.3"><span>1:06</span>Pay tuition</button>
+          <button type="button" data-t="83.1"><span>1:23</span>Guardian login</button>
+          <button type="button" data-t="103.2"><span>1:43</span>Student confirms</button>
+          <button type="button" data-t="131.2"><span>2:11</span>Certificate</button>
+          <button type="button" data-t="150.6"><span>2:30</span>On-chain proof</button>
+          <button type="button" data-t="170.3"><span>2:50</span>Smart timing</button>
+          <button type="button" data-t="200.7"><span>3:20</span>Judge mode</button>
+          <button type="button" data-t="227.1"><span>3:47</span>Security Lab</button>
+          <button type="button" data-t="245.4"><span>4:05</span>Wrap-up</button>
       </div>
     </div>
   </div>
@@ -262,6 +302,9 @@
       <div><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/></svg></span><h3 data-i18n="feat.f7">SudoRoute AI on every page</h3><p data-i18n="feat.f7d">Students, parents and visitors can ask anything. It writes your money brief and drafts e-mails to the university — and every number is checked before you see it.</p></div>
       <div><span class="ic"><svg viewBox="0 0 24 24"><path d="M4 7h16v12H4z"/><path d="M8 7V5h8v2M9 13l2 2 4-4"/></svg></span><h3 data-i18n="feat.f8">Proof of funds</h3><p data-i18n="feat.f8d">Show a visa office or landlord that you hold at least an amount — signed, checkable, and without revealing your balance or a bank statement.</p></div>
       <div><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></span><h3 data-i18n="feat.f9">When a transfer goes wrong</h3><p data-i18n="feat.f9d">If a bank returns the money or takes a fee on the way, SudoRoute explains why and pays only the shortfall — the university is never paid twice.</p></div>
+      <div><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></svg></span><h3 data-i18n="feat.f10">Pay at the best rate</h3><p data-i18n="feat.f10d">Approve once. The agent watches the exchange rate every day and pays by itself when it reaches your target — or on the last safe day, so it is never late. It never pays below the floor you signed.</p></div>
+      <div><span class="ic"><svg viewBox="0 0 24 24"><path d="M4 6h6v6H4zM14 12h6v6h-6z"/><path d="M10 9h4v6"/></svg></span><h3 data-i18n="feat.f11">An AI that plans, inside fences</h3><p data-i18n="feat.f11d">Gemini plans multi-step tasks — check the invoice, compare channels, prepare the payment — from a fixed list of tools. It can prepare, never pay; a second, quarantined AI reads suspicious e-mails and can only raise the alarm.</p></div>
+      <div><span class="ic"><svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M10 7h4M10 12h4"/></svg></span><h3 data-i18n="feat.f12">Authenticator app</h3><p data-i18n="feat.f12d">Link Google or Microsoft Authenticator: payment codes then exist only on your phone — not in text messages, and never visible to the AI.</p></div>
     </div>
   </div>
 </section>
@@ -273,7 +316,7 @@
       <p class="intro" data-reveal data-i18n="proof.intro">Three things you can run yourself, right now, without an account.</p>
     </div>
     <div class="proofs" data-stagger>
-      <a class="proofcard" href="/security-lab"><b class="num">47 attacks</b><h3 data-i18n="proof.lab">Security Lab</h3><p data-i18n="proof.labd">Fire prompt injection in four languages, payment tampering, replay, forged approvals and broken access control at a live copy of SudoRoute, and watch each one get stopped.</p><span class="go" data-i18n="proof.labgo">Run the attacks</span></a>
+      <a class="proofcard" href="/security-lab"><b class="num">57 attacks</b><h3 data-i18n="proof.lab">Security Lab</h3><p data-i18n="proof.labd">Fire prompt injection in four languages, payment tampering, replay, forged approvals and broken access control at a live copy of SudoRoute, and watch each one get stopped.</p><span class="go" data-i18n="proof.labgo">Run the attacks</span></a>
       <a class="proofcard" href="/accuracy"><b class="num">0 / 42</b><h3 data-i18n="proof.acc">Scam-shield accuracy</h3><p data-i18n="proof.accd">Genuine invoices wrongly blocked on our multilingual test set, with every scam flagged. Every sample and every miss is published.</p><span class="go" data-i18n="proof.accgo">See all 84 results</span></a>
       <a class="proofcard" href="/verify"><b class="num">Ed25519</b><h3 data-i18n="proof.ver">Verify a certificate</h3><p data-i18n="proof.verd">Paste a SudoRoute payment certificate and check its digital signature — and its on-chain anchor on Bitcoin. Change one digit and it fails.</p><span class="go" data-i18n="proof.vergo">Open the checker</span></a>
     </div>
@@ -285,7 +328,7 @@
       <div><b data-i18n="sec.m5">Ten checks per payment</b><span data-i18n="sec.m5d">Limits, sanctions screening, licensed channels, country rules, overpayment and anti-money-laundering patterns, run again at the moment of payment.</span></div>
       <div><b data-i18n="sec.m6">Kill switch</b><span data-i18n="sec.m6d">One press cancels everything pending and stops scheduled instalments. Releasing it needs a password.</span></div>
       <div><b data-i18n="sec.m7">Tamper-evident log</b><span data-i18n="sec.m7d">Each action is chained to the one before with SHA-256, so an edited or deleted record is detected.</span></div>
-      <div><b data-i18n="sec.m8">Bounded AI</b><span data-i18n="sec.m8d">The language model writes replies, but cannot see pasted e-mails, call tools or change a number. Altered figures are discarded.</span></div>
+      <div><b data-i18n="sec.m8">Bounded AI</b><span data-i18n="sec.m8d">The AI plans with a fixed list of tools that has no “pay” tool. Pasted e-mails go only to a separate AI with no tools, which can raise a warning but never clear one. Altered figures are discarded.</span></div>
     </div>
   </div>
 </section>
@@ -298,7 +341,7 @@
     </div>
     <div>
       <details data-reveal><summary data-i18n="faq.q1">Is any real money moved?</summary><p data-i18n="faq.a1">No. This is a sandbox built for the competition. Universities, banks and balances are simulated; exchange rates are real when the server can reach the live feed, and every screen says whether they are LIVE or a dated REFERENCE snapshot.</p></details>
-      <details data-reveal><summary data-i18n="faq.q2">Can the AI pay someone by itself?</summary><p data-i18n="faq.a2">No. It can prepare a signed proposal. Money moves only through a separate confirmation step that needs your one-time code, and your guardian's when they are linked. Instructions inside invoices or e-mails are never followed.</p></details>
+      <details data-reveal><summary data-i18n="faq.q2">Can the AI pay someone by itself?</summary><p data-i18n="faq.a2">Not without you. It can only prepare a signed proposal; money moves after your one-time code, and your guardian's when they are linked. With smart timing you approve once and the agent picks the day — but only for that exact payee, amount, price floor and deadline, and you can cancel any time. Instructions inside invoices or e-mails are never followed.</p></details>
       <details data-reveal><summary data-i18n="faq.q6">My university isn't in the list. Can I still use SudoRoute?</summary><p data-i18n="faq.a6">Yes. Type its name when you sign up. It is added as "waiting for verification": the assistant can check invoices for scams straight away, and payments open once the university's official bank account has been confirmed with the university itself.</p></details>
       <details data-reveal><summary data-i18n="faq.q3">Why was a cheaper option excluded?</summary><p data-i18n="faq.a3">Some channels are illegal for tuition (such as hundi) or not allowed by your home country's rules. SudoRoute shows them so you can see the price difference, explains why they were excluded, and never uses them.</p></details>
       <details data-reveal><summary data-i18n="faq.q4">What does my guardian see?</summary><p data-i18n="faq.a4">Linked guardians see your invoices, payments and balances, approve payments and can freeze them. They never see your password, codes or chat with the assistant, and phone numbers are masked.</p></details>
@@ -320,24 +363,41 @@
 </section>
 </main>
 
-<footer class="footer4">
-  <div class="wrap fcols">
+<footer class="footer4 footer9">
+  <div class="fband"><div class="wrap ftop">
     <div class="fbrand">
-      <a class="brand" href="/" aria-label="SudoRoute home"><span data-logo></span><b>SudoRoute</b></a>
+      <a class="brand" href="/" aria-label="SudoRoute home"><span data-logo></span><b class="wordmark"><span class="w1">Sudo</span><span class="w2">Route</span></b></a>
       <p data-i18n="foot.about">An AI agent that pays international students' tuition — only to verified universities, only after the student and family approve.</p>
+      <div class="fbadges"><span>🔒 <b>57/57</b> <span data-i18n="foot.b1">attacks stopped</span></span><span>⛓ <span data-i18n="foot.b2">Bitcoin-anchored certificates</span></span></div>
     </div>
-    <div><b data-i18n="nav.product">Product</b><a href="#how" data-i18n="nav.how">How it works</a><a href="#scams" data-i18n="nav.scams">Scam check</a><a href="#families" data-i18n="nav.families">For families</a><a href="#app" data-i18n="nav.app">Inside the app</a></div>
-    <div><b data-i18n="nav.proof">Proof</b><a href="/security-lab" data-i18n="proof.lab">Security Lab</a><a href="/accuracy" data-i18n="proof.acc">Scam-shield accuracy</a><a href="/verify" data-i18n="proof.ver">Verify a certificate</a></div>
+    <form class="newsletter" data-newsletter novalidate>
+      <b data-i18n="nl.title">Tuition tips, once a month</b>
+      <p data-i18n="nl.text">Exchange-rate timing, scam alerts and deadlines for international students. No spam — unsubscribe any time.</p>
+      <div class="nlrow"><label class="sr" for="nl-email">E-mail</label><input class="input" id="nl-email" type="email" autocomplete="email" placeholder="you@example.com" data-i18n-ph="nl.ph" required>
+        <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <button class="btn accent" type="submit" data-i18n="nl.btn">Subscribe</button></div>
+      <p class="nlmsg" aria-live="polite"></p>
+    </form>
+  </div></div>
+  <div class="wrap fcols">
+    <div><b data-i18n="nav.product">Product</b><a href="/#how" data-i18n="nav.how">How it works</a><a href="/#features" data-i18n="nav.smart">Smart timing &amp; AI agent</a><a href="/#scams" data-i18n="nav.scams">Scam check</a><a href="/#families" data-i18n="nav.families">For families</a><a href="/#demo" data-i18n="nav.demo">Watch the demo</a></div>
+    <div><b data-i18n="nav.proof">Proof</b><a href="/security-lab" data-i18n="proof.lab">Security Lab</a><a href="/accuracy" data-i18n="proof.acc">Scam-shield accuracy</a><a href="/accuracy#baselines" data-i18n="proof.base">Compared with today</a><a href="/verify" data-i18n="proof.ver">Verify a certificate</a></div>
+    <div><b data-i18n="nav.help">Help</b><a href="/help" data-i18n="nav.hc">Help center</a><a href="/help#faq" data-i18n="nav.faq">Questions</a><a href="/contact" data-i18n="nav.contact">Contact</a><a href="/contact?topic=feedback" data-i18n="nav.fb">Send feedback</a><a href="/#top" data-i18n="foot.judge2">Judge demo (home page)</a></div>
+    <div><b data-i18n="foot.company">Company</b><a href="/pricing" data-i18n="nav.pricing">Pricing</a><a href="/pricing#model" data-i18n="foot.model">How we make money</a><a href="/legal#terms" data-i18n="foot.terms">Terms</a><a href="/legal#privacy" data-i18n="foot.privacy">Privacy</a><a href="/legal#disclosure" data-i18n="foot.disclosure">Security disclosure</a></div>
     <div><b data-i18n="foot.account">Account</b><a href="/register?role=student" data-i18n="foot.student">Student sign-up</a><a href="/register?role=guardian" data-i18n="foot.guardian">Guardian sign-up</a><a href="/login" data-i18n="cta.signin">Sign in</a></div>
   </div>
+  <div class="wrap flegal">
+    <p data-i18n="foot.legal">SudoRoute is a prototype built for the 2026 Shenzhen International FinTech Competition (International Track, Topic C). It is not a bank or a licensed money transmitter and it moves no real money: every account, university and transfer on this site is simulated. In production, payments would be executed only by licensed partners — banks, education payment platforms and licensed money transfer operators — under their licences in each country, and SudoRoute would charge one visible service fee, never a hidden exchange-rate markup.</p>
+  </div>
   <div class="wrap fbottom">
-    <span data-i18n="footer.left">SudoRoute — 2026 Shenzhen International FinTech Competition, International Track, Topic C.</span>
-    <span data-i18n="foot.photos">Sandbox only: no real money moves. Photos from Unsplash.</span>
+    <span>© 2026 SudoRoute · <span data-i18n="foot.team">Team SudoRoute — Rajshahi, Bangladesh · Kuala Lumpur, Malaysia</span></span>
+    <span class="fbr"><span data-lang-picker></span><span data-i18n="foot.photos">Photos from Unsplash.</span></span>
   </div>
 </footer>
 <script src="/static/common.js"></script>
 <script src="/static/motion.js"></script>
 <script src="/static/landing.js"></script>
+<script src="/static/site9.js"></script>
 <script src="/static/aichat.js" data-mode="public"></script>
 </body>
 </html>

@@ -73,3 +73,9 @@ LLM_MODEL = os.environ.get("TS_LLM_MODEL", "")
 GEMINI_MODELS = [m for m in [LLM_MODEL] if m and LLM_PROVIDER == "gemini"] + [
     "gemini-3.1-flash-lite", "gemini-3-flash-preview", "gemini-flash-latest"]
 LLM_TIMEOUT = float(os.environ.get("TS_LLM_TIMEOUT", 15))
+
+# Business model (shown on every quote and on /pricing). Waived during the pilot, so sandbox amounts are unchanged.
+SERVICE_FEE_RATE = _env_float("TS_SERVICE_FEE_RATE", 0.005)
+SERVICE_FEE_MIN_USD = _env_float("TS_SERVICE_FEE_MIN_USD", 3.0)
+SERVICE_FEE_CAP_USD = _env_float("TS_SERVICE_FEE_CAP_USD", 25.0)
+SERVICE_FEE_WAIVED = os.environ.get("TS_SERVICE_FEE_WAIVED", "1") != "0"

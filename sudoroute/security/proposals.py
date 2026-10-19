@@ -77,8 +77,12 @@ class ProposalStore:
             raise ProposalError("Unknown proposal.", "unknown_proposal")
         return self.proposals[proposal_id]
 
-    def validate(self, proposal_id: str, token: str, otp: str, now: float | None = None) -> dict:
-        """Run every check required before execution. Returns the trusted payload."""
+    def validate(self, proposal_id: str, token: str, otp: str, now: float | None = None, otp_check=None) -> dict:
+        """Run every check required before execution. Returns the trusted payload.
+
+        otp_check, when given, replaces the sandbox SMS code (e.g. an authenticator-app TOTP check);
+        the same lockout counter applies to it.
+        """
         rec = self.get(proposal_id)
         payload = rec["payload"]
         if proposal_id in self.executed or rec["status"] in ("executed", "executing"):
@@ -91,7 +95,8 @@ class ProposalStore:
         if (now or time.time()) > payload["expires_at"]:
             rec["status"] = "expired"
             raise ProposalError("The quote expired. Ask SudoRoute for a fresh quote.", "expired")
-        if not hmac.compare_digest(sandbox_otp(proposal_id, self.key), (otp or "").strip()):
+        ok = otp_check(otp) if otp_check else hmac.compare_digest(sandbox_otp(proposal_id, self.key), (otp or "").strip())
+        if not ok:
             self.attempts[proposal_id] = self.attempts.get(proposal_id, 0) + 1
             if self.attempts[proposal_id] >= self.MAX_OTP_ATTEMPTS:
                 rec["status"] = "locked"

@@ -8,7 +8,7 @@ never allowed to call tools or move money directly.
 
 import re
 
-INTENTS = ["help", "balances", "list_invoices", "verify_invoice", "pay_tuition", "compare_routes",
+INTENTS = ["help", "balances", "list_invoices", "verify_invoice", "pay_tuition", "smart_pay", "compare_routes",
            "fx_risk", "budget", "credit", "audit", "status", "general", "prohibited"]
 
 PROHIBITED_RULES = [
@@ -26,15 +26,17 @@ PROHIBITED_RULES = [
 ]
 
 KEYWORDS = [
-    ("verify_invoice", r"\b(verify|legit|real|fake|scam|phish|genuine|authentic|suspicious|safe\s+to\s+pay)\b|ভুয়া|আসল|যাচাই"),
+    ("smart_pay", r"\b(best|good|better|target)\s+(exchange\s+)?rate\b|\brate\s+(is\s+|gets\s+)?(good|better|improves)|smart[- ]?(pay|timing)"
+                  r"|\blimit\s+order|ভালো\s*রেট|রেট\s*ভালো|汇率.{0,4}(好|合适|最佳)"),
+    ("verify_invoice", r"\b(verify|legit|real|fake|scam|phish|genuine|authentic|suspicious|safe\s+to\s+pay)\b|ভুয়া|আসল|যাচাই|真的|假的|诈骗|骗局|核实"),
     ("status", r"\b(status|track|where\s+is\s+my|arrived|settled|mandate)\b"),
-    ("compare_routes", r"\b(compare|cheapest|routes?|providers?|channels?|remit(tance)?|send\s+money|transfer\s+options|fees?\s+compar)\b"),
+    ("compare_routes", r"\b(compare|cheapest|routes?|providers?|channels?|remit(tance)?|send\s+money|transfer\s+options|fees?\s+compar)\b|তুলনা|সবচেয়ে\s*কম\s*খরচ|最便宜|比较|汇款方式"),
     ("fx_risk", r"\b(fx|exchange\s+rate|currency\s+risk|rate\s+risk|when\s+should\s+i\s+pay|budget[- ]at[- ]risk|wait)\b|রেট"),
-    ("pay_tuition", r"\b(pay|settle|installments?|instalments?|split)\b|পরিশোধ|পেমেন্ট|জমা\s*দ"),
-    ("budget", r"\b(budget|spend(ing)?|expenses?|runway|afford|savings)\b|বাজেট|খরচ"),
+    ("pay_tuition", r"\b(pay|settle|installments?|instalments?|split)\b|পরিশোধ|পেমেন্ট|জমা\s*দ|কিস্তি|付学费|付款|支付|缴费|交学费|分期|bayar"),
+    ("budget", r"\b(budget|spend(ing)?|expenses?|runway|afford|savings)\b|বাজেট|খরচ|预算|开销|花费"),
     ("credit", r"\b(credit|score|credit\s+history|credit\s+card)\b|ক্রেডিট"),
     ("audit", r"\b(audit|logs?|what\s+did\s+you\s+do|activity)\b"),
-    ("balances", r"\b(balances?|how\s+much\s+(money|do\s+i\s+have)|wallets?|my\s+accounts?)\b|ব্যালেন্স"),
+    ("balances", r"\b(balances?|how\s+much\s+(money|do\s+i\s+have)|wallets?|my\s+accounts?)\b|ব্যালেন্স|余额|钱包"),
     ("list_invoices", r"\b(invoices?|bills?|what\s+do\s+i\s+owe|due)\b|বিল|ইনভয়েস"),
     ("help", r"\b(help|hi|hello|hey|what\s+can\s+you\s+do|start)\b|সাহায্য|হ্যালো"),
 ]
@@ -52,6 +54,7 @@ def parse(message: str) -> dict:
         "invoice_id": inv.group(0).upper() if inv else None,
         "installments": bool(re.search(r"install?ments?|split|in\s+\d\s+parts|tranche|কিস্তি", low)),
         "pay_now": bool(re.search(r"\b(now|today|immediately|full)\b", low)),
+        "smart": False,
         "pasted": looks_like_pasted_document(text),
     }
     # A pasted document is analysed as untrusted data — never as instructions.
@@ -62,6 +65,9 @@ def parse(message: str) -> dict:
             slots["prohibited_action"] = action
             return {"intent": "prohibited", "slots": slots, "source": "rules"}
     low = re.sub(r"\binv-[a-z0-9-]+\b", " ", low)  # invoice IDs must not trigger keywords
+    # "Check it, and if it's fine, pay it" → the payment flow, which always verifies the invoice first.
+    if re.search(r"\b(if|then)\b[^.?!]*\bpay\s+(it|for\s+it|my|the|this)\b", low) and not re.search(r"\b(best|good|better)\s+rate\b", low):
+        return {"intent": "pay_tuition", "slots": slots, "source": "rules"}
     for intent, pat in KEYWORDS:
         if re.search(pat, low, re.I):
             if intent == "pay_tuition" and re.search(r"\b(compare|cheapest|routes?)\b", low):

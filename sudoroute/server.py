@@ -10,6 +10,7 @@ import hashlib
 import json
 import os
 import re
+import secrets
 import threading
 import time
 from collections import defaultdict, deque
@@ -25,7 +26,7 @@ from .agent import llm
 from .agent.core import SudoRouteAgent
 from .sandbox.bank import HOME_CURRENCY, SandboxBank
 from .sandbox.reference_data import COUNTRY_RULES, UNIVERSITIES
-from .security import permissions
+from .security import permissions, totp
 from .security.audit import AuditLog
 from .security.auth import (EMAIL_RE, IP_LOCK_AFTER, LoginGuard, SessionStore, UserStore, burn_time,
                             normalise_email, password_problems, verify_password)
@@ -61,6 +62,9 @@ RELATIONSHIPS = ["Mother", "Father", "Parent", "Sibling", "Relative", "Sponsor",
 
 _BASELINES = None
 PUBLIC_ASKS: dict = defaultdict(deque)
+JUDGE_STARTS: dict = defaultdict(deque)
+FORM_POSTS: dict = defaultdict(deque)
+FORM_PER_IP_HOUR = 10
 PUBLIC_ASK_PER_HOUR = 40
 
 
@@ -82,8 +86,88 @@ def _baselines() -> dict:
 
 def public_user(u: dict) -> dict:
     keys = ("id", "role", "name", "email", "created", "student_id", "relationship", "students",
-            "phone", "phone_masked", "password_changed", "photo")
+            "phone", "phone_masked", "password_changed", "photo", "judge")
     return {k: u[k] for k in keys if k in u}
+
+
+JUDGE_TTL = 24 * 3600      # judge accounts and their private sandboxes are removed after a day
+MAX_WORLDS = 150           # private sandboxes kept in memory (least recently used are rebuilt on demand)
+JUDGE_PER_IP_HOUR = 8
+
+
+class World:
+    """A private sandbox (bank, FX market, clock, agent) for one judge's student and guardian.
+
+    Judges who press "Try as judge" each get their own world, so moving the sandbox clock, paying or
+    resetting never affects anyone else. The audit chain, certificate issuer and on-chain anchors are shared.
+    """
+
+    def __init__(self, app: "App", wid: str):
+        self.app, self.id = app, wid
+        self.touched = time.time()
+        self.build()
+
+    def build(self):
+        app = self.app
+        self.bank = SandboxBank(samples=False, spots=fx_live.STATE["spots"])
+        self.agent = SudoRouteAgent(self.bank, app.audit, ProposalStore())
+        self.agent.issuer, self.agent.anchors = app.issuer, app.anchors
+        self.agent.sms_out = _sms_hook(app, self.agent)
+        for u in app.users.users.values():
+            if u.get("world") == self.id and u["role"] == "student" and u.get("profile"):
+                self.bank.create_student(student_id=u["student_id"], name=u["name"], **u["profile"])
+                if (u.get("totp") or {}).get("secret"):
+                    self.agent.totp[u["student_id"]] = {"secret": u["totp"]["secret"], "last_step": None}
+        self.sync()
+
+    def sync(self):
+        for s in self.bank.students.values():
+            s["guardians"] = []
+        for g in self.app.users.users.values():
+            if g["role"] == "guardian" and g.get("world") == self.id:
+                for sid in g.get("students", []):
+                    if sid in self.bank.students:
+                        self.bank.students[sid]["guardians"].append(
+                            {"id": g["id"], "name": g["name"], "relationship": g.get("relationship", ""),
+                             "phone_masked": g.get("phone_masked", "")})
+
+
+def _sms_hook(app, agent):
+    """Real SMS to the account's own registered number, when SMS_PROVIDER is configured (sudoroute/sms.py)."""
+    from . import sms
+
+    def out(kind, ref, text):
+        if not sms.provider():
+            return
+        if kind == "student":
+            st = agent.bank.students.get(ref) or {}
+            phone, cc = st.get("phone"), st.get("home_country")
+        else:
+            u = app.users.get(ref) or {}
+            linked = [agent.bank.students[x] for x in u.get("students", []) if x in agent.bank.students]
+            phone, cc = u.get("phone"), (linked[0]["home_country"] if linked else None)
+        sms.send(phone, cc, text, on_result=lambda r: app.audit.append("sms_delivery", actor="sms", sim_time=agent.bank.now.isoformat(),
+                                                                       kind=kind, **r))
+    return out
+
+
+class WorldView:
+    """What a request handler sees as `self.app` for a judge: the shared app, with that judge's bank and agent."""
+
+    def __init__(self, base: "App", world: World):
+        self._base, self._world = base, world
+        self.agent, self.bank = world.agent, world.bank
+
+    def __getattr__(self, name):
+        return getattr(self._base, name)
+
+    def reset(self):
+        self._world.build()
+        self.agent, self.bank = self._world.agent, self._world.bank
+        self._base.audit.append("sandbox_reset", actor="system", sim_time=self.bank.now.isoformat(), world=self._world.id)
+
+    def sync_links(self):
+        self._world.sync()
 
 
 class App:
@@ -99,6 +183,10 @@ class App:
         self.issuer = Issuer(os.path.join(data_dir, "issuer_ed25519.key") if data_dir else None)
         self.feedback = FeedbackStore(os.path.join(data_dir, "pilot_feedback.json") if data_dir else None)
         self.anchors = Anchors(os.path.join(data_dir, "anchors.json") if data_dir else None)
+        self.worlds: dict[str, World] = {}
+        from . import inbox
+        self.messages = inbox.Inbox(os.path.join(data_dir, "contact_messages.json") if data_dir else None)
+        self.subscribers = inbox.Inbox(os.path.join(data_dir, "newsletter.json") if data_dir else None)
         self._drop_legacy_demo_users()
         self.reset()
 
@@ -119,8 +207,13 @@ class App:
             self.agent = SudoRouteAgent(self.bank, self.audit, ProposalStore())
             self.agent.issuer = self.issuer
             self.agent.anchors = self.anchors
+            self.agent.sms_out = _sms_hook(self, self.agent)
+            for u in self.users.users.values():  # authenticator apps survive restarts and sandbox resets
+                if u["role"] == "student" and not u.get("world") and (u.get("totp") or {}).get("secret"):
+                    self.agent.totp[u["student_id"]] = {"secret": u["totp"]["secret"], "last_step": None}
             for u in self.users.users.values():
-                if u["role"] == "student" and u.get("profile") and u["student_id"] not in self.bank.students:
+                if u["role"] == "student" and u.get("profile") and not u.get("world") \
+                        and u["student_id"] not in self.bank.students:
                     self.bank.create_student(student_id=u["student_id"], name=u["name"], **u["profile"])
             self.sync_links()
             self.audit.append("sandbox_reset", actor="system", sim_time=self.bank.now.isoformat())
@@ -136,6 +229,54 @@ class App:
                     self.bank.students[sid]["guardians"].append(
                         {"id": g["id"], "name": g["name"], "relationship": g.get("relationship", ""),
                          "phone_masked": g.get("phone_masked", "")})
+
+    # ------------------------------------------------------------ private judge sandboxes
+    def world(self, wid: str) -> World:
+        with self.lock:
+            w = self.worlds.get(wid)
+            if w is None:
+                if len(self.worlds) >= MAX_WORLDS:
+                    oldest = min(self.worlds.values(), key=lambda x: x.touched)
+                    del self.worlds[oldest.id]
+                w = self.worlds[wid] = World(self, wid)
+            w.touched = time.time()
+            return w
+
+    def purge_judges(self) -> int:
+        cutoff = time.time() - JUDGE_TTL
+        with self.lock:
+            old = [uid for uid, u in self.users.users.items() if u.get("judge") and u.get("created", 0) < cutoff]
+            for uid in old:
+                self.worlds.pop(self.users.users[uid].get("world"), None)
+                del self.users.users[uid]
+            if old:
+                self.users.save()
+        return len(old)
+
+    def create_judge(self) -> dict:
+        """One click: a private sandbox with a student (with tuition due) and a linked guardian."""
+        self.purge_judges()
+        wid = "J" + secrets.token_hex(5)
+        pw = lambda: "Judge#" + secrets.token_urlsafe(9)  # noqa: E731
+        with self.lock:
+            n = 900 + sum(1 for u in self.users.users.values() if u.get("judge") and u["role"] == "student")
+            sid = f"STU-BD-{n}"
+            while self.users.student_user(sid):
+                n += 1
+                sid = f"STU-BD-{n}"
+            profile = {"home_country": "BD", "university_id": "MUT", "program": "BSc Computer Science, Year 2",
+                       "phone": "01700000000", "phone_masked": mask_phone("01700000000")}
+            student = self.users.create(role="student", name="Md Soron", email=f"student.{wid.lower()}@judge.invalid",
+                                        password=pw(), student_id=sid, profile=profile, world=wid, judge=True,
+                                        guardian_invite={"name": "Mst Nishi", "email": f"parent.{wid.lower()}@judge.invalid",
+                                                         "status": "accepted", "created": int(time.time())})
+            guardian = self.users.create(role="guardian", name="Mst Nishi", email=f"parent.{wid.lower()}@judge.invalid",
+                                         password=pw(), relationship="Mother", students=[sid], world=wid, judge=True,
+                                         phone="01800000000", phone_masked=mask_phone("01800000000"))
+            self.world(wid)
+            self.audit.append("judge_sandbox_created", actor="system", sim_time=self.bank.now.isoformat(), world=wid,
+                              student_id=sid, user_id=student["id"])
+        return {"student": student, "guardian": guardian, "world": wid}
 
     def next_student_id(self, cc: str) -> str:
         n = 100 + sum(1 for u in self.users.users.values() if u["role"] == "student")
@@ -226,10 +367,13 @@ class Handler(BaseHTTPRequestHandler):
         return c[COOKIE].value if COOKIE in c else None
 
     def _session(self):
+        self.app = type(self).app  # never carry a previous request's world over a kept-alive connection
         sess = self.app.sessions.get(self._token())
         if not sess:
             return None, None
         user = self.app.users.get(sess["user_id"])
+        if user and user.get("world"):
+            self.app = WorldView(type(self).app, self.app.world(user["world"]))
         return (sess, user) if user else (None, None)
 
     def _cookie(self, token: str, max_age: int) -> dict:
@@ -254,7 +398,8 @@ class Handler(BaseHTTPRequestHandler):
         path = url.path.rstrip("/") or "/"
         try:
             pages = {"/": "index.html", "/login": "auth.html", "/register": "auth.html", "/verify": "verify.html",
-                     "/security-lab": "lab.html", "/accuracy": "accuracy.html", "/offline": "offline.html"}
+                     "/security-lab": "lab.html", "/accuracy": "accuracy.html", "/offline": "offline.html",
+                     "/help": "help.html", "/contact": "contact.html", "/pricing": "pricing.html", "/legal": "legal.html"}
             if path in pages:
                 return self._file(pages[path], "text/html; charset=utf-8")
             if path in ("/app", "/guardian"):
@@ -366,6 +511,7 @@ class Handler(BaseHTTPRequestHandler):
         sess, user = self._session()
         if not user:
             return self._err(401, "Your session has ended. Sign in again.", "unauthenticated")
+        app = self.app  # a judge's private sandbox, if any
         if path == "/api/auth/me":
             return self._json({"ok": True, "user": public_user(user), "csrf": sess["csrf"],
                                "idle_timeout": 1800, "session_started": int(sess["created"])})
@@ -376,6 +522,7 @@ class Handler(BaseHTTPRequestHandler):
                     st = app.agent.state(sid)
                     st["user"] = public_user(user)
                     st["guardian_invite"] = user.get("guardian_invite")
+                    st["totp_enabled"] = sid in app.agent.totp
                     return self._json(st)
                 if path == "/api/dashboard":
                     return self._json(app.agent.dashboard(sid))
@@ -442,6 +589,49 @@ class Handler(BaseHTTPRequestHandler):
                 hist.append(now)
                 from .agent import assist
                 return self._json({"ok": True, **assist.public_answer(q, _lang(data))})
+            if path == "/api/public/judge":
+                hist = JUDGE_STARTS[self.ip]
+                now = time.time()
+                while hist and now - hist[0] > 3600:
+                    hist.popleft()
+                if len(hist) >= JUDGE_PER_IP_HOUR:
+                    return self._err(429, "Too many demo sandboxes from this network. Try again later.", "rate_limited")
+                hist.append(now)
+                made = self.app.create_judge()
+                self.app.sessions.destroy(self._token())
+                token, sess = self.app.sessions.create(made["student"], self.ip)
+                self.app.audit.append("judge_login", actor="auth", sim_time=self.app.bank.now.isoformat(), ip=self.ip,
+                                      user_id=made["student"]["id"], world=made["world"])
+                return self._json({"ok": True, "csrf": sess["csrf"], "redirect": "/app#overview?judge"},
+                                  extra=self._cookie(token, 12 * 3600))
+            if path in ("/api/public/contact", "/api/public/newsletter"):
+                from . import inbox
+                hist = FORM_POSTS[self.ip]
+                now = time.time()
+                while hist and now - hist[0] > 3600:
+                    hist.popleft()
+                if len(hist) >= FORM_PER_IP_HOUR:
+                    return self._err(429, "Too many messages from this network. Please try again later.", "rate_limited")
+                if path == "/api/public/contact":
+                    item, errors = inbox.contact(data)
+                    if errors.get("_bot"):
+                        return self._json({"ok": True})  # quietly drop bots
+                    if errors:
+                        return self._json({"ok": False, "code": "invalid", "error": "Please check the highlighted fields.",
+                                           "fields": errors}, 400)
+                    hist.append(now)
+                    saved = self.app.messages.add(item)
+                    return self._json({"ok": True, "id": saved["id"]})
+                item, err = inbox.newsletter(data)
+                if err == "rejected":
+                    return self._json({"ok": True})
+                if err:
+                    return self._err(400, err, "invalid")
+                hist.append(now)
+                if any(x.get("email") == item["email"] for x in self.app.subscribers.items):
+                    return self._json({"ok": True, "already": True})
+                self.app.subscribers.add(item)
+                return self._json({"ok": True})
             if path == "/api/public/verify":
                 res = self.app.issuer.verify(str(data.get("code", ""))[:8000])
                 return self._json({"ok": True, **res, "issuer": self.app.issuer.info()})
@@ -450,6 +640,19 @@ class Handler(BaseHTTPRequestHandler):
                 return self._err(401, "Your session has ended. Sign in again.", "unauthenticated")
             if self.headers.get("X-CSRF-Token", "") != sess["csrf"]:
                 return self._err(403, "Security token missing or wrong. Reload the page.", "csrf")
+            if path == "/api/judge/switch":
+                if not user.get("judge"):
+                    return self._err(403, "Only judge demo accounts can switch roles.", "forbidden")
+                other = next((u for u in self.app.users.users.values()
+                              if u.get("world") == user["world"] and u["role"] != user["role"]), None)
+                if not other:
+                    return self._err(404, "No partner account in this sandbox.")
+                self.app.sessions.destroy(self._token())
+                token, sess2 = self.app.sessions.create(other, self.ip)
+                self._audit("judge_switch_role", user_id=other["id"], role=other["role"], world=user["world"])
+                return self._json({"ok": True, "csrf": sess2["csrf"],
+                                   "redirect": ("/app#payments?judge" if other["role"] == "student" else "/guardian#approvals?judge")},
+                                  extra=self._cookie(token, 12 * 3600))
             if path == "/api/auth/logout":
                 self.app.sessions.destroy(self._token())
                 self._audit("logout", user_id=user["id"], student_id=user.get("student_id"))
@@ -679,8 +882,43 @@ class Handler(BaseHTTPRequestHandler):
             return self._json(res, 200 if res.get("ok") else 404)
         if path == "/api/confirm":
             res = app.agent.confirm(sid, str(data.get("proposal_id", "")), str(data.get("token", "")),
-                                    str(data.get("otp", "")), bool(data.get("acknowledge_review", False)))
+                                    str(data.get("otp", "")), bool(data.get("acknowledge_review", False)),
+                                    bool(data.get("acknowledge_hold", False)))
             return self._json(res, 200 if res.get("ok") else 403)
+        if path == "/api/totp/setup":
+            # Step 1: password, then a fresh secret to scan. Nothing changes until a code from the app is entered.
+            if not self._check_password(user, data.get("password")):
+                return self._err(403, "Enter your password to link an authenticator app.", "reauth_required")
+            secret = totp.new_secret()
+            app.users.update(user["id"], totp_pending={"secret": secret, "created": int(time.time())})
+            self._audit("totp_setup_started", user_id=user["id"], student_id=sid)
+            return self._json({"ok": True, "secret": secret, "uri": totp.provisioning_uri(secret, user["email"])})
+        if path == "/api/totp/enable":
+            pend = (app.users.get(user["id"]) or {}).get("totp_pending")
+            if not pend or time.time() - pend["created"] > 900:
+                return self._err(400, "Start again: the setup expired.", "expired")
+            if self.app.guard.locked("totp:" + user["id"]):
+                return self._err(429, "Too many wrong codes. Try again in 15 minutes.", "locked")
+            step = totp.verify(pend["secret"], str(data.get("code", "")))
+            if step is None:
+                self.app.guard.fail("totp:" + user["id"])
+                return self._err(400, "That code doesn't match. Check the time on your phone and try the newest code.", "bad_otp")
+            app.users.update(user["id"], totp={"secret": pend["secret"], "enabled": int(time.time())}, totp_pending=None)
+            app.agent.totp[sid] = {"secret": pend["secret"], "last_step": step}
+            self._audit("totp_enabled", user_id=user["id"], student_id=sid)
+            return self._json({"ok": True})
+        if path == "/api/totp/disable":
+            if not self._check_password(user, data.get("password")):
+                return self._err(403, "Enter your password to remove the authenticator app.", "reauth_required")
+            cur = app.agent.totp.get(sid)
+            if cur:
+                step = totp.verify(cur["secret"], str(data.get("code", "")), cur.get("last_step"))
+                if step is None:
+                    return self._err(400, "Enter the current code from your authenticator app.", "bad_otp")
+            app.users.update(user["id"], totp=None, totp_pending=None)
+            app.agent.totp.pop(sid, None)
+            self._audit("totp_disabled", user_id=user["id"], student_id=sid)
+            return self._json({"ok": True})
         if path == "/api/mandate/cancel":
             return self._json(app.agent.cancel_mandate(sid, str(data.get("mandate_id", ""))))
         if path == "/api/settings":

@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Help center — SudoRoute</title>
+<meta name="description" content="Guides and answers for students, families and judges using SudoRoute.">
+<link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/static/img/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&family=Noto+Sans+Bengali:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="/static/site.css">
+<script src="/static/theme.js"></script>
+<script src="/static/i18n.js"></script>
+</head>
+<body>
+<div class="announce" id="announce" role="region" aria-label="Announcement">
+  <div class="wrap">
+    <span class="an-dot" aria-hidden="true"></span>
+    <p><b data-i18n="an.b">Shenzhen FinTechathon 2026 · Topic C</b> <span data-i18n="an.t">Sandbox demo — no real money moves.</span></p>
+    <a href="/register?role=student" data-auth class="an-cta"><span data-i18n="an.cta2">Get started</span> <i aria-hidden="true">→</i></a>
+    <button type="button" class="an-x" data-announce-close aria-label="Dismiss announcement">×</button>
+  </div>
+</div>
+<header class="topnav" id="topnav">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="SudoRoute home"><span data-logo></span><b class="wordmark"><span class="w1">Sudo</span><span class="w2">Route</span></b></a>
+    <nav id="mainnav" aria-label="Main">
+      <span class="hl" aria-hidden="true"></span>
+      <div class="dd">
+        <button type="button" class="navlink" aria-expanded="false" aria-controls="dd-product"><span data-i18n="nav.product">Product</span><i></i></button>
+        <div class="ddmenu" id="dd-product">
+          <a href="/#how"><b data-i18n="nav.how">How it works</b><span data-i18n="nav.howd">Five checks before any money moves</span></a>
+          <a href="/#features"><b data-i18n="nav.smart">Smart timing &amp; AI agent</b><span data-i18n="nav.smartd">Pays at a better rate, never late</span></a>
+          <a href="/#scams"><b data-i18n="nav.scams">Scam check</b><span data-i18n="nav.scamsd">Fake invoices caught in four languages</span></a>
+          <a href="/#families"><b data-i18n="nav.families">For families</b><span data-i18n="nav.familiesd">Guardians approve with their own code</span></a>
+          <a href="/#demo"><b data-i18n="nav.demo">Watch the demo</b><span data-i18n="nav.demod">Four minutes, the whole flow</span></a>
+        </div>
+      </div>
+      <div class="dd">
+        <button type="button" class="navlink" data-nav="/security-lab /accuracy /verify" aria-expanded="false" aria-controls="dd-proof"><span data-i18n="nav.proof">Proof</span><i></i></button>
+        <div class="ddmenu" id="dd-proof">
+          <a href="/security-lab"><b data-i18n="proof.lab">Security Lab</b><span data-i18n="nav.labd">Run 57 live attacks yourself</span></a>
+          <a href="/accuracy"><b data-i18n="proof.acc">Scam-shield accuracy</b><span data-i18n="nav.accd">Every test invoice and every result</span></a>
+          <a href="/accuracy#baselines"><b data-i18n="proof.base">Compared with today</b><span data-i18n="nav.based">SudoRoute vs bank wire vs a basic AI assistant</span></a>
+          <a href="/verify"><b data-i18n="proof.ver">Verify a certificate</b><span data-i18n="nav.verd">Check a payment certificate's signature</span></a>
+        </div>
+      </div>
+      <a class="navlink" href="/pricing" data-nav="/pricing" data-i18n="nav.pricing">Pricing</a>
+      <div class="dd">
+        <button type="button" class="navlink" data-nav="/help" aria-expanded="false" aria-controls="dd-help"><span data-i18n="nav.help">Help</span><i></i></button>
+        <div class="ddmenu" id="dd-help">
+          <a href="/help"><b data-i18n="nav.hc">Help center</b><span data-i18n="nav.hcd">Guides for students, families and judges</span></a>
+          <a href="/help#faq"><b data-i18n="nav.faq">Questions</b><span data-i18n="nav.faqd">The short answers</span></a>
+          <a href="/contact?topic=feedback"><b data-i18n="nav.fb">Send feedback</b><span data-i18n="nav.fbd">Tell us what to improve</span></a>
+        </div>
+      </div>
+      <a class="navlink" href="/contact" data-nav="/contact" data-i18n="nav.contact">Contact</a>
+    </nav>
+    <div class="right">
+      <span data-lang-picker></span>
+      <button class="iconbtn" data-theme-toggle type="button"></button>
+      <a class="btn quiet signin" href="/login" data-i18n="cta.signin">Sign in</a>
+      <a class="btn accent" href="/register" data-auth data-i18n="cta.start">Get started</a>
+      <button class="iconbtn menubtn" id="menubtn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mainnav">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+<main class="page9" id="main">
+  <section class="phero">
+    <div class="wrap">
+      <span class="eyebrow" data-i18n="help.eyebrow">Help center</span>
+      <h1 data-i18n="help.title">How can we help?</h1>
+      <p class="plead" data-i18n="help.lead">Guides for students, families and judges. Search, or pick a topic.</p>
+      <div class="hsearch">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <label class="sr" for="hq">Search help</label>
+        <input id="hq" type="search" placeholder="Try “one-time code”, “guardian” or “fees”" data-i18n-ph="help.ph" autocomplete="off">
+        <span class="hcount" id="hcount" aria-live="polite"></span>
+      </div>
+    </div>
+  </section>
+  <section class="wrap">
+    <div class="hcats" data-stagger>
+      <a href="#start" class="hcat"><span>🚀</span><b data-i18n="help.c1">Getting started</b><small data-i18n="help.c1d">Accounts, judge mode, the sandbox</small></a>
+      <a href="#paying" class="hcat"><span>💸</span><b data-i18n="help.c2">Paying tuition</b><small data-i18n="help.c2d">Routes, smart timing, installments</small></a>
+      <a href="#security" class="hcat"><span>🛡️</span><b data-i18n="help.c3">Security &amp; codes</b><small data-i18n="help.c3d">One-time codes, authenticator, kill switch</small></a>
+      <a href="#family" class="hcat"><span>👪</span><b data-i18n="help.c4">Guardians &amp; family</b><small data-i18n="help.c4d">Linking, approvals, sending funds</small></a>
+      <a href="#proof" class="hcat"><span>📜</span><b data-i18n="help.c5">Certificates &amp; proof</b><small data-i18n="help.c5d">Verify, proof of funds, Bitcoin</small></a>
+      <a href="#ai" class="hcat"><span>✦</span><b data-i18n="help.c6">The AI agent</b><small data-i18n="help.c6d">What it can and can never do</small></a>
+    </div>
+
+    <div class="harticles" id="faq">
+      <h2 class="hgroup" id="start" data-i18n="help.c1">Getting started</h2>
+      <details class="hq"><summary>What is the fastest way to try SudoRoute?</summary><div class="ha"><p>Press <b>Try it now — 1 click</b> on the home page. You get a private sandbox with a student (Md Soron) and his mother (Mst Nishi). The Judge mode panel walks you through a full payment in about a minute: ask the agent → approve as the mother → confirm as the student → fast-forward 7 days → certificate.</p></div></details>
+      <details class="hq"><summary>Is any real money involved?</summary><div class="ha"><p>No. Everything is a sandbox: universities, banks, wallets and transfers are simulated. Exchange-rate <i>levels</i> are real (a live feed or a dated snapshot, always labelled); their future movement is simulated.</p></div></details>
+      <details class="hq"><summary>How do I create a real account instead?</summary><div class="ha"><p>Choose <b>Get started</b>, pick Student or Guardian, and type your university. Verified universities can be paid straight away; others are added as <i>pending verification</i> and can't receive money until their bank account is confirmed with the university itself.</p></div></details>
+      <details class="hq"><summary>Which languages are supported?</summary><div class="ha"><p>The interface is in English, 简体中文 and বাংলা. The assistant also understands Malay, and the scam check reads invoices in all four languages.</p></div></details>
+
+      <h2 class="hgroup" id="paying" data-i18n="help.c2">Paying tuition</h2>
+      <details class="hq"><summary>How does SudoRoute choose the channel?</summary><div class="ha"><p>It compares bank wires, education payment platforms and licensed money transfer operators on <b>landed cost</b>: the hidden exchange-rate markup, fees and the priced risk of arriving late. Channels your home country or university doesn't allow — and informal ones like hundi — are excluded even when cheaper.</p></div></details>
+      <details class="hq"><summary>What is smart timing?</summary><div class="ha"><p>Ask “Pay at the best rate before my deadline”. You approve once; the agent then checks the rate every day and pays by itself as soon as it reaches a target — or on the last safe day, so it still arrives on time. It never pays below a price floor you signed; if the rate falls further it pauses and asks you.</p></div></details>
+      <details class="hq"><summary>Can I pay in installments?</summary><div class="ha"><p>Yes, if your university allows it. After one approval the later installments run on their dates — same payee and invoice only — and pause automatically if your currency weakens more than 5%.</p></div></details>
+      <details class="hq"><summary>What happens if a transfer comes back or arrives short?</summary><div class="ha"><p>SudoRoute explains why, refuses a blind resend, and — if an intermediary bank took a fee — offers to pay only the shortfall. The overpayment check makes paying twice impossible.</p></div></details>
+      <details class="hq"><summary>What does SudoRoute cost?</summary><div class="ha"><p>One visible service fee: 0.5% of the payment, at least USD 3 and at most USD 25 — shown on every quote and waived during the pilot. We never add a hidden exchange-rate markup. See <a href="/pricing">Pricing</a>.</p></div></details>
+
+      <h2 class="hgroup" id="security" data-i18n="help.c3">Security &amp; codes</h2>
+      <details class="hq"><summary>What is the 6-digit code?</summary><div class="ha"><p>It proves that <i>you</i> — not the AI and not someone in your account — approve this exact payment. In the sandbox it arrives on the phone icon at the top of the portal. You can link an authenticator app instead under Security.</p></div></details>
+      <details class="hq"><summary>How do I link Google or Microsoft Authenticator?</summary><div class="ha"><p>Open <b>Security → Authenticator app</b>, enter your password, scan the QR code and type the code the app shows. From then on only the app's code approves payments; text-message codes stop working.</p></div></details>
+      <details class="hq"><summary>What does the kill switch do?</summary><div class="ha"><p>One press cancels pending payments and stops installment and smart-timing plans. Nothing can be prepared or paid until it is released with your password. If your guardian switched it on, only a guardian can release it.</p></div></details>
+      <details class="hq"><summary>How do I know the security claims are true?</summary><div class="ha"><p>Run the <a href="/security-lab">Security Lab</a>: it fires 57 real attacks — including a deliberately compromised AI model — at a live copy of SudoRoute and shows each result.</p></div></details>
+
+      <h2 class="hgroup" id="family" data-i18n="help.c4">Guardians &amp; family</h2>
+      <details class="hq"><summary>How does a parent get linked?</summary><div class="ha"><p>The student enters the parent's name and e-mail at sign-up; when the parent registers as a Guardian with that e-mail, they are linked automatically. A one-time link code works too (Security → Create a guardian link code).</p></div></details>
+      <details class="hq"><summary>Why does my guardian have to approve?</summary><div class="ha"><p>When family money pays the fees, a linked guardian approves with their own code before the student confirms. A decline is final. Turning this off needs the student's password.</p></div></details>
+      <details class="hq"><summary>Can a guardian send money to the student?</summary><div class="ha"><p>Yes — under <b>Send funds</b> in the guardian portal (sandbox limit about USD 10,000 a day).</p></div></details>
+
+      <h2 class="hgroup" id="proof" data-i18n="help.c5">Certificates &amp; proof</h2>
+      <details class="hq"><summary>What is a payment certificate?</summary><div class="ha"><p>A signed record (Ed25519) of an on-time tuition payment or of your payment history, which a landlord, bank or scholarship office can check on <a href="/verify">/verify</a> without an account. Change one character and it fails.</p></div></details>
+      <details class="hq"><summary>What does “anchored on Bitcoin” mean?</summary><div class="ha"><p>A 32-byte fingerprint of each certificate and of the audit log is timestamped on the Bitcoin blockchain via OpenTimestamps. No money and no personal data go on-chain. Anyone can download the proof and check it at opentimestamps.org.</p></div></details>
+      <details class="hq"><summary>What is proof of funds?</summary><div class="ha"><p>A signed statement that you held <i>at least</i> an amount on a date — the real balance is never written into it. SudoRoute refuses to sign a claim your wallets can't back.</p></div></details>
+
+      <h2 class="hgroup" id="ai" data-i18n="help.c6">The AI agent</h2>
+      <details class="hq"><summary>What can the AI do on its own?</summary><div class="ha"><p>Plan multi-step tasks (check an invoice, compare channels, price currency risk), prepare a signed payment for you to approve, and — after you approve a bounded plan — execute installments or a smart-timing payment within the limits you signed.</p></div></details>
+      <details class="hq"><summary>What can it never do?</summary><div class="ha"><p>Move money without your code, pay an account typed in a message, use crypto or hundi, raise limits, delete logs, or follow instructions hidden in an e-mail. These rules are enforced in code, not by asking the model nicely. <b>AI proposes, code disposes, humans execute.</b></p></div></details>
+      <details class="hq"><summary>What is the AI auditor?</summary><div class="ha"><p>An independent AI that reviews every prepared payment and every payment the agent is about to make by itself. It can only put a payment on hold with a reason; you read it and decide. It can never approve anything.</p></div></details>
+      <p class="hnone" id="hnone" hidden>No article matches that. Try other words — or <a href="/contact">ask us</a>.</p>
+    </div>
+
+    <div class="hcta">
+      <div><b data-i18n="help.still">Still need help?</b><p data-i18n="help.stilld">Ask the AI button in the corner, or write to the team — we usually reply within a day.</p></div>
+      <a class="btn primary" href="/contact" data-i18n="nav.contact">Contact</a>
+    </div>
+  </section>
+</main>
+<footer class="footer4 footer9">
+  <div class="fband"><div class="wrap ftop">
+    <div class="fbrand">
+      <a class="brand" href="/" aria-label="SudoRoute home"><span data-logo></span><b class="wordmark"><span class="w1">Sudo</span><span class="w2">Route</span></b></a>
+      <p data-i18n="foot.about">An AI agent that pays international students' tuition — only to verified universities, only after the student and family approve.</p>
+      <div class="fbadges"><span>🔒 <b>57/57</b> <span data-i18n="foot.b1">attacks stopped</span></span><span>⛓ <span data-i18n="foot.b2">Bitcoin-anchored certificates</span></span></div>
+    </div>
+    <form class="newsletter" data-newsletter novalidate>
+      <b data-i18n="nl.title">Tuition tips, once a month</b>
+      <p data-i18n="nl.text">Exchange-rate timing, scam alerts and deadlines for international students. No spam — unsubscribe any time.</p>
+      <div class="nlrow"><label class="sr" for="nl-email">E-mail</label><input class="input" id="nl-email" type="email" autocomplete="email" placeholder="you@example.com" data-i18n-ph="nl.ph" required>
+        <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <button class="btn accent" type="submit" data-i18n="nl.btn">Subscribe</button></div>
+      <p class="nlmsg" aria-live="polite"></p>
+    </form>
+  </div></div>
+  <div class="wrap fcols">
+    <div><b data-i18n="nav.product">Product</b><a href="/#how" data-i18n="nav.how">How it works</a><a href="/#features" data-i18n="nav.smart">Smart timing &amp; AI agent</a><a href="/#scams" data-i18n="nav.scams">Scam check</a><a href="/#families" data-i18n="nav.families">For families</a><a href="/#demo" data-i18n="nav.demo">Watch the demo</a></div>
+    <div><b data-i18n="nav.proof">Proof</b><a href="/security-lab" data-i18n="proof.lab">Security Lab</a><a href="/accuracy" data-i18n="proof.acc">Scam-shield accuracy</a><a href="/accuracy#baselines" data-i18n="proof.base">Compared with today</a><a href="/verify" data-i18n="proof.ver">Verify a certificate</a></div>
+    <div><b data-i18n="nav.help">Help</b><a href="/help" data-i18n="nav.hc">Help center</a><a href="/help#faq" data-i18n="nav.faq">Questions</a><a href="/contact" data-i18n="nav.contact">Contact</a><a href="/contact?topic=feedback" data-i18n="nav.fb">Send feedback</a><a href="/#top" data-i18n="foot.judge2">Judge demo (home page)</a></div>
+    <div><b data-i18n="foot.company">Company</b><a href="/pricing" data-i18n="nav.pricing">Pricing</a><a href="/pricing#model" data-i18n="foot.model">How we make money</a><a href="/legal#terms" data-i18n="foot.terms">Terms</a><a href="/legal#privacy" data-i18n="foot.privacy">Privacy</a><a href="/legal#disclosure" data-i18n="foot.disclosure">Security disclosure</a></div>
+    <div><b data-i18n="foot.account">Account</b><a href="/register?role=student" data-i18n="foot.student">Student sign-up</a><a href="/register?role=guardian" data-i18n="foot.guardian">Guardian sign-up</a><a href="/login" data-i18n="cta.signin">Sign in</a></div>
+  </div>
+  <div class="wrap flegal">
+    <p data-i18n="foot.legal">SudoRoute is a prototype built for the 2026 Shenzhen International FinTech Competition (International Track, Topic C). It is not a bank or a licensed money transmitter and it moves no real money: every account, university and transfer on this site is simulated. In production, payments would be executed only by licensed partners — banks, education payment platforms and licensed money transfer operators — under their licences in each country, and SudoRoute would charge one visible service fee, never a hidden exchange-rate markup.</p>
+  </div>
+  <div class="wrap fbottom">
+    <span>© 2026 SudoRoute · <span data-i18n="foot.team">Team SudoRoute — Rajshahi, Bangladesh · Kuala Lumpur, Malaysia</span></span>
+    <span class="fbr"><span data-lang-picker></span><span data-i18n="foot.photos">Photos from Unsplash.</span></span>
+  </div>
+</footer>
+<script src="/static/common.js"></script>
+<script src="/static/motion.js"></script>
+<script src="/static/landing.js"></script>
+<script src="/static/site9.js"></script>
+<script src="/static/aichat.js" data-mode="public"></script>
+</body>
+</html>
