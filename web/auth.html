@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in — SudoRoute</title>
+<link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/static/img/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&family=Noto+Sans+Bengali:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="/static/site.css">
+<script src="/static/theme.js"></script>
+<script src="/static/i18n.js"></script>
+</head>
+<body>
+<div class="auth">
+  <div class="formside">
+    <div class="top">
+      <a class="brand" href="/"><span data-logo></span><b>SudoRoute</b></a>
+      <span style="display:flex;gap:8px"><span data-lang-picker></span><button class="iconbtn" data-theme-toggle type="button"></button></span>
+    </div>
+    <div class="authbox">
+      <h1 id="title">Welcome back</h1>
+      <p class="sub" id="subtitle">Sign in to pay tuition, check invoices and approve payments.</p>
+      <div class="tabs" role="tablist">
+        <a href="/login" id="tab-login" data-i18n="auth.signin">Sign in</a>
+        <a href="/register" id="tab-register" data-i18n="auth.register">Create account</a>
+      </div>
+      <div class="roles" role="group" aria-label="Account type">
+        <button type="button" class="role" data-role="student" aria-pressed="true"><b data-i18n="auth.student">Student</b><span data-i18n="auth.studentd">I'm paying my own tuition</span></button>
+        <button type="button" class="role" data-role="guardian" aria-pressed="false"><b data-i18n="auth.guardian">Guardian</b><span data-i18n="auth.guardiand">I support a student's fees</span></button>
+      </div>
+      <div id="alert"></div>
+
+      <form id="login" novalidate>
+        <div class="field"><label for="l-email" data-i18n="auth.email">E-mail</label><input class="input" id="l-email" name="email" type="email" autocomplete="username" required></div>
+        <div class="field"><label for="l-pw" data-i18n="auth.password">Password</label>
+          <div class="pwwrap"><input class="input" id="l-pw" name="password" type="password" autocomplete="current-password" required><button type="button" data-showpw>Show</button></div></div>
+        <button class="btn primary lg" style="width:100%" type="submit" data-i18n="auth.signin">Sign in</button>
+        <p class="hint" style="color:var(--ink-3);font-size:13px;margin-top:14px" data-i18n="auth.lock">After five wrong passwords the account is locked for 15 minutes.</p>
+      </form>
+
+      <form id="register" novalidate hidden>
+        <div class="field" data-f="name"><label for="r-name" data-i18n="auth.name">Full name</label><input class="input" id="r-name" name="name" autocomplete="name" required><span class="err"></span></div>
+        <div class="field" data-f="email"><label for="r-email" data-i18n="auth.email">E-mail</label><input class="input" id="r-email" name="email" type="email" autocomplete="email" required><span class="err"></span></div>
+        <div class="field" data-f="password"><label for="r-pw" data-i18n="auth.password">Password</label>
+          <div class="pwwrap"><input class="input" id="r-pw" name="password" type="password" autocomplete="new-password" required><button type="button" data-showpw>Show</button></div>
+          <ul class="pwrules" id="pwrules" aria-live="polite">
+            <li data-rule="len" data-i18n="pw.len">At least 8 characters</li><li data-rule="upper" data-i18n="pw.upper">An uppercase letter (A–Z)</li>
+            <li data-rule="lower" data-i18n="pw.lower">A lowercase letter (a–z)</li><li data-rule="digit" data-i18n="pw.digit">A number (0–9)</li></ul>
+          <span class="err"></span></div>
+        <div class="field" data-f="phone"><label for="r-phone" data-i18n="auth.phone">Phone number</label><input class="input" id="r-phone" name="phone" type="tel" autocomplete="tel" required placeholder="e.g. 01906032900"><span class="err"></span></div>
+        <div data-for="student">
+          <div class="field" data-f="home_country"><label for="r-country" data-i18n="auth.country">Home country</label><select class="input" id="r-country" name="home_country"></select><span class="err"></span></div>
+          <div class="field" data-f="university_name"><label for="r-uni" data-i18n="auth.uni">University</label>
+            <input class="input" id="r-uni" name="university_name" list="uni-list" autocomplete="off" data-i18n-ph="auth.uniph" placeholder="Type your university's full name">
+            <datalist id="uni-list"></datalist>
+            <span class="hint" id="unihint" data-i18n="auth.unihint">Type any university. If it isn't verified yet, we confirm its bank account with the university before the first payment.</span><span class="err"></span></div>
+          <div class="field" data-f="study_country"><label for="r-scountry" data-i18n="auth.scountry">Country where you study</label><select class="input" id="r-scountry" name="study_country"></select><span class="err"></span></div>
+          <div class="field" data-f="university_website" id="webfield"><label for="r-web"><span data-i18n="auth.web">University website</span> <span style="font-weight:400;color:var(--ink-3)" data-i18n="auth.optional">(optional)</span></label><input class="input" id="r-web" name="university_website" inputmode="url" autocomplete="off" placeholder="e.g. www.university.edu"><span class="err"></span></div>
+          <fieldset class="gfield">
+            <legend data-i18n="auth.gtitle">Your parent or guardian</legend>
+            <p class="hint" data-i18n="auth.gtext">They approve payments made with family money. When they sign up with this e-mail, they're linked to you automatically.</p>
+            <div class="field" data-f="guardian_name"><label for="r-gname" data-i18n="auth.gname">Guardian's full name</label><input class="input" id="r-gname" name="guardian_name" autocomplete="off"><span class="err"></span></div>
+            <div class="field" data-f="guardian_email"><label for="r-gemail" data-i18n="auth.gemail">Guardian's e-mail</label><input class="input" id="r-gemail" name="guardian_email" type="email" autocomplete="off"><span class="err"></span></div>
+          </fieldset>
+          <div class="field" data-f="program"><label for="r-prog" data-i18n="auth.prog">Programme</label><input class="input" id="r-prog" name="program" placeholder="e.g. BSc Computer Science, Year 1"><span class="err"></span></div>
+        </div>
+        <div data-for="guardian" hidden>
+          <div class="field" data-f="relationship"><label for="r-rel" data-i18n="auth.rel">Relationship to the student</label><select class="input" id="r-rel" name="relationship"></select><span class="err"></span></div>
+          <div class="field" data-f="link_code"><label for="r-code"><span data-i18n="auth.code">Student's link code</span> <span style="font-weight:400;color:var(--ink-3)" data-i18n="auth.optional">(optional)</span></label><input class="input" id="r-code" name="link_code" placeholder="ABCD-2345" autocomplete="off"><span class="hint" data-i18n="auth.codehint">Not needed if your student entered this e-mail as their guardian's — you'll be linked automatically.</span></div>
+        </div>
+        <button class="btn primary lg" style="width:100%" type="submit" data-i18n="auth.register">Create account</button>
+        <p class="hint" style="color:var(--ink-3);font-size:13px;margin-top:14px" data-i18n="auth.newstudent">New student accounts get a sandbox wallet and one tuition invoice to try.</p>
+      </form>
+    </div>
+  </div>
+
+  <aside class="aside photo">
+    <img src="https://images.unsplash.com/photo-1607013407627-6ee814329547?auto=format&fit=crop&w=1400&q=70" alt="" decoding="async">
+    <div class="aside-shade" aria-hidden="true"></div>
+    <div class="aside-copy">
+      <h2 data-i18n="auth.asidetitle">Every payment, the same safe route.</h2>
+      <ol class="vroute">
+        <li><b data-i18n="auth.v1">Invoice checked</b><span data-i18n="auth.v1d">against the university registry</span></li>
+        <li><b data-i18n="auth.v2">Cheapest licensed route</b><span data-i18n="auth.v2d">with a reason for every choice</span></li>
+        <li><b data-i18n="auth.v3">Guardian approves</b><span data-i18n="auth.v3d">with their own code</span></li>
+        <li><b data-i18n="auth.v4">Student confirms</b><span data-i18n="auth.v4d">sealed by a signature, can't be changed</span></li>
+      </ol>
+    </div>
+  </aside>
+</div>
+<script src="/static/common.js"></script>
+<script src="/static/motion.js"></script>
+<script src="/static/auth.js"></script>
+</body>
+</html>

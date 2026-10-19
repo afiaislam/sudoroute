@@ -1,0 +1,14 @@
+{
+  "name": "SudoRoute — safe tuition payments",
+  "short_name": "SudoRoute",
+  "description": "An AI agent that pays international students' tuition — only to verified universities, only after the student and family approve.",
+  "start_url": "/app",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f4f6f5",
+  "theme_color": "#0f766e",
+  "icons": [
+    { "src": "/static/img/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/static/img/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

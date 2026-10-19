@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Student — SudoRoute</title>
+<link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/static/img/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&family=Noto+Sans+Bengali:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="/static/site.css">
+<script src="/static/theme.js"></script>
+<script src="/static/i18n.js"></script>
+</head>
+<body class="portal">
+<a class="skip" href="#view">Skip to content</a>
+<div class="shell">
+  <aside class="side" id="side" aria-label="Student navigation">
+    <a class="brand" href="/app#overview"><span data-logo></span><b>SudoRoute</b></a>
+    <nav id="sidenav"></nav>
+    <div class="side-foot">
+      <a class="side-help" href="/#demo"><span>▶</span><div><b>Watch the demo</b><small>How SudoRoute works, in 4 minutes</small></div></a>
+      <p>Sandbox — no real money moves.</p>
+    </div>
+  </aside>
+  <div class="maincol">
+    <header class="topbar">
+      <button class="iconbtn menubtn" id="menubtn" type="button" aria-label="Open navigation" aria-controls="side" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <h1 id="viewtitle">Overview</h1>
+      <div class="right">
+        <span class="aistat hide-sm" id="aistat"><i></i><span>Rule engine</span></span>
+        <div class="clock hide-sm" title="Sandbox clock — move time forward to see payments arrive"><span id="simdate">—</span>
+          <button type="button" data-adv="1">+1 day</button><button type="button" data-adv="7">+7</button><button type="button" data-adv="20">+20</button></div>
+        <button class="iconbtn" data-theme-toggle type="button"></button>
+        <div class="me-dd">
+          <button class="mebtn" id="mebtn" type="button" aria-expanded="false" aria-controls="memenu"><span class="avatar" id="me-av">–</span><span class="hide-sm"><b id="me-name">…</b><small id="me-role">Student</small></span><i></i></button>
+          <div class="memenu" id="memenu">
+            <a href="#profile" data-i18n="p.profile">Profile</a>
+            <a href="#security">Security</a>
+            <a href="/">Home page</a>
+            <button type="button" id="logout" data-i18n="p.signout">Sign out</button>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main class="view" id="view" tabindex="-1"></main>
+  </div>
+</div>
+<dialog id="pwdialog">
+  <form method="dialog" id="pwform">
+    <h3 id="pwtitle">Confirm it's you</h3>
+    <p id="pwtext">Enter your password to continue.</p>
+    <div class="field"><label for="pwinput">Password</label><input class="input" id="pwinput" type="password" autocomplete="current-password" required></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn" value="cancel" type="button" id="pwcancel">Cancel</button><button class="btn primary" value="ok">Continue</button></div>
+  </form>
+</dialog>
+<script src="/static/common.js"></script>
+<script src="/static/motion.js"></script>
+<script src="/static/cards.js"></script>
+<script src="/static/portal.js"></script>
+<script src="/static/phone.js"></script>
+<script src="/static/student.js"></script>
+<script src="/static/aichat.js" data-mode="student"></script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+name: tests
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Unit, integration and HTTP tests
+        run: python -m unittest discover -s tests -t . -v
+      - name: Security Lab (live attack suite)
+        run: python scripts/security_lab.py
+      - name: Scam-shield hold-out benchmark
+        run: python scripts/benchmark_scam_shield.py
+      - name: Baseline comparison
+        run: python scripts/benchmark_baselines.py
+      - name: Sandbox execution evidence
+        run: python scripts/run_demo.py

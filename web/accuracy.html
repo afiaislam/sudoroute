@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scam-shield accuracy — SudoRoute</title>
+<meta name="description" content="How SudoRoute's tuition-scam detector performs on a multilingual hold-out set, with every sample published.">
+<link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/static/img/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&family=Noto+Sans+Bengali:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="/static/site.css">
+<script src="/static/theme.js"></script>
+<script src="/static/i18n.js"></script>
+</head>
+<body>
+<header class="topnav" id="topnav">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="SudoRoute home"><span data-logo></span><b>SudoRoute</b></a>
+    <nav id="mainnav" aria-label="Main">
+      <span class="hl" aria-hidden="true"></span>
+      <div class="dd">
+        <button type="button" class="navlink" aria-expanded="false" aria-controls="dd-product"><span data-i18n="nav.product">Product</span><i></i></button>
+        <div class="ddmenu" id="dd-product">
+          <a href="/#how"><b data-i18n="nav.how">How it works</b><span data-i18n="nav.howd">Five checks before any money moves</span></a>
+          <a href="/#scams"><b data-i18n="nav.scams">Scam check</b><span data-i18n="nav.scamsd">Fake invoices caught in four languages</span></a>
+          <a href="/#families"><b data-i18n="nav.families">For families</b><span data-i18n="nav.familiesd">Guardians approve with their own code</span></a>
+          <a href="/#app"><b data-i18n="nav.app">Inside the app</b><span data-i18n="nav.appd">Real screens from the student portal</span></a>
+        </div>
+      </div>
+      <div class="dd">
+        <button type="button" class="navlink" aria-expanded="false" aria-controls="dd-proof"><span data-i18n="nav.proof">Proof</span><i></i></button>
+        <div class="ddmenu" id="dd-proof">
+          <a href="/security-lab"><b data-i18n="proof.lab">Security Lab</b><span data-i18n="nav.labd">Run 47 live attacks yourself</span></a>
+          <a href="/accuracy"><b data-i18n="proof.acc">Scam-shield accuracy</b><span data-i18n="nav.accd">Every test invoice and every result</span></a>
+          <a href="/accuracy#baselines"><b data-i18n="proof.base">Compared with today</b><span data-i18n="nav.based">SudoRoute vs bank wire vs a basic AI assistant</span></a>
+          <a href="/verify"><b data-i18n="proof.ver">Verify a certificate</b><span data-i18n="nav.verd">Check a payment certificate's signature</span></a>
+        </div>
+      </div>
+      <a class="navlink" href="/#anywhere" data-i18n="nav.anywhere">Universities</a>
+      <a class="navlink" href="/#faq" data-i18n="nav.faq">Questions</a>
+    </nav>
+    <div class="right">
+      <span data-lang-picker></span>
+      <button class="iconbtn" data-theme-toggle type="button"></button>
+      <a class="btn quiet signin" href="/login" data-i18n="cta.signin">Sign in</a>
+      <a class="btn accent" href="/register" data-i18n="cta.start">Get started</a>
+      <button class="iconbtn menubtn" id="menubtn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mainnav">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+<main class="page page-top" id="main"><div class="wrap">
+  <h1 data-i18n="acc.title">Scam-shield accuracy</h1>
+  <p class="intro" data-reveal>We froze the detection rules, then wrote 60 test invoices — 30 genuine, 30 scams — in English, Malay, Bangla and Chinese. Some genuine ones deliberately contain scary words such as "final notice" or "never pay in crypto". The results below are computed live from the code, and the rules were not tuned on this set.</p>
+  <div class="scoreboard" id="score"></div>
+  <section class="panel v2panel" style="margin-top:8px"><h3>Hold-out v2 — unseen set <small>the honest number</small></h3>
+    <p style="color:var(--ink-2);font-size:14px;margin:0 0 12px" id="v2note"></p><div class="scoreboard" id="v2score"></div>
+    <div class="tablewrap" style="margin-top:12px"><table id="v2misses"></table></div></section>
+  <section class="panel" style="margin-top:8px"><h3>By language <small>set v1</small></h3><div class="tablewrap"><table id="bylang"></table></div></section>
+  <section class="panel"><h3>What the numbers mean</h3><ul class="ticks" id="defs" style="margin:0"></ul></section>
+  <section class="panel"><h3>All 60 samples of set v1 <small>misses and false alarms first</small></h3><div class="tablewrap"><table id="samples"></table></div></section>
+  <h2 id="baselines" style="margin-top:42px">SudoRoute vs today's options</h2>
+  <p class="intro" data-reveal>Both test sets (84 invoices), plus 160 priced payments (4 home countries × 4 universities × 5 deadlines × 2 amounts) and 3 retry situations replayed on the real agent. Compared with a bank wire (how most families pay today) and a cheapest-fee AI assistant. Computed live from the code.</p>
+  <section class="panel"><div class="tablewrap"><table id="base"></table></div><p id="impossible" style="color:var(--ink-2);font-size:13.5px;margin:12px 0 0"></p><ul class="ticks" id="basedefs" style="margin:14px 0 0"></ul></section>
+  <section class="panel"><h3>Fairness: the same protection for every home country</h3><div class="tablewrap"><table id="fair"></table></div></section>
+  <h2 id="pilot" style="margin-top:42px">Pilot feedback from real testers</h2>
+  <p class="intro" data-reveal>Signed-in students and guardians rate SudoRoute inside the app (Profile → Help us improve). Only totals are shown here, live from the server — never names or comments.</p>
+  <div class="scoreboard" id="pilotscore"></div>
+  <p class="empty">Limitations: the samples are synthetic and the universities fictional. Treat this as a transparent regression benchmark, not a field accuracy claim. Source: <code>sudoroute/benchmark/invoice_holdout.py</code>.</p>
+</div></main>
+<footer class="footer4">
+  <div class="wrap fcols">
+    <div class="fbrand">
+      <a class="brand" href="/" aria-label="SudoRoute home"><span data-logo></span><b>SudoRoute</b></a>
+      <p data-i18n="foot.about">An AI agent that pays international students' tuition — only to verified universities, only after the student and family approve.</p>
+    </div>
+    <div><b data-i18n="nav.product">Product</b><a href="/#how" data-i18n="nav.how">How it works</a><a href="/#scams" data-i18n="nav.scams">Scam check</a><a href="/#families" data-i18n="nav.families">For families</a><a href="/#app" data-i18n="nav.app">Inside the app</a></div>
+    <div><b data-i18n="nav.proof">Proof</b><a href="/security-lab" data-i18n="proof.lab">Security Lab</a><a href="/accuracy" data-i18n="proof.acc">Scam-shield accuracy</a><a href="/verify" data-i18n="proof.ver">Verify a certificate</a></div>
+    <div><b data-i18n="foot.account">Account</b><a href="/register?role=student" data-i18n="foot.student">Student sign-up</a><a href="/register?role=guardian" data-i18n="foot.guardian">Guardian sign-up</a><a href="/login" data-i18n="cta.signin">Sign in</a></div>
+  </div>
+  <div class="wrap fbottom">
+    <span data-i18n="footer.left">SudoRoute — 2026 Shenzhen International FinTech Competition, International Track, Topic C.</span>
+    <span data-i18n="foot.photos">Sandbox only: no real money moves. Photos from Unsplash.</span>
+  </div>
+</footer>
+<script src="/static/common.js"></script>
+<script src="/static/motion.js"></script>
+<script src="/static/landing.js"></script>
+<script src="/static/accuracy.js"></script>
+<script src="/static/aichat.js" data-mode="public"></script>
+</body>
+</html>

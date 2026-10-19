@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Security Lab — SudoRoute</title>
+<meta name="description" content="Run 47 real attacks against a live copy of SudoRoute and watch each one get stopped.">
+<link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/static/img/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&family=Noto+Sans+Bengali:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="/static/site.css">
+<script src="/static/theme.js"></script>
+<script src="/static/i18n.js"></script>
+</head>
+<body>
+<header class="topnav" id="topnav">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="SudoRoute home"><span data-logo></span><b>SudoRoute</b></a>
+    <nav id="mainnav" aria-label="Main">
+      <span class="hl" aria-hidden="true"></span>
+      <div class="dd">
+        <button type="button" class="navlink" aria-expanded="false" aria-controls="dd-product"><span data-i18n="nav.product">Product</span><i></i></button>
+        <div class="ddmenu" id="dd-product">
+          <a href="/#how"><b data-i18n="nav.how">How it works</b><span data-i18n="nav.howd">Five checks before any money moves</span></a>
+          <a href="/#scams"><b data-i18n="nav.scams">Scam check</b><span data-i18n="nav.scamsd">Fake invoices caught in four languages</span></a>
+          <a href="/#families"><b data-i18n="nav.families">For families</b><span data-i18n="nav.familiesd">Guardians approve with their own code</span></a>
+          <a href="/#app"><b data-i18n="nav.app">Inside the app</b><span data-i18n="nav.appd">Real screens from the student portal</span></a>
+        </div>
+      </div>
+      <div class="dd">
+        <button type="button" class="navlink" aria-expanded="false" aria-controls="dd-proof"><span data-i18n="nav.proof">Proof</span><i></i></button>
+        <div class="ddmenu" id="dd-proof">
+          <a href="/security-lab"><b data-i18n="proof.lab">Security Lab</b><span data-i18n="nav.labd">Run 47 live attacks yourself</span></a>
+          <a href="/accuracy"><b data-i18n="proof.acc">Scam-shield accuracy</b><span data-i18n="nav.accd">Every test invoice and every result</span></a>
+          <a href="/accuracy#baselines"><b data-i18n="proof.base">Compared with today</b><span data-i18n="nav.based">SudoRoute vs bank wire vs a basic AI assistant</span></a>
+          <a href="/verify"><b data-i18n="proof.ver">Verify a certificate</b><span data-i18n="nav.verd">Check a payment certificate's signature</span></a>
+        </div>
+      </div>
+      <a class="navlink" href="/#anywhere" data-i18n="nav.anywhere">Universities</a>
+      <a class="navlink" href="/#faq" data-i18n="nav.faq">Questions</a>
+    </nav>
+    <div class="right">
+      <span data-lang-picker></span>
+      <button class="iconbtn" data-theme-toggle type="button"></button>
+      <a class="btn quiet signin" href="/login" data-i18n="cta.signin">Sign in</a>
+      <a class="btn accent" href="/register" data-i18n="cta.start">Get started</a>
+      <button class="iconbtn menubtn" id="menubtn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mainnav">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+<main class="page page-top" id="main"><div class="wrap">
+  <h1 data-i18n="lab.title">Security Lab</h1>
+  <p class="intro" data-reveal data-i18n="lab.intro">Each run starts a private, live copy of SudoRoute — the same code and the same web server — and fires real attacks at it over HTTP. Every attack has an expected defence; below is what actually happened. Controls are normal actions that must still succeed, to show the defences don't simply block everything.</p>
+  <button class="btn primary lg" id="run" type="button" data-i18n="lab.run">Run all attacks</button>
+  <div class="indeterminate" id="prog" hidden></div><p class="labstatus" id="labstatus" aria-live="polite"></p>
+  <div class="scoreboard" id="score" style="margin-top:22px">
+    <div><b class="num" id="s-pass">—</b><small data-i18n="lab.passed">passed</small></div>
+    <div class="good"><b class="num" id="s-att">—</b><small data-i18n="lab.attacks">attacks stopped</small></div>
+    <div class="good"><b class="num" id="s-ctl">—</b><small data-i18n="lab.controls">legitimate actions succeeded</small></div>
+    <div><b class="num" id="s-time">—</b><small data-i18n="lab.time">run time</small></div>
+  </div>
+  <p id="meta" class="empty"></p>
+  <div id="results"></div>
+</div></main>
+<footer class="footer4">
+  <div class="wrap fcols">
+    <div class="fbrand">
+      <a class="brand" href="/" aria-label="SudoRoute home"><span data-logo></span><b>SudoRoute</b></a>
+      <p data-i18n="foot.about">An AI agent that pays international students' tuition — only to verified universities, only after the student and family approve.</p>
+    </div>
+    <div><b data-i18n="nav.product">Product</b><a href="/#how" data-i18n="nav.how">How it works</a><a href="/#scams" data-i18n="nav.scams">Scam check</a><a href="/#families" data-i18n="nav.families">For families</a><a href="/#app" data-i18n="nav.app">Inside the app</a></div>
+    <div><b data-i18n="nav.proof">Proof</b><a href="/security-lab" data-i18n="proof.lab">Security Lab</a><a href="/accuracy" data-i18n="proof.acc">Scam-shield accuracy</a><a href="/verify" data-i18n="proof.ver">Verify a certificate</a></div>
+    <div><b data-i18n="foot.account">Account</b><a href="/register?role=student" data-i18n="foot.student">Student sign-up</a><a href="/register?role=guardian" data-i18n="foot.guardian">Guardian sign-up</a><a href="/login" data-i18n="cta.signin">Sign in</a></div>
+  </div>
+  <div class="wrap fbottom">
+    <span data-i18n="footer.left">SudoRoute — 2026 Shenzhen International FinTech Competition, International Track, Topic C.</span>
+    <span data-i18n="foot.photos">Sandbox only: no real money moves. Photos from Unsplash.</span>
+  </div>
+</footer>
+<script src="/static/common.js"></script>
+<script src="/static/motion.js"></script>
+<script src="/static/landing.js"></script>
+<script src="/static/lab.js"></script>
+<script src="/static/aichat.js" data-mode="public"></script>
+</body>
+</html>

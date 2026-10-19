@@ -1,0 +1,4023 @@
+{
+  "systems": [
+    "SudoRoute",
+    "Bank wire",
+    "Cheapest-fee assistant"
+  ],
+  "summary": {
+    "SudoRoute": {
+      "scams_that_reach_a_fraudster": 0,
+      "genuine_paid_without_delay": 40,
+      "genuine_sent_for_a_check": 2,
+      "genuine_blocked": 0,
+      "avg_saving_vs_bank_pct": 1.82,
+      "rule_violations": 0,
+      "late_rate_pct": 11.0,
+      "avoidable_late_pct": 0.0,
+      "overpayments_on_retry": 0
+    },
+    "Bank wire": {
+      "scams_that_reach_a_fraudster": 42,
+      "genuine_paid_without_delay": 42,
+      "genuine_sent_for_a_check": 0,
+      "genuine_blocked": 0,
+      "avg_saving_vs_bank_pct": 0.0,
+      "rule_violations": 0,
+      "late_rate_pct": 27.5,
+      "avoidable_late_pct": 16.5,
+      "overpayments_on_retry": 2
+    },
+    "Cheapest-fee assistant": {
+      "scams_that_reach_a_fraudster": 42,
+      "genuine_paid_without_delay": 42,
+      "genuine_sent_for_a_check": 0,
+      "genuine_blocked": 0,
+      "avg_saving_vs_bank_pct": 2.48,
+      "rule_violations": 120,
+      "late_rate_pct": 0.5,
+      "avoidable_late_pct": 0.2,
+      "overpayments_on_retry": 2
+    }
+  },
+  "fraud": {
+    "scams": 42,
+    "genuine": 42,
+    "results": {
+      "SudoRoute": {
+        "scams_paid": 0,
+        "money_lost_invoices": 0,
+        "genuine_paid_now": 40,
+        "genuine_checked": 2,
+        "genuine_blocked": 0
+      },
+      "Bank wire": {
+        "scams_paid": 42,
+        "money_lost_invoices": 42,
+        "genuine_paid_now": 42,
+        "genuine_checked": 0,
+        "genuine_blocked": 0
+      },
+      "Cheapest-fee assistant": {
+        "scams_paid": 42,
+        "money_lost_invoices": 42,
+        "genuine_paid_now": 42,
+        "genuine_checked": 0,
+        "genuine_blocked": 0
+      }
+    }
+  },
+  "routes": {
+    "scenarios": 160,
+    "results": {
+      "SudoRoute": {
+        "payments": 160,
+        "avg_cost_usd": 8380.55,
+        "avg_saving_vs_bank_pct": 1.82,
+        "rule_violations": 0,
+        "expected_late_payments": 17.7,
+        "late_rate_pct": 11.0,
+        "avoidable_late_pct": 0.0
+      },
+      "Bank wire": {
+        "payments": 160,
+        "avg_cost_usd": 8496.54,
+        "avg_saving_vs_bank_pct": 0.0,
+        "rule_violations": 0,
+        "expected_late_payments": 43.9,
+        "late_rate_pct": 27.5,
+        "avoidable_late_pct": 16.5
+      },
+      "Cheapest-fee assistant": {
+        "payments": 160,
+        "avg_cost_usd": 8313.15,
+        "avg_saving_vs_bank_pct": 2.48,
+        "rule_violations": 120,
+        "expected_late_payments": 0.8,
+        "late_rate_pct": 0.5,
+        "avoidable_late_pct": 0.2
+      }
+    },
+    "impossible_on_time_legally": 24,
+    "by_country": {
+      "BD": {
+        "payments": 40,
+        "saving_vs_bank_pct": 1.58,
+        "rule_violations": 0,
+        "late_rate_pct": 15.0,
+        "bank_wire_late_rate_pct": 27.0
+      },
+      "NG": {
+        "payments": 40,
+        "saving_vs_bank_pct": 2.05,
+        "rule_violations": 0,
+        "late_rate_pct": 8.0,
+        "bank_wire_late_rate_pct": 27.0
+      },
+      "IN": {
+        "payments": 40,
+        "saving_vs_bank_pct": 2.05,
+        "rule_violations": 0,
+        "late_rate_pct": 8.0,
+        "bank_wire_late_rate_pct": 27.0
+      },
+      "PK": {
+        "payments": 40,
+        "saving_vs_bank_pct": 1.58,
+        "rule_violations": 0,
+        "late_rate_pct": 15.0,
+        "bank_wire_late_rate_pct": 27.0
+      }
+    }
+  },
+  "route_rows": [
+    {
+      "home": "BD",
+      "university": "MUT",
+      "amount": "full semester",
+      "days_to_due": 2,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.5025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "BD",
+      "university": "MUT",
+      "amount": "full semester",
+      "days_to_due": 4,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "BD",
+      "university": "MUT",
+      "amount": "full semester",
+      "days_to_due": 6,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "BD",
+      "university": "MUT",
+      "amount": "full semester",
+      "days_to_due": 10,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "BD",
+      "university": "MUT",
+      "amount": "full semester",
+      "days_to_due": 21,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "BD",
+      "university": "MUT",
+      "amount": "remaining balance",
+      "days_to_due": 2,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.5025,
+        "cost_usd": 2530.36
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "BD",
+      "university": "MUT",
+      "amount": "remaining balance",
+      "days_to_due": 4,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 2530.36
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "BD",
+      "university": "MUT",
+      "amount": "remaining balance",
+      "days_to_due": 6,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 2530.36
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "BD",
+      "university": "MUT",
+      "amount": "remaining balance",
+      "days_to_due": 10,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 2530.36
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "BD",
+      "university": "MUT",
+      "amount": "remaining balance",
+      "days_to_due": 21,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 2530.36
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "BD",
+      "university": "NBU",
+      "amount": "full semester",
+      "days_to_due": 2,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.5025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "BD",
+      "university": "NBU",
+      "amount": "full semester",
+      "days_to_due": 4,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "BD",
+      "university": "NBU",
+      "amount": "full semester",
+      "days_to_due": 6,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "BD",
+      "university": "NBU",
+      "amount": "full semester",
+      "days_to_due": 10,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "BD",
+      "university": "NBU",
+      "amount": "full semester",
+      "days_to_due": 21,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "BD",
+      "university": "NBU",
+      "amount": "remaining balance",
+      "days_to_due": 2,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.5025,
+        "cost_usd": 2530.36
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "BD",
+      "university": "NBU",
+      "amount": "remaining balance",
+      "days_to_due": 4,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 2530.36
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "BD",
+      "university": "NBU",
+      "amount": "remaining balance",
+      "days_to_due": 6,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 2530.36
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "BD",
+      "university": "NBU",
+      "amount": "remaining balance",
+      "days_to_due": 10,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 2530.36
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "BD",
+      "university": "NBU",
+      "amount": "remaining balance",
+      "days_to_due": 21,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 2530.36
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "BD",
+      "university": "PCSU",
+      "amount": "full semester",
+      "days_to_due": 2,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.5025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "BD",
+      "university": "PCSU",
+      "amount": "full semester",
+      "days_to_due": 4,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "BD",
+      "university": "PCSU",
+      "amount": "full semester",
+      "days_to_due": 6,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "BD",
+      "university": "PCSU",
+      "amount": "full semester",
+      "days_to_due": 10,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "BD",
+      "university": "PCSU",
+      "amount": "full semester",
+      "days_to_due": 21,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "BD",
+      "university": "PCSU",
+      "amount": "remaining balance",
+      "days_to_due": 2,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.5025,
+        "cost_usd": 2530.36
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "BD",
+      "university": "PCSU",
+      "amount": "remaining balance",
+      "days_to_due": 4,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 2530.36
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "BD",
+      "university": "PCSU",
+      "amount": "remaining balance",
+      "days_to_due": 6,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 2530.36
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "BD",
+      "university": "PCSU",
+      "amount": "remaining balance",
+      "days_to_due": 10,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 2530.36
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "BD",
+      "university": "PCSU",
+      "amount": "remaining balance",
+      "days_to_due": 21,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 2530.36
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "BD",
+      "university": "SRU",
+      "amount": "full semester",
+      "days_to_due": 2,
+      "SudoRoute": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 14393.97
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "BD",
+      "university": "SRU",
+      "amount": "full semester",
+      "days_to_due": 4,
+      "SudoRoute": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 14393.97
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "BD",
+      "university": "SRU",
+      "amount": "full semester",
+      "days_to_due": 6,
+      "SudoRoute": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "BD",
+      "university": "SRU",
+      "amount": "full semester",
+      "days_to_due": 10,
+      "SudoRoute": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "BD",
+      "university": "SRU",
+      "amount": "full semester",
+      "days_to_due": 21,
+      "SudoRoute": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "BD",
+      "university": "SRU",
+      "amount": "remaining balance",
+      "days_to_due": 2,
+      "SudoRoute": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 2599.1
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "BD",
+      "university": "SRU",
+      "amount": "remaining balance",
+      "days_to_due": 4,
+      "SudoRoute": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 2599.1
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "BD",
+      "university": "SRU",
+      "amount": "remaining balance",
+      "days_to_due": 6,
+      "SudoRoute": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "BD",
+      "university": "SRU",
+      "amount": "remaining balance",
+      "days_to_due": 10,
+      "SudoRoute": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "BD",
+      "university": "SRU",
+      "amount": "remaining balance",
+      "days_to_due": 21,
+      "SudoRoute": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "NG",
+      "university": "MUT",
+      "amount": "full semester",
+      "days_to_due": 2,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.5025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "NG",
+      "university": "MUT",
+      "amount": "full semester",
+      "days_to_due": 4,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "NG",
+      "university": "MUT",
+      "amount": "full semester",
+      "days_to_due": 6,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "NG",
+      "university": "MUT",
+      "amount": "full semester",
+      "days_to_due": 10,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "NG",
+      "university": "MUT",
+      "amount": "full semester",
+      "days_to_due": 21,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "NG",
+      "university": "MUT",
+      "amount": "remaining balance",
+      "days_to_due": 2,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "NG",
+      "university": "MUT",
+      "amount": "remaining balance",
+      "days_to_due": 4,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "NG",
+      "university": "MUT",
+      "amount": "remaining balance",
+      "days_to_due": 6,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "NG",
+      "university": "MUT",
+      "amount": "remaining balance",
+      "days_to_due": 10,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "NG",
+      "university": "MUT",
+      "amount": "remaining balance",
+      "days_to_due": 21,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "NG",
+      "university": "NBU",
+      "amount": "full semester",
+      "days_to_due": 2,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.5025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "NG",
+      "university": "NBU",
+      "amount": "full semester",
+      "days_to_due": 4,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "NG",
+      "university": "NBU",
+      "amount": "full semester",
+      "days_to_due": 6,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "NG",
+      "university": "NBU",
+      "amount": "full semester",
+      "days_to_due": 10,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "NG",
+      "university": "NBU",
+      "amount": "full semester",
+      "days_to_due": 21,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "NG",
+      "university": "NBU",
+      "amount": "remaining balance",
+      "days_to_due": 2,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "NG",
+      "university": "NBU",
+      "amount": "remaining balance",
+      "days_to_due": 4,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "NG",
+      "university": "NBU",
+      "amount": "remaining balance",
+      "days_to_due": 6,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "NG",
+      "university": "NBU",
+      "amount": "remaining balance",
+      "days_to_due": 10,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "NG",
+      "university": "NBU",
+      "amount": "remaining balance",
+      "days_to_due": 21,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "NG",
+      "university": "PCSU",
+      "amount": "full semester",
+      "days_to_due": 2,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.5025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "NG",
+      "university": "PCSU",
+      "amount": "full semester",
+      "days_to_due": 4,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "NG",
+      "university": "PCSU",
+      "amount": "full semester",
+      "days_to_due": 6,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "NG",
+      "university": "PCSU",
+      "amount": "full semester",
+      "days_to_due": 10,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "NG",
+      "university": "PCSU",
+      "amount": "full semester",
+      "days_to_due": 21,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "NG",
+      "university": "PCSU",
+      "amount": "remaining balance",
+      "days_to_due": 2,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "NG",
+      "university": "PCSU",
+      "amount": "remaining balance",
+      "days_to_due": 4,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "NG",
+      "university": "PCSU",
+      "amount": "remaining balance",
+      "days_to_due": 6,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "NG",
+      "university": "PCSU",
+      "amount": "remaining balance",
+      "days_to_due": 10,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "NG",
+      "university": "PCSU",
+      "amount": "remaining balance",
+      "days_to_due": 21,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "NG",
+      "university": "SRU",
+      "amount": "full semester",
+      "days_to_due": 2,
+      "SudoRoute": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 14393.97
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "NG",
+      "university": "SRU",
+      "amount": "full semester",
+      "days_to_due": 4,
+      "SudoRoute": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 14393.97
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "NG",
+      "university": "SRU",
+      "amount": "full semester",
+      "days_to_due": 6,
+      "SudoRoute": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "NG",
+      "university": "SRU",
+      "amount": "full semester",
+      "days_to_due": 10,
+      "SudoRoute": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "NG",
+      "university": "SRU",
+      "amount": "full semester",
+      "days_to_due": 21,
+      "SudoRoute": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "NG",
+      "university": "SRU",
+      "amount": "remaining balance",
+      "days_to_due": 2,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "NG",
+      "university": "SRU",
+      "amount": "remaining balance",
+      "days_to_due": 4,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "NG",
+      "university": "SRU",
+      "amount": "remaining balance",
+      "days_to_due": 6,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "NG",
+      "university": "SRU",
+      "amount": "remaining balance",
+      "days_to_due": 10,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "NG",
+      "university": "SRU",
+      "amount": "remaining balance",
+      "days_to_due": 21,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "IN",
+      "university": "MUT",
+      "amount": "full semester",
+      "days_to_due": 2,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.5025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "IN",
+      "university": "MUT",
+      "amount": "full semester",
+      "days_to_due": 4,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "IN",
+      "university": "MUT",
+      "amount": "full semester",
+      "days_to_due": 6,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "IN",
+      "university": "MUT",
+      "amount": "full semester",
+      "days_to_due": 10,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "IN",
+      "university": "MUT",
+      "amount": "full semester",
+      "days_to_due": 21,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "IN",
+      "university": "MUT",
+      "amount": "remaining balance",
+      "days_to_due": 2,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "IN",
+      "university": "MUT",
+      "amount": "remaining balance",
+      "days_to_due": 4,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "IN",
+      "university": "MUT",
+      "amount": "remaining balance",
+      "days_to_due": 6,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "IN",
+      "university": "MUT",
+      "amount": "remaining balance",
+      "days_to_due": 10,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "IN",
+      "university": "MUT",
+      "amount": "remaining balance",
+      "days_to_due": 21,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "IN",
+      "university": "NBU",
+      "amount": "full semester",
+      "days_to_due": 2,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.5025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "IN",
+      "university": "NBU",
+      "amount": "full semester",
+      "days_to_due": 4,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "IN",
+      "university": "NBU",
+      "amount": "full semester",
+      "days_to_due": 6,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "IN",
+      "university": "NBU",
+      "amount": "full semester",
+      "days_to_due": 10,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "IN",
+      "university": "NBU",
+      "amount": "full semester",
+      "days_to_due": 21,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "IN",
+      "university": "NBU",
+      "amount": "remaining balance",
+      "days_to_due": 2,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "IN",
+      "university": "NBU",
+      "amount": "remaining balance",
+      "days_to_due": 4,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "IN",
+      "university": "NBU",
+      "amount": "remaining balance",
+      "days_to_due": 6,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "IN",
+      "university": "NBU",
+      "amount": "remaining balance",
+      "days_to_due": 10,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "IN",
+      "university": "NBU",
+      "amount": "remaining balance",
+      "days_to_due": 21,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "IN",
+      "university": "PCSU",
+      "amount": "full semester",
+      "days_to_due": 2,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.5025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "IN",
+      "university": "PCSU",
+      "amount": "full semester",
+      "days_to_due": 4,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "IN",
+      "university": "PCSU",
+      "amount": "full semester",
+      "days_to_due": 6,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "IN",
+      "university": "PCSU",
+      "amount": "full semester",
+      "days_to_due": 10,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "IN",
+      "university": "PCSU",
+      "amount": "full semester",
+      "days_to_due": 21,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "IN",
+      "university": "PCSU",
+      "amount": "remaining balance",
+      "days_to_due": 2,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "IN",
+      "university": "PCSU",
+      "amount": "remaining balance",
+      "days_to_due": 4,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "IN",
+      "university": "PCSU",
+      "amount": "remaining balance",
+      "days_to_due": 6,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "IN",
+      "university": "PCSU",
+      "amount": "remaining balance",
+      "days_to_due": 10,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "IN",
+      "university": "PCSU",
+      "amount": "remaining balance",
+      "days_to_due": 21,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "IN",
+      "university": "SRU",
+      "amount": "full semester",
+      "days_to_due": 2,
+      "SudoRoute": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 14393.97
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "IN",
+      "university": "SRU",
+      "amount": "full semester",
+      "days_to_due": 4,
+      "SudoRoute": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 14393.97
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "IN",
+      "university": "SRU",
+      "amount": "full semester",
+      "days_to_due": 6,
+      "SudoRoute": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "IN",
+      "university": "SRU",
+      "amount": "full semester",
+      "days_to_due": 10,
+      "SudoRoute": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "IN",
+      "university": "SRU",
+      "amount": "full semester",
+      "days_to_due": 21,
+      "SudoRoute": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "IN",
+      "university": "SRU",
+      "amount": "remaining balance",
+      "days_to_due": 2,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "IN",
+      "university": "SRU",
+      "amount": "remaining balance",
+      "days_to_due": 4,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "IN",
+      "university": "SRU",
+      "amount": "remaining balance",
+      "days_to_due": 6,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "IN",
+      "university": "SRU",
+      "amount": "remaining balance",
+      "days_to_due": 10,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "IN",
+      "university": "SRU",
+      "amount": "remaining balance",
+      "days_to_due": 21,
+      "SudoRoute": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": true,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "PK",
+      "university": "MUT",
+      "amount": "full semester",
+      "days_to_due": 2,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.5025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "PK",
+      "university": "MUT",
+      "amount": "full semester",
+      "days_to_due": 4,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "PK",
+      "university": "MUT",
+      "amount": "full semester",
+      "days_to_due": 6,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "PK",
+      "university": "MUT",
+      "amount": "full semester",
+      "days_to_due": 10,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "PK",
+      "university": "MUT",
+      "amount": "full semester",
+      "days_to_due": 21,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "PK",
+      "university": "MUT",
+      "amount": "remaining balance",
+      "days_to_due": 2,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.5025,
+        "cost_usd": 2530.36
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "PK",
+      "university": "MUT",
+      "amount": "remaining balance",
+      "days_to_due": 4,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 2530.36
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "PK",
+      "university": "MUT",
+      "amount": "remaining balance",
+      "days_to_due": 6,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 2530.36
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "PK",
+      "university": "MUT",
+      "amount": "remaining balance",
+      "days_to_due": 10,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 2530.36
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "PK",
+      "university": "MUT",
+      "amount": "remaining balance",
+      "days_to_due": 21,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 2530.36
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "PK",
+      "university": "NBU",
+      "amount": "full semester",
+      "days_to_due": 2,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.5025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "PK",
+      "university": "NBU",
+      "amount": "full semester",
+      "days_to_due": 4,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "PK",
+      "university": "NBU",
+      "amount": "full semester",
+      "days_to_due": 6,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "PK",
+      "university": "NBU",
+      "amount": "full semester",
+      "days_to_due": 10,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "PK",
+      "university": "NBU",
+      "amount": "full semester",
+      "days_to_due": 21,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "PK",
+      "university": "NBU",
+      "amount": "remaining balance",
+      "days_to_due": 2,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.5025,
+        "cost_usd": 2530.36
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "PK",
+      "university": "NBU",
+      "amount": "remaining balance",
+      "days_to_due": 4,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 2530.36
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "PK",
+      "university": "NBU",
+      "amount": "remaining balance",
+      "days_to_due": 6,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 2530.36
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "PK",
+      "university": "NBU",
+      "amount": "remaining balance",
+      "days_to_due": 10,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 2530.36
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "PK",
+      "university": "NBU",
+      "amount": "remaining balance",
+      "days_to_due": 21,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 2530.36
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "PK",
+      "university": "PCSU",
+      "amount": "full semester",
+      "days_to_due": 2,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.5025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "PK",
+      "university": "PCSU",
+      "amount": "full semester",
+      "days_to_due": 4,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "PK",
+      "university": "PCSU",
+      "amount": "full semester",
+      "days_to_due": 6,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "PK",
+      "university": "PCSU",
+      "amount": "full semester",
+      "days_to_due": 10,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "PK",
+      "university": "PCSU",
+      "amount": "full semester",
+      "days_to_due": 21,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 14170.04
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "PK",
+      "university": "PCSU",
+      "amount": "remaining balance",
+      "days_to_due": 2,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.5025,
+        "cost_usd": 2530.36
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "PK",
+      "university": "PCSU",
+      "amount": "remaining balance",
+      "days_to_due": 4,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 2530.36
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "PK",
+      "university": "PCSU",
+      "amount": "remaining balance",
+      "days_to_due": 6,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 2530.36
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "PK",
+      "university": "PCSU",
+      "amount": "remaining balance",
+      "days_to_due": 10,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 2530.36
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "PK",
+      "university": "PCSU",
+      "amount": "remaining balance",
+      "days_to_due": 21,
+      "SudoRoute": {
+        "channel": "EduPay (education payment platform)",
+        "eligible": true,
+        "p_late": 0.0025,
+        "cost_usd": 2530.36
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "PK",
+      "university": "SRU",
+      "amount": "full semester",
+      "days_to_due": 2,
+      "SudoRoute": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 14393.97
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "PK",
+      "university": "SRU",
+      "amount": "full semester",
+      "days_to_due": 4,
+      "SudoRoute": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 14393.97
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "PK",
+      "university": "SRU",
+      "amount": "full semester",
+      "days_to_due": 6,
+      "SudoRoute": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "PK",
+      "university": "SRU",
+      "amount": "full semester",
+      "days_to_due": 10,
+      "SudoRoute": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "PK",
+      "university": "SRU",
+      "amount": "full semester",
+      "days_to_due": 21,
+      "SudoRoute": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 14393.97
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 14103.68
+      }
+    },
+    {
+      "home": "PK",
+      "university": "SRU",
+      "amount": "remaining balance",
+      "days_to_due": 2,
+      "SudoRoute": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 2599.1
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 1.0,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "PK",
+      "university": "SRU",
+      "amount": "remaining balance",
+      "days_to_due": 4,
+      "SudoRoute": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 2599.1
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.3433,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "PK",
+      "university": "SRU",
+      "amount": "remaining balance",
+      "days_to_due": 6,
+      "SudoRoute": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "PK",
+      "university": "SRU",
+      "amount": "remaining balance",
+      "days_to_due": 10,
+      "SudoRoute": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    },
+    {
+      "home": "PK",
+      "university": "SRU",
+      "amount": "remaining balance",
+      "days_to_due": 21,
+      "SudoRoute": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Bank wire": {
+        "channel": "Bank wire (SWIFT via authorised bank)",
+        "eligible": true,
+        "p_late": 0.01,
+        "cost_usd": 2599.1
+      },
+      "Cheapest-fee assistant": {
+        "channel": "RemitLite (licensed money transfer operator)",
+        "eligible": false,
+        "p_late": 0.005,
+        "cost_usd": 2522.61
+      }
+    }
+  ],
+  "retry": {
+    "currency": "MYR",
+    "cases": [
+      {
+        "case": "Same request sent twice",
+        "SudoRoute_overpaid": 0,
+        "SudoRoute_second_payment": false,
+        "baseline_overpaid": 18500.0
+      },
+      {
+        "case": "Transfer returned by the bank",
+        "SudoRoute_overpaid": 0.0,
+        "SudoRoute_second_payment": false,
+        "SudoRoute_advice": "Do not resend the same transfer: the cause has not been fixed yet.",
+        "baseline_overpaid": 0.0,
+        "baseline_note": "Money comes back, but a blind resend fails again for the same reason."
+      },
+      {
+        "case": "University received less than sent",
+        "SudoRoute_overpaid": 0,
+        "SudoRoute_second_payment": true,
+        "SudoRoute_paid_again": 142.85,
+        "shortfall": 142.85,
+        "baseline_overpaid": 18357.15
+      }
+    ],
+    "results": {
+      "SudoRoute": {
+        "overpayments": 0
+      },
+      "Bank wire": {
+        "overpayments": 2
+      },
+      "Cheapest-fee assistant": {
+        "overpayments": 2
+      }
+    }
+  },
+  "definitions": {
+    "Bank wire": "SWIFT wire from an authorised bank to the account printed on the invoice. Legal, no invoice check, ignores timing.",
+    "Cheapest-fee assistant": "Licensed channels only; lowest cost; pays the account on the invoice; does not check country rules, university partner status, limits or arrival time; executes every request.",
+    "scams_that_reach_a_fraudster": "Of 42 scam invoices, how many send money to an account that is not the university's verified one.",
+    "rule_violations": "Of 160 payments, how many use a channel the home-country rules, the university or the channel limit do not allow.",
+    "late_rate_pct": "Expected share of payments arriving after the real due date (channel delivery window and reliability).",
+    "avoidable_late_pct": "Lateness that an allowed channel could have avoided. Some deadlines are too close for any allowed channel; SudoRoute warns about these early with a pay-by date.",
+    "overpayments_on_retry": "Of 3 retry situations, how many end with the university paid more than the invoice.",
+    "why_assistant_cheaper": "The assistant is cheaper and faster only because it uses channels the rules do not allow; SudoRoute chooses among allowed channels only.",
+    "note": "SudoRoute sends genuine invoices flagged for a check to the student first; it never pays the account printed on an invoice."
+  }
+}
