@@ -30,6 +30,17 @@ def redact_obs(text: str) -> str:
 
 
 
+def script_lang(text: str) -> str | None:
+    """'bn' or 'zh' when the message is written in Bengali or Chinese script; None otherwise (keep the UI language)."""
+    bn = sum(1 for ch in text or "" if "\u0980" <= ch <= "\u09ff")
+    zh = sum(1 for ch in text or "" if "\u4e00" <= ch <= "\u9fff")
+    if bn >= 2 and bn >= zh:
+        return "bn"
+    if zh >= 2:
+        return "zh"
+    return None
+
+
 _PREFIXES = {"md", "mst", "mosammat", "mohd", "mr", "mrs", "ms", "miss", "dr", "prof"}
 
 
@@ -117,6 +128,7 @@ class SudoRouteAgent:
     def chat(self, sid: str, message: str, lang: str | None = None) -> dict:
         sess = self.session(sid)
         ctx = Context(sid, sess["level"])
+        lang = script_lang(message) or lang   # reply in the language the student wrote in
         ctx.lang = lang
         parsed = intents.parse(message)
         pasted = parsed["slots"]["pasted"]

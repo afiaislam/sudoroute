@@ -158,7 +158,7 @@ Certificate `CRT-00009` for MYR 18,500.00 paid 18 day(s) before the due date. Pu
 Verification with the public key: **valid**. One character changed: **rejected**.
 
 ```
-SR1.eyJhdWRpdF9hbmNob3IiOnsiaGFzaCI6ImNlNGZmN2IxMGMwMDBmZWM3NWJhNjFhNGRhZDU3MjljYTRhMzI3ZjVkYjM5YmI3NzhmYzIwMThkOTA4YjcyZDIiLCJzZXEiOjEwNX0sImNlcnRfaWQiOiJDUlQtMDAwMDkiLCJob2xkZXIiOiJBZmlhIElzbGFtIiwiaG9sZGVyX3JlZiI6IuKAouKAouKAojQ0MTciLCJpbnN0aXR1dGlvbl9jb3VudHJ5IjoiTVkiLCJpc3MiOiJTdWRvUm91dGUiLCJpc3N1ZWRfYXQiOiIyMDI2LTEyLTAxVDA5OjAwOjAwKzAwOjAwIiwia2lkIjoiNTY0NzVhYTc1NDYzNDc0YyIsInBheW1lbnQiOnsiYW1vdW50IjoxODUwMC4wLCJjaGFubmVsIjoiRWR1UGF5IChlZHVjYXRpb24gcGF5bWVudCBwbGF0Zm9ybSkiLCJjdXJyZW5jeSI6Ik1ZUiIsImRheXNfZWFybHkiOjE4LCJkdWUiOiIyMDI2LTExLTA4IiwiaW5zdGl0dXRpb24iOiJNZXJpZGlhbiBVbml2ZXJzaXR5IG9mIFRlY2hub2xvZ3kiLCJvbl90aW1lIjp0cnVlLCJwYWlkX29uIjoiMjAyNi0xMC0yMSIsInRyYW5zZmVyX2lkIjoiVFhOLTIwMjYxMDE4LTAwMDIifSwic2FuZGJveCI6dHJ1ZSwidHlwZSI6InR1aXRpb25fcGF5bWVudCIsInYiOjF9.t3TWa8h-WFP38tjTyinTW1puM8s56GMLvQvHMcMKtuF7I4S6M9p8hQ3-g4lVBoloSHdSN302GTTkdaftjpvaCw
+SR1.eyJhdWRpdF9hbmNob3IiOnsiaGFzaCI6IjViNzVlOGZhNmYxNmIwYjc4MDZlNTQwNWQxYzQ4YzUyNTU1ODYxNWJiMjQ3ZWU5NWRhZWY2MDQwODE2MGRmZDgiLCJzZXEiOjEwNX0sImNlcnRfaWQiOiJDUlQtMDAwMDkiLCJob2xkZXIiOiJBZmlhIElzbGFtIiwiaG9sZGVyX3JlZiI6IuKAouKAouKAojQ0MTciLCJpbnN0aXR1dGlvbl9jb3VudHJ5IjoiTVkiLCJpc3MiOiJTdWRvUm91dGUiLCJpc3N1ZWRfYXQiOiIyMDI2LTEyLTAxVDA5OjAwOjAwKzAwOjAwIiwia2lkIjoiNTY0NzVhYTc1NDYzNDc0YyIsInBheW1lbnQiOnsiYW1vdW50IjoxODUwMC4wLCJjaGFubmVsIjoiRWR1UGF5IChlZHVjYXRpb24gcGF5bWVudCBwbGF0Zm9ybSkiLCJjdXJyZW5jeSI6Ik1ZUiIsImRheXNfZWFybHkiOjE4LCJkdWUiOiIyMDI2LTExLTA4IiwiaW5zdGl0dXRpb24iOiJNZXJpZGlhbiBVbml2ZXJzaXR5IG9mIFRlY2hub2xvZ3kiLCJvbl90aW1lIjp0cnVlLCJwYWlkX29uIjoiMjAyNi0xMC0yMSIsInRyYW5zZmVyX2lkIjoiVFhOLTIwMjYxMDE4LTAwMDIifSwic2FuZGJveCI6dHJ1ZSwidHlwZSI6InR1aXRpb25fcGF5bWVudCIsInYiOjF9.ahUesJX7HVEkGoK5JqwDgS-DzGI4TSi-E-jcT2v11SxUA1z9ypobUw2So1B8yfyWSRNhjC965UWm3f9VTXQMDQ
 ```
 
 ## Scenario 8 — Smart timing: the agent waits for a better rate and pays by itself, never late
@@ -188,7 +188,7 @@ The agent checked the rate on 5 sandbox days and decided **target reached** on 2
 ## Result
 
 - Steps passed: **41/41**
-- Audit chain: **valid**, 131 entries, head `83db215a895b4efc…`
+- Audit chain: **valid**, 131 entries, head `199eb8efbb4b27b5…`
 - Money moved: 6 sandbox transfers; INV-MUT-26S2 = paid, INV-NBU-26T1 = paid, INV-PHISH-001 = open (never paid)
 
 | Transfer | Student | Channel | Sent | Received | Status |

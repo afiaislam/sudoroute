@@ -184,6 +184,7 @@ test_one_click_flow_and_role_switch (tests.test_v8.PublicFormsTests.test_one_cli
 test_quote_shows_service_fee (tests.test_v8.PublicFormsTests.test_quote_shows_service_fee) ... ok
 test_rate_limited_per_network (tests.test_v8.PublicFormsTests.test_rate_limited_per_network) ... ok
 test_regular_accounts_cannot_switch (tests.test_v8.PublicFormsTests.test_regular_accounts_cannot_switch) ... ok
+test_script_detection (tests.test_v8.ReplyLanguageTests.test_script_detection) ... ok
 test_off_by_default_and_e164 (tests.test_v8.SMSTests.test_off_by_default_and_e164) ... ok
 test_sends_to_registered_number_with_rate_limit (tests.test_v8.SMSTests.test_sends_to_registered_number_with_rate_limit) ... ok
 test_audit_chain_is_persistent_and_reset_cannot_erase_it (tests.test_web.AuditSurvivesRestartAndReset.test_audit_chain_is_persistent_and_reset_cannot_erase_it) ... ok
@@ -229,6 +230,6 @@ test_two_party_approval_flow (tests.test_web.RolesAndApprovals.test_two_party_ap
 test_reset_requires_reauthentication (tests.test_web.SandboxResetNeedsPassword.test_reset_requires_reauthentication) ... ok
 
 ----------------------------------------------------------------------
-Ran 229 tests in 39.160s
+Ran 230 tests in 39.868s
 
 OK

@@ -278,3 +278,14 @@ class PublicFormsTests(JudgeHTTPTests):
         fee = p["service_fee"]
         self.assertTrue(3 <= fee["usd"] <= 25)
         self.assertTrue(fee["waived"])
+
+
+class ReplyLanguageTests(unittest.TestCase):
+    """The agent answers in the script the student wrote in, whatever the interface language."""
+
+    def test_script_detection(self):
+        from sudoroute.agent.core import script_lang
+        self.assertEqual(script_lang("ইনভয়েসটা আসল কিনা দেখো"), "bn")
+        self.assertEqual(script_lang("帮我付学费"), "zh")
+        self.assertIsNone(script_lang("Pay my tuition"))
+        self.assertIsNone(script_lang("Pay 学"))   # a single stray character does not switch language

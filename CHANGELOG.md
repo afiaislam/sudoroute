@@ -23,7 +23,8 @@
 - **Only the home-page *Try it now — 1 click* button signs in by itself** (for judges). Every other *Get started*
   (navigation, announcement bar, pricing) opens a sign-in / create-account window for students and guardians.
 - Greetings skip honorific prefixes ("Good morning, Soron", not "Md").
-- 229 tests · Security Lab 63/63 · demo 41/41.
+- The agent replies in the language the student writes in (Bangla or Chinese script), whatever the interface language.
+- 230 tests · Security Lab 63/63 · demo 41/41.
 
 
 ## v9 — a real website (October 2026)
