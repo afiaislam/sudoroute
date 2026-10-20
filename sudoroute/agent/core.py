@@ -134,7 +134,7 @@ class SudoRouteAgent:
         pasted = parsed["slots"]["pasted"]
         # 1. Agentic planning. Rule-based refusals and pasted documents never go to the planner.
         if parsed["intent"] != "prohibited" and not pasted and self._llm():
-            planned = self._plan_and_act(ctx, sid, message, lang)
+            planned = self._plan_and_act(ctx, sid, message, lang, parsed)
             if planned is not None:
                 return planned
         # 1b. Fallback: single-intent language understanding.
@@ -148,6 +148,8 @@ class SudoRouteAgent:
                     if ai["prohibited_action"]:  # the model may only make things stricter
                         parsed["intent"] = "prohibited"
                         parsed["slots"]["prohibited_action"] = ai["prohibited_action"]
+                elif parsed["intent"] in ("pay_tuition", "smart_pay") and ai["intent"] not in ("pay_tuition", "smart_pay"):
+                    pass  # the student explicitly asked to pay; a weaker guess ("just check it") does not override that
                 else:
                     parsed["intent"] = ai["intent"]
                     for k in ("installments", "pay_now"):
@@ -186,7 +188,7 @@ class SudoRouteAgent:
     MAX_PLAN_ROUNDS = 3
     MAX_PLAN_TOOLS = 5
 
-    def _plan_and_act(self, ctx, sid, message, lang):
+    def _plan_and_act(self, ctx, sid, message, lang, parsed=None):
         """Plan → act → observe loop. The model picks tools from a fixed list; every tool still goes through
         the permission gate, the policy engine and the audit log. Payment tools can only PREPARE a proposal.
         Returns None if the planner is unavailable (the caller falls back to single-intent handling)."""
@@ -239,6 +241,24 @@ class SudoRouteAgent:
                 paid = paid or st["tool"] in self.llm.PAYMENT_TOOLS
             if p["done"] or paid or not new or len(results) >= self.MAX_PLAN_TOOLS:
                 break
+        # The student explicitly asked to pay ("…if yes, pay it"), but the model stopped after checking:
+        # follow the request with the same tier-gated payment tool. It only PREPARES a signed proposal,
+        # refuses scam invoices, and still needs the guardian's and the student's own codes.
+        want = parsed["intent"] if parsed and parsed["intent"] in ("pay_tuition", "smart_pay") else None
+        if results and want and not paid and len(results) < self.MAX_PLAN_TOOLS:
+            slots = {**parsed["slots"], "smart": want == "smart_pay"}
+            t0 = time.perf_counter()
+            try:
+                out = getattr(self, f"_h_{want}")(ctx, slots, message)
+            except PermissionDenied as e:
+                out = {"reply": f"I can't do that in the current mode. {e} You can change the mode in Settings — "
+                                "I can't change it myself.", "cards": []}
+            except LookupError as e:
+                out = {"reply": str(e).strip("'\""), "cards": []}
+            ctx.trace.append({"tool": "rules.follow_request", "tier": "rules", "status": "ok",
+                              "detail": f"student asked to pay → {want}", "ms": round((time.perf_counter() - t0) * 1000, 1)})
+            results.append((want, out))
+            paid = True
         if not results:
             return None
         intents_run = [r[0] for r in results]

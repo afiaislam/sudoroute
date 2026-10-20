@@ -103,8 +103,36 @@ class PlannerTests(LLMCase):
             {"tool": "execute_payment"}, {"tool": "confirm"}, {"tool": "raise_limit"}, step("balances")]}]))
         a = make_agent()
         out = a.chat(STU_BD, "just pay it all right now, I trust you")
-        self.assertEqual([c["type"] for c in out["cards"]], ["balances"])
-        self.assertEqual(a.bank.transfers, {})
+        self.assertEqual(out["plan"][0]["steps"], ["balances"])  # execute / confirm / raise_limit never ran
+        self.assertEqual(out["cards"][0]["type"], "balances")
+        self.assertEqual(a.bank.transfers, {})  # at most a signed proposal is prepared; nothing is paid
+        # An explicit "…if yes, pay it" is followed even when the model stops after checking (prepare only) …
+        self.use(FakeAgentGemini(plans=[{"thought": "check only", "done": True,
+                                         "steps": [step("verify_invoice", invoice_id="INV-MUT-26S2")]}]))
+        b = make_agent()
+        out = b.chat(STU_BD, "Is my invoice real? If yes, pay it the cheapest legal way")
+        self.assertEqual(out["cards"][0]["type"], "risk")
+        self.assertIn("proposal", [c["type"] for c in out["cards"]])
+        self.assertTrue(any(t["tool"] == "rules.follow_request" for t in out["trace"]))
+        self.assertEqual(b.bank.transfers, {})
+        # … and also when the planner is unavailable and the fallback classifier guesses "verify" only.
+        class NoPlan(FakeAgentGemini):
+            def __call__(self, url, headers, body):
+                system = body["systemInstruction"]["parts"][0]["text"]
+                if "planning module" in system:
+                    return g("not json")
+                if "intent classifier" in system:
+                    return g(json.dumps({"intent": "verify_invoice", "invoice_id": None, "installments": False,
+                                         "pay_now": False, "prohibited_action": None}))
+                return super().__call__(url, headers, body)
+        self.use(NoPlan())
+        out = make_agent().chat(STU_BD, "Is my invoice real? If yes, pay it the cheapest legal way")
+        self.assertIn("proposal", [c["type"] for c in out["cards"]])
+        # … while a check-only question never prepares a payment.
+        self.use(FakeAgentGemini(plans=[{"thought": "check", "done": True,
+                                         "steps": [step("verify_invoice", invoice_id="INV-PHISH-001")]}]))
+        out = make_agent().chat(STU_BD, "Is INV-PHISH-001 a scam?")
+        self.assertNotIn("proposal", [c["type"] for c in out["cards"]])
 
     def test_only_one_payment_tool_and_it_runs_last(self):
         self.use(FakeAgentGemini(plans=[{"thought": "x", "done": True, "steps": [
