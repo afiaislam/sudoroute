@@ -105,6 +105,7 @@ class World:
     def __init__(self, app: "App", wid: str):
         self.app, self.id = app, wid
         self.touched = time.time()
+        self.lock = threading.RLock()  # each judge's sandbox has its own lock: one slow AI reply never blocks another judge
         self.build()
 
     def build(self):
@@ -157,6 +158,7 @@ class WorldView:
     def __init__(self, base: "App", world: World):
         self._base, self._world = base, world
         self.agent, self.bank = world.agent, world.bank
+        self.lock = world.lock
 
     def __getattr__(self, name):
         return getattr(self._base, name)
@@ -588,7 +590,7 @@ class Handler(BaseHTTPRequestHandler):
                     return self._err(429, "Please wait a moment before asking again.", "rate_limited")
                 hist.append(now)
                 from .agent import assist
-                return self._json({"ok": True, **assist.public_answer(q, _lang(data))})
+                return self._json({"ok": True, **assist.public_answer(q, _lang(data), use_llm=self.app.agent.use_llm)})
             if path == "/api/public/judge":
                 hist = JUDGE_STARTS[self.ip]
                 now = time.time()
@@ -666,6 +668,12 @@ class Handler(BaseHTTPRequestHandler):
                     return self._err(400, str(e))
             if path == "/api/profile/photo":
                 return self._photo(user, data)
+            # Read-only AI helpers call the model without holding the sandbox lock, so a slow model never
+            # freezes the rest of the page (balances, approvals, the phone) while it writes.
+            if user["role"] == "student" and path in ("/api/brief", "/api/email-draft"):
+                return self._student_post(path, user, data)
+            if user["role"] == "guardian" and path == "/api/guardian/ask":
+                return self._guardian_post(path, user, data)
             with self.app.lock:
                 if path == "/api/sandbox/advance" and DEMO_MODE:
                     return self._json(self.app.agent.advance(max(1, min(60, int(data.get("days", 1))))))

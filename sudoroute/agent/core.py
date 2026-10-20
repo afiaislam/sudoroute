@@ -56,6 +56,11 @@ class Context:
         self.student_id = student_id
         self.level = level
         self.trace: list[dict] = []
+        self.t0 = time.perf_counter()
+
+    def ai_time_left(self, budget: float = 22.0) -> bool:
+        """Keep every reply fast: once a request has spent ~22 s on the model, the rest is done by rules/templates."""
+        return time.perf_counter() - self.t0 < budget
 
 
 class SudoRouteAgent:
@@ -170,7 +175,7 @@ class SudoRouteAgent:
         out.setdefault("cards", [])
         out.setdefault("reply_source", "template")
         # 3. Natural-language reply. Facts come from the draft; numbers are verified after rewriting.
-        if out["reply_source"] == "template" and parsed["intent"] != "prohibited" and self._llm():
+        if out["reply_source"] == "template" and parsed["intent"] != "prohibited" and self._llm() and ctx.ai_time_left():
             t0 = time.perf_counter()
             shown = "[the student pasted an email/invoice for checking]" if pasted else message
             polished = self.llm.compose(shown, out["reply"], parsed["intent"], lang)
@@ -203,6 +208,8 @@ class SudoRouteAgent:
         observations, results, done_keys, plan_log = [], [], set(), []
         paid = False
         for rnd in range(self.MAX_PLAN_ROUNDS):
+            if rnd and not ctx.ai_time_left(15.0):
+                break  # the model is slow today: act on what is planned so far
             t0 = time.perf_counter()
             p = self.llm.plan(message, context, observations or None)
             names = [x["tool"] for x in p["steps"]] if p else []
@@ -281,7 +288,7 @@ class SudoRouteAgent:
     def _finish(self, ctx, out, intent, source, message, lang, pasted):
         out.setdefault("cards", [])
         out.setdefault("reply_source", "template")
-        if out["reply_source"] == "template" and intent != "prohibited" and self._llm():
+        if out["reply_source"] == "template" and intent != "prohibited" and self._llm() and ctx.ai_time_left():
             t0 = time.perf_counter()
             shown = "[the student pasted an email/invoice for checking]" if pasted else message
             polished = self.llm.compose(shown, out["reply"], intent, lang)

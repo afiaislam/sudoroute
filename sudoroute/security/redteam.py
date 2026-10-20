@@ -635,6 +635,7 @@ class Lab:
         # ---------------- v7: compromised model, smart timing, authenticator app (fresh sandbox, same accounts)
         with self.app.lock:
             self.app.reset()
+        self.app.agent.use_llm = False  # the reset builds a fresh agent: keep the lab deterministic (no real model)
         self.key = self.app.agent.proposals.key
         agent = self.app.agent
         real_llm, real_use = agent.llm, agent.use_llm

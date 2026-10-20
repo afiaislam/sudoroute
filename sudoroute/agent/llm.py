@@ -194,6 +194,9 @@ def _post(url: str, headers: dict, body: dict) -> dict:
         return json.loads(resp.read())
 
 
+
+_REAL_POST = _post
+
 _NO_THINKING_CFG: set = set()  # models that rejected thinkingConfig (sent without it from then on)
 
 
@@ -221,10 +224,19 @@ def _gemini(system: str, user: str, *, json_mode: bool, max_tokens: int, tempera
         return _gemini_once(system, user, json_mode=json_mode, max_tokens=max_tokens, temperature=temperature)
 
 
+_COOL: dict = {}        # model -> time until which it is skipped after a network timeout
+COOL_SECONDS = 60
+
+
 def _gemini_once(system: str, user: str, *, json_mode: bool, max_tokens: int, temperature: float) -> str:
     models = [_state["working_model"]] if _state["working_model"] else list(dict.fromkeys(config.GEMINI_MODELS))
     if _state["working_model"]:  # a busy model falls back to the others too
         models += [m for m in dict.fromkeys(config.GEMINI_MODELS) if m not in models]
+    if _post is _REAL_POST:  # a model that just timed out is skipped for a while, so one slow model can't stall every reply
+        now = time.time()
+        models = [m for m in models if _COOL.get(m, 0) <= now]
+        if not models:
+            raise RuntimeError("all Gemini models are cooling down after timeouts")
     last = None
     headers = {"x-goog-api-key": _gemini_key(), "Content-Type": "application/json"}
     for model in models:
@@ -256,6 +268,11 @@ def _gemini_once(system: str, user: str, *, json_mode: bool, max_tokens: int, te
                 raise RuntimeError(last) from None
             except (urllib.error.URLError, TimeoutError) as e:
                 last = f"{model}: {type(e).__name__}: {e}"
+                if _post is _REAL_POST:  # the Gemini API itself is slow or unreachable: give every model a rest
+                    until = time.time() + COOL_SECONDS
+                    for m in config.GEMINI_MODELS:
+                        _COOL[m] = until
+                    raise RuntimeError(last) from None
                 break
             if not thinking:
                 break

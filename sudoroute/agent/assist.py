@@ -199,8 +199,8 @@ PUBLIC_FAQ = [
 ]
 
 
-def public_answer(question: str, lang: str | None = None) -> dict:
-    ai = llm.grounded(question, PUBLIC_FACTS, lang=lang, words=90) if llm.enabled() else None
+def public_answer(question: str, lang: str | None = None, use_llm: bool = True) -> dict:
+    ai = llm.grounded(question, PUBLIC_FACTS, lang=lang, words=90) if use_llm and llm.enabled() else None
     if ai:
         return {"text": ai, "source": llm.provider()}
     q = question.lower()
