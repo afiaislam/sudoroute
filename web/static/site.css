@@ -1740,3 +1740,11 @@ html.motion .fgrid > div, html.motion .proofcard { transition: opacity var(--t-s
 html.ap-lock { overflow: hidden; }
 @media (max-width: 560px) { .ap-grid { grid-template-columns: 1fr; } .ap-card { padding: 24px 18px 18px; } }
 @media (prefers-reduced-motion: reduce) { .ap-back, .ap-card { transition: none; } }
+
+/* demo chapters: same height as the video on wide screens; the list scrolls inside */
+@media (min-width: 1081px) {
+  .demogrid { align-items: stretch; }
+  .demogrid .chapters { height: 0; min-height: 100%; overflow-y: auto; align-content: start; gap: 2px; position: relative; scrollbar-width: thin; }
+  .demogrid .chapters b { position: sticky; top: -14px; background: var(--surface); z-index: 1; padding-top: 6px; margin-top: -4px; }
+  .demogrid .chapters button { padding: 7px 10px; }
+}

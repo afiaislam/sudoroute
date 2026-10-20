@@ -75,7 +75,14 @@
     chs.forEach(b => b.addEventListener("click", () => { vid.currentTime = +b.dataset.t; vid.play().catch(() => {}); }));
     vid.addEventListener("timeupdate", () => {
       let on = chs[0]; chs.forEach(b => { if (vid.currentTime >= +b.dataset.t) on = b; });
-      chs.forEach(b => b.classList.toggle("on", b === on));
+      if (!on.classList.contains("on")) {
+        chs.forEach(b => b.classList.toggle("on", b === on));
+        const box = on.parentNode;  // keep the playing chapter visible inside the list, without moving the page
+        if (box.scrollHeight > box.clientHeight) {
+          const top = on.offsetTop, bottom = top + on.offsetHeight;
+          if (top < box.scrollTop || bottom > box.scrollTop + box.clientHeight) box.scrollTop = top - box.clientHeight / 2 + on.offsetHeight / 2;
+        }
+      }
     });
   }
 
