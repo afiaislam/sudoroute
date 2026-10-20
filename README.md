@@ -193,7 +193,12 @@ One visible service fee — **0.5% (min USD 3, max USD 25)**, waived in the pilo
 
 ## 10. Team and license
 
-Team SudoRoute — Rajshahi, Bangladesh · Kuala Lumpur, Malaysia. Contact: afiaislam2313@gmail.com · WhatsApp +880 1906-032900.
+Team SudoRoute:
+
+- **Afia Islam** — Team Leader · Varendra University, Rajshahi, Bangladesh
+- **Md. Shamsul Alam Soron** — Team Member · Lincoln University College, Malaysia
+
+Contact: afiaislam2313@gmail.com · WhatsApp +880 1906-032900.
 
 Documents: [Technical Document](docs/SudoRoute-Technical-Document.pdf) · [Security Self-Assessment](docs/SudoRoute-Security-Self-Assessment.pdf) · [Pitch Deck](docs/SudoRoute-Pitch-Deck.pdf).
 
