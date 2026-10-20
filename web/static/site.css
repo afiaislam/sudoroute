@@ -1748,3 +1748,29 @@ html.ap-lock { overflow: hidden; }
   .demogrid .chapters b { position: sticky; top: -14px; background: var(--surface); z-index: 1; padding-top: 6px; margin-top: -4px; }
   .demogrid .chapters button { padding: 7px 10px; }
 }
+
+/* phones: the portal top bar never pushes the page wider than the screen */
+html, body { overflow-x: clip; }
+@media (max-width: 860px) {
+  .topbar { gap: 8px; }
+  .topbar h1 { font-size: 18px; flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .topbar .right { flex-shrink: 0; gap: 4px; }
+  .topbar .iconbtn, .topbar .kill { width: 36px; height: 36px; padding: 0; justify-content: center; }
+  .topbar .mebtn { padding: 2px; }
+}
+@media (max-width: 480px) {
+  .topbar [data-theme-toggle] { display: none; }
+  .topbar .lp-btn { height: 36px; width: 36px; padding: 0; justify-content: center; }
+  .topbar .lp-chev, .topbar .lp-cur { display: none; }
+}
+@media (max-width: 1100px) {
+  .split, .measures, .cols, .cols.even, .chatwrap { grid-template-columns: minmax(0, 1fr); }
+  .chatwrap > *, .split > *, .cols > * { min-width: 0; }
+}
+
+/* phones: the judge guide never sits on top of the open side menu; screenshot tabs form a tidy grid */
+body:has(.side.open) .judgebox { display: none; }
+@media (max-width: 560px) {
+  .shot-tabs { display: grid; grid-template-columns: 1fr 1fr; }
+  .shot-tabs button { padding: 9px 10px; text-align: center; }
+}

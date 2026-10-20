@@ -14,6 +14,19 @@
   if (collapsed) box.classList.add("min");
   document.body.appendChild(box);
 
+  // Phones: the guide starts folded on every page, folds itself after each step and when the page changes,
+  // and never remembers "open" — so it does not cover the screen.
+  const small = () => window.matchMedia("(max-width: 860px)").matches;
+  function fold() {
+    if (!small() || box.classList.contains("min")) return;
+    box.classList.add("min");
+    const h = box.querySelector(".jhead"); if (h) h.setAttribute("aria-expanded", "false");
+  }
+  window.addEventListener("hashchange", fold);
+  document.addEventListener("click", e => {  // tap outside the guide (or open the menu) folds it
+    if (small() && !box.contains(e.target)) fold();
+  });
+
   async function sw() {
     const r = await api("/api/judge/switch", {});
     if (r.ok) { location.href = r.redirect; } else toast(r.error);
@@ -61,11 +74,13 @@
         <ol class="jsteps">${steps.join("")}</ol>
         ${role === "student" ? `<div class="jmore"><b>Then try:</b> <button type="button" class="linkbtn" data-j="smart">Pay at the best rate</button> · <button type="button" class="linkbtn" data-j="scam">Paste a scam e-mail</button> · <a href="/security-lab" target="_blank" rel="noopener">Security Lab</a></div>` : ""}</div>`;
     box.querySelector(".jhead").addEventListener("click", () => {
+      if (small()) { box.classList.toggle("min"); box.querySelector(".jhead").setAttribute("aria-expanded", String(!box.classList.contains("min"))); return; }
       box.classList.toggle("min"); store.set("sr-judge-collapsed", box.classList.contains("min") ? "1" : "0");
       box.querySelector(".jhead").setAttribute("aria-expanded", String(!box.classList.contains("min")));
     });
     box.querySelectorAll("[data-j]").forEach(b => b.addEventListener("click", () => Motion.busy(b, async () => {
       const a = b.dataset.j;
+      fold();  // on a phone, fold the guide away so the result of the step is visible
       if (a === "ask") send("Is my invoice real? If yes, pay it the cheapest legal way");
       else if (a === "switch") await sw();
       else if (a === "payments") { if (typeof Phone !== "undefined") Phone.useLatest(); else location.hash = "payments"; }

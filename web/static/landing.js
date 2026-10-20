@@ -55,7 +55,7 @@
 
   // Screenshot tabs with a sliding selection and arrow-key support.
   const tabs = $$(".shot-tabs [role=tab]"), ind = $(".shot-tabs .tab-ind");
-  const moveInd = t => { if (ind && t) { ind.style.transform = `translateX(${t.offsetLeft - 5}px)`; ind.style.width = `${t.offsetWidth}px`; ind.style.left = "5px"; } };
+  const moveInd = t => { if (ind && t) { ind.style.transform = `translate(${t.offsetLeft - 5}px, ${t.offsetTop - 5}px)`; ind.style.width = `${t.offsetWidth}px`; ind.style.height = `${t.offsetHeight}px`; ind.style.left = "5px"; ind.style.top = "5px"; ind.style.bottom = "auto"; } };
   const select = t => {
     tabs.forEach(x => { const on = x === t; x.setAttribute("aria-selected", String(on)); x.tabIndex = on ? 0 : -1; $("#shot-" + x.dataset.shot).hidden = !on; });
     moveInd(t);
