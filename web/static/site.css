@@ -1774,3 +1774,14 @@ body:has(.side.open) .judgebox { display: none; }
   .shot-tabs { display: grid; grid-template-columns: 1fr 1fr; }
   .shot-tabs button { padding: 9px 10px; text-align: center; }
 }
+/* phones: suggestion chips sit in one swipeable row, so the conversation keeps the space */
+@media (max-width: 860px) {
+  .chat { height: calc(100dvh - 150px); min-height: 460px; }
+  .chat .chips { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 10px; }
+  .chat .chips::-webkit-scrollbar { display: none; }
+  .chat .chips .chip { flex: 0 0 auto; white-space: nowrap; }
+}
+@media (max-width: 860px) {
+  body:has(.judgebox) main.view { padding-bottom: 170px; }
+  body:has(.judgebox) .chat { height: calc(100dvh - 240px); }
+}
