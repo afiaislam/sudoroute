@@ -2,7 +2,7 @@
 
 * Passwords: PBKDF2-HMAC-SHA256, 310,000 iterations, 16-byte random salt, constant-time compare.
   Unknown e-mails still run a full hash so response time does not reveal which accounts exist.
-* Password policy: 10+ characters, a letter and a digit, not a common password, not the e-mail name.
+* Password policy: 8+ characters with an uppercase letter, a lowercase letter and a digit; not a common password, not built on the e-mail or first name.
 * Sessions: 256-bit random token in an HttpOnly, SameSite=Strict cookie. Only its SHA-256 hash is
   stored server-side. 30-minute idle and 12-hour absolute timeout. New token on every login
   (prevents session fixation). All sessions are revoked when the password changes.

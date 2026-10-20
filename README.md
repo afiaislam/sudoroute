@@ -121,7 +121,7 @@ Known risks and their limits are listed in section 8.
 | Scam shield (84 hold-out invoices, 4 languages) | **100% of scams flagged, 0 genuine invoices blocked** | `python scripts/benchmark_scam_shield.py` |
 | vs bank wire (160 priced payments) | **0** scams paid (bank wire: 42 of 42) · **1.82%** cheaper · **0** rule-breaking channels | `python scripts/benchmark_baselines.py` |
 | End-to-end demo | **9 scenarios, 41 checked steps**, audit chain valid | `python scripts/run_demo.py` |
-| Real Gemini (20 Oct 2026, gemini-3.1-flash-lite) | **23 of 24** requests in 4 languages planned correctly (the miss failed safe) · **0** money moved · **0** leaks · reader monotonic **100%** | `python scripts/eval_live_llm.py` (needs a key) → `evidence/live_llm_eval.md` |
+| Real Gemini (20 Oct 2026, gemini-3.1-flash-lite) | **23 of 24** requests in 4 languages planned correctly vs 19/24 for rules alone (the miss failed safe) · 15 multi-step plans · AI reader raised scam blocks from 19 to 28 of 42 with 0 genuine blocked · **0** money moved · **0** leaks · reader monotonic **100%** | `python scripts/eval_live_llm.py` (needs a key) → `evidence/live_llm_eval.md` |
 
 Reports are in `evidence/`; screenshots in `evidence/screenshots/`.
 
